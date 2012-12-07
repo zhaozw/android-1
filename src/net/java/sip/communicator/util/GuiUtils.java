@@ -7,8 +7,8 @@
 package net.java.sip.communicator.util;
 
 import java.awt.*;
-import java.awt.font.*;
-import java.awt.geom.*;
+//import java.awt.font.*;
+//import java.awt.geom.*;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.List;
@@ -154,11 +154,11 @@ public class GuiUtils
      * @param text the text to measure
      * @return the width in pixels of a text.
      */
-    public static int getStringWidth(Component c, String text)
-    {
-        return SwingUtilities.computeStringWidth(c
-                .getFontMetrics(c.getFont()), text);
-    }
+//    public static int getStringWidth(Component c, String text)
+//    {
+//        return SwingUtilities.computeStringWidth(c
+//                .getFontMetrics(c.getFont()), text);
+//    }
 
     /**
      * Returns the size of the given text computed towards to the given
@@ -167,31 +167,31 @@ public class GuiUtils
      * @param text the text to measure
      * @return the dimensions of the text
      */
-    public static Dimension getStringSize(Component c, String text)
-    {
-        // get metrics from the graphics
-        FontMetrics metrics = c.getFontMetrics(c.getFont());
-        // get the height of a line of text in this font and render context
-        int hgt = metrics.getHeight();
-        // get the advance of my text in this font and render context
-        int adv = metrics.stringWidth(text);
-        // calculate the size of a box to hold the text with some padding.
-        return new Dimension(adv+2, hgt+2);
-    }
+//    public static Dimension getStringSize(Component c, String text)
+//    {
+//        // get metrics from the graphics
+//        FontMetrics metrics = c.getFontMetrics(c.getFont());
+//        // get the height of a line of text in this font and render context
+//        int hgt = metrics.getHeight();
+//        // get the advance of my text in this font and render context
+//        int adv = metrics.stringWidth(text);
+//        // calculate the size of a box to hold the text with some padding.
+//        return new Dimension(adv+2, hgt+2);
+//    }
 
     /**
      * Returns the bounds of the given string.
      * @param text the string to measure
      * @return the bounds of the given string
      */
-    public static Rectangle2D getDefaultStringSize(String text)
-    {
-        Font font = UIManager.getFont("Label.font");
-        FontRenderContext frc = new FontRenderContext(null, true, false);
-        TextLayout layout = new TextLayout(text, font, frc);
-
-        return layout.getBounds();
-    }
+//    public static Rectangle2D getDefaultStringSize(String text)
+//    {
+//        Font font = UIManager.getFont("Label.font");
+//        FontRenderContext frc = new FontRenderContext(null, true, false);
+//        TextLayout layout = new TextLayout(text, font, frc);
+//
+//        return layout.getBounds();
+//    }
 
     /**
      * Counts occurrences of the <tt>needle</tt> character in the given
@@ -602,13 +602,13 @@ public class GuiUtils
      *
      * @param c UI component.
      */
-    public static void updateComponentTreeUI(Component c)
-    {
-        updateComponentTreeUI0(c);
-        c.invalidate();
-        c.validate();
-        c.repaint();
-    }
+//    public static void updateComponentTreeUI(Component c)
+//    {
+//        updateComponentTreeUI0(c);
+//        c.invalidate();
+//        c.validate();
+//        c.repaint();
+//    }
 
     /**
      * Returns the index of the given component in the given container.
@@ -618,49 +618,49 @@ public class GuiUtils
      * @return the index of the component in the container or -1 if no such
      * component is contained in the container
      */
-    public static int getComponentIndex(Component c, Container container)
-    {
-        for (int i = 0, count = container.getComponentCount(); i < count; i++)
-        {
-            if (container.getComponent(i).equals(c))
-                return i;
-        }
-        return -1;
-    }
+//    public static int getComponentIndex(Component c, Container container)
+//    {
+//        for (int i = 0, count = container.getComponentCount(); i < count; i++)
+//        {
+//            if (container.getComponent(i).equals(c))
+//                return i;
+//        }
+//        return -1;
+//    }
 
     /**
      * Repaints UI tree recursively.
      * @param c UI component.
      */
-    private static void updateComponentTreeUI0(Component c)
-    {
-        if (c instanceof JComponent)
-        {
-            JComponent jc = (JComponent) c;
-            jc.invalidate();
-            jc.validate();
-            jc.repaint();
-            JPopupMenu jpm =jc.getComponentPopupMenu();
-            if(jpm != null && jpm.isVisible() && jpm.getInvoker() == jc)
-            {
-                updateComponentTreeUI(jpm);
-            }
-        }
-        Component[] children = null;
-        if (c instanceof JMenu)
-        {
-            children = ((JMenu)c).getMenuComponents();
-        }
-        else if (c instanceof java.awt.Container)
-        {
-            children = ((java.awt.Container)c).getComponents();
-        }
-        if (children != null)
-        {
-            for(int i = 0; i < children.length; i++)
-                updateComponentTreeUI0(children[i]);
-        }
-    }
+//    private static void updateComponentTreeUI0(Component c)
+//    {
+//        if (c instanceof JComponent)
+//        {
+//            JComponent jc = (JComponent) c;
+//            jc.invalidate();
+//            jc.validate();
+//            jc.repaint();
+//            JPopupMenu jpm =jc.getComponentPopupMenu();
+//            if(jpm != null && jpm.isVisible() && jpm.getInvoker() == jc)
+//            {
+//                updateComponentTreeUI(jpm);
+//            }
+//        }
+//        Component[] children = null;
+//        if (c instanceof JMenu)
+//        {
+//            children = ((JMenu)c).getMenuComponents();
+//        }
+//        else if (c instanceof java.awt.Container)
+//        {
+//            children = ((java.awt.Container)c).getComponents();
+//        }
+//        if (children != null)
+//        {
+//            for(int i = 0; i < children.length; i++)
+//                updateComponentTreeUI0(children[i]);
+//        }
+//    }
 
     /**
      * Replaces the characters that we must escape used for the created

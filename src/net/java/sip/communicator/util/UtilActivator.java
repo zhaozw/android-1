@@ -6,15 +6,15 @@
  */
 package net.java.sip.communicator.util;
 
-import java.awt.image.*;
+//import java.awt.image.*;
 import java.net.*;
 import java.util.*;
 
-import javax.imageio.*;
+//import javax.imageio.*;
 
 import net.java.sip.communicator.service.browserlauncher.*;
 import net.java.sip.communicator.service.gui.*;
-import net.java.sip.communicator.service.keybindings.*;
+//import net.java.sip.communicator.service.keybindings.*;
 import net.java.sip.communicator.service.netaddr.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.resources.*;
@@ -46,7 +46,7 @@ public class UtilActivator
 
     private static ConfigurationService configurationService;
 
-    private static KeybindingsService keybindingsService;
+//    private static KeybindingsService keybindingsService;
 
     private static ResourceManagementService resourceService;
 
@@ -79,10 +79,11 @@ public class UtilActivator
     public void start(BundleContext context)
         throws Exception
     {
+        bundleContext = context;
+        new JavaUtilLoggingConfig();
+
         if (logger.isTraceEnabled())
             logger.trace("Setting default uncaught exception handler.");
-
-        bundleContext = context;
 
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
@@ -143,17 +144,17 @@ public class UtilActivator
      *
      * @return the <tt>KeybindingsService</tt>
      */
-    public static KeybindingsService getKeybindingsService()
-    {
-        if (keybindingsService == null)
-        {
-            keybindingsService
-                = ServiceUtils.getService(
-                        bundleContext,
-                        KeybindingsService.class);
-        }
-        return keybindingsService;
-    }
+//    public static KeybindingsService getKeybindingsService()
+//    {
+//        if (keybindingsService == null)
+//        {
+//            keybindingsService
+//                = ServiceUtils.getService(
+//                        bundleContext,
+//                        KeybindingsService.class);
+//        }
+//        return keybindingsService;
+//    }
 
     /**
      * Returns the service giving access to all application resources.
@@ -210,26 +211,26 @@ public class UtilActivator
      * @param imageID the identifier of the image
      * @return the image corresponding to the given <tt>imageID</tt>
      */
-    public static BufferedImage getImage(String imageID)
-    {
-        BufferedImage image = null;
-
-        URL path = getResources().getImageURL(imageID);
-
-        if (path == null)
-            return null;
-
-        try
-        {
-            image = ImageIO.read(path);
-        }
-        catch (Exception exc)
-        {
-            logger.error("Failed to load image:" + path, exc);
-        }
-
-        return image;
-    }
+//    public static BufferedImage getImage(String imageID)
+//    {
+//        BufferedImage image = null;
+//
+//        URL path = getResources().getImageURL(imageID);
+//
+//        if (path == null)
+//            return null;
+//
+//        try
+//        {
+//            image = ImageIO.read(path);
+//        }
+//        catch (Exception exc)
+//        {
+//            logger.error("Failed to load image:" + path, exc);
+//        }
+//
+//        return image;
+//    }
 
     /**
      * Gets the <tt>UIService</tt> instance registered in the

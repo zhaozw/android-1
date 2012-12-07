@@ -1848,13 +1848,13 @@ public class CallPeerMediaHandlerJabberImpl
     {
         super.close();
 
-        OperationSetDesktopSharingClientJabberImpl client
-            = (OperationSetDesktopSharingClientJabberImpl)
-                getPeer().getProtocolProvider().getOperationSet(
-                    OperationSetDesktopSharingClient.class);
-
-        if (client != null)
-            client.fireRemoteControlRevoked(getPeer());
+//        OperationSetDesktopSharingClientJabberImpl client
+//            = (OperationSetDesktopSharingClientJabberImpl)
+//                getPeer().getProtocolProvider().getOperationSet(
+//                    OperationSetDesktopSharingClient.class);
+//
+//        if (client != null)
+//            client.fireRemoteControlRevoked(getPeer());
     }
 
     /**

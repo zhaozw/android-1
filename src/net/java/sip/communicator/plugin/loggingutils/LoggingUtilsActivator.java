@@ -6,14 +6,12 @@
  */
 package net.java.sip.communicator.plugin.loggingutils;
 
-import java.util.*;
-
-import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.notification.*;
 import net.java.sip.communicator.util.*;
 
 import org.jitsi.service.configuration.*;
 import org.jitsi.service.fileaccess.*;
+import org.jitsi.service.log.*;
 import org.jitsi.service.packetlogging.*;
 import org.jitsi.service.resources.*;
 import org.osgi.framework.*;
@@ -29,6 +27,11 @@ public class LoggingUtilsActivator
      * The OSGI bundle context.
      */
     static BundleContext        bundleContext         = null;
+
+    /**
+     * The OSGi service registration.
+     */
+    private ServiceRegistration logUploadServReg = null;
 
     /**
      * The resource service.
@@ -74,26 +77,10 @@ public class LoggingUtilsActivator
     {
         LoggingUtilsActivator.bundleContext = bundleContext;
 
-        // If the logging configuration form is disabled don't continue.
-        if (!getConfigurationService().getBoolean(DISABLED_PROP, false))
-        {
-            // Config Form
-            Dictionary<String, String> packetLoggingProps
-                = new Hashtable<String, String>();
-            packetLoggingProps.put(
-                    ConfigurationForm.FORM_TYPE,
-                    ConfigurationForm.ADVANCED_TYPE);
-            bundleContext.registerService(
-                    ConfigurationForm.class.getName(),
-                    new LazyConfigurationForm(
-                            LoggingConfigForm.class.getName(),
-                            getClass().getClassLoader(),
-                            null,
-                            "plugin.loggingutils.PACKET_LOGGING_CONFIG",
-                            1200,
-                            true),
-                    packetLoggingProps);
-        }
+        logUploadServReg =  bundleContext.registerService(
+            LogUploadService.class.getName(),
+            new LogUploadServiceImpl(),
+            null);
     }
 
     /**
@@ -105,6 +92,7 @@ public class LoggingUtilsActivator
             throws
             Exception
     {
+        logUploadServReg.unregister();
     }
 
     /**

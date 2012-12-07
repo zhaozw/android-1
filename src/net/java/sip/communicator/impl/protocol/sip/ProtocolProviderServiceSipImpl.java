@@ -485,15 +485,15 @@ public class ProtocolProviderServiceSipImpl
                                 opSetBasicTelephonySipImpl));
 
                     // OperationSetDesktopSharingServer
-                    addSupportedOperationSet(
-                       OperationSetDesktopSharingServer.class,
-                       new OperationSetDesktopSharingServerSipImpl(
-                               opSetBasicTelephonySipImpl));
+//                    addSupportedOperationSet(
+//                       OperationSetDesktopSharingServer.class,
+//                       new OperationSetDesktopSharingServerSipImpl(
+//                               opSetBasicTelephonySipImpl));
 
                     // OperationSetDesktopSharingClient
-                    addSupportedOperationSet(
-                        OperationSetDesktopSharingClient.class,
-                        new OperationSetDesktopSharingClientSipImpl(this));
+//                    addSupportedOperationSet(
+//                        OperationSetDesktopSharingClient.class,
+//                        new OperationSetDesktopSharingClientSipImpl(this));
                 }
             }
 

@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.List;
 
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.swing.*;
+//import net.java.sip.communicator.util.swing.*;
 
 /**
  * The <tt>UIContact</tt> represents the user interface contact contained in the
@@ -56,7 +56,7 @@ public abstract class UIContact
      *
      * @return the tool tip for this contact descriptor
      */
-    public abstract ExtendedTooltip getToolTip();
+//    public abstract ExtendedTooltip getToolTip();
 
     /**
      * Returns the right button menu component.
@@ -125,7 +125,7 @@ public abstract class UIContact
      *
      * @return a list of all custom action buttons for this notification contact
      */
-    public abstract Collection<SIPCommButton> getContactCustomActionButtons();
+//    public abstract Collection<SIPCommButton> getContactCustomActionButtons();
 
     /**
      * Returns the preferred height of this group in the contact list.

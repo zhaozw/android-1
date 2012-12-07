@@ -21,13 +21,13 @@ import net.java.sip.communicator.impl.protocol.jabber.extensions.caps.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.cobri.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.coin.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.gtalk.*;
-import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.*;
+//import net.java.sip.communicator.impl.protocol.jabber.extensions.inputevt.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingle.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.jingleinfo.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.keepalive.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.messagecorrection.*;
 import net.java.sip.communicator.impl.protocol.jabber.extensions.version.*;
-import net.java.sip.communicator.impl.protocol.jabber.sasl.*;
+//import net.java.sip.communicator.impl.protocol.jabber.sasl.*;
 import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -62,6 +62,31 @@ public class ProtocolProviderServiceJabberImpl
      */
     private static final Logger logger =
         Logger.getLogger(ProtocolProviderServiceJabberImpl.class);
+
+    static
+    {
+        try
+        {
+            // pre-configure smack in android
+            // just to load class to init their static blocks
+            SmackConfiguration.getVersion();
+            Class.forName(ServiceDiscoveryManager.class.getName());
+
+            Class.forName(DelayInformation.class.getName());
+            Class.forName(org.jivesoftware.smackx
+                .provider.DelayInformationProvider.class.getName());
+            Class.forName(org.jivesoftware.smackx
+                .bytestreams.socks5.Socks5BytestreamManager.class.getName());
+            Class.forName(XHTMLManager.class.getName());
+            Class.forName(org.jivesoftware.smackx
+                .bytestreams.ibb.InBandBytestreamManager.class.getName());
+
+        }
+        catch(ClassNotFoundException e)
+        {
+            logger.error("Error loading classes in smack", e);
+        }
+    }
 
     /**
      * Jingle's Discovery Info common URN.
@@ -1246,10 +1271,10 @@ public class ProtocolProviderServiceJabberImpl
 
         // Insert our sasl mechanism implementation
         // in order to support some incompatible servers
-        SASLAuthentication.unregisterSASLMechanism("DIGEST-MD5");
-        SASLAuthentication.registerSASLMechanism("DIGEST-MD5",
-            SASLDigestMD5Mechanism.class);
-        SASLAuthentication.supportSASLMechanism("DIGEST-MD5");
+//        SASLAuthentication.unregisterSASLMechanism("DIGEST-MD5");
+//        SASLAuthentication.registerSASLMechanism("DIGEST-MD5",
+//            SASLDigestMD5Mechanism.class);
+//        SASLAuthentication.supportSASLMechanism("DIGEST-MD5");
 
         connection.login(userName, password, resource);
 
@@ -1570,9 +1595,9 @@ public class ProtocolProviderServiceJabberImpl
                     persistentPresence));
 
             //initialize the Whiteboard operation set
-            addSupportedOperationSet(
-                OperationSetWhiteboarding.class,
-                new OperationSetWhiteboardingJabberImpl(this));
+//            addSupportedOperationSet(
+//                OperationSetWhiteboarding.class,
+//                new OperationSetWhiteboardingJabberImpl(this));
 
             //initialize the typing notifications operation set
             addSupportedOperationSet(
@@ -1648,9 +1673,9 @@ public class ProtocolProviderServiceJabberImpl
                                            new JingleIQProvider());
 
             // register our input event provider
-            providerManager.addIQProvider(InputEvtIQ.ELEMENT_NAME,
-                                          InputEvtIQ.NAMESPACE,
-                                          new InputEvtIQProvider());
+//            providerManager.addIQProvider(InputEvtIQ.ELEMENT_NAME,
+//                                          InputEvtIQ.NAMESPACE,
+//                                          new InputEvtIQProvider());
 
             // register our coin provider
             providerManager.addIQProvider(CoinIQ.ELEMENT_NAME,
@@ -1769,23 +1794,23 @@ public class ProtocolProviderServiceJabberImpl
                             new OperationSetDesktopStreamingJabberImpl(
                                 basicTelephony));
 
-                    // initialize desktop sharing OperationSets
-                    addSupportedOperationSet(
-                            OperationSetDesktopSharingServer.class,
-                            new OperationSetDesktopSharingServerJabberImpl(
-                                basicTelephony));
-
-                    // Adds extension to support remote control as a sharing
-                    // server (sharer).
-                    supportedFeatures.add(InputEvtIQ.NAMESPACE_SERVER);
-
-                    addSupportedOperationSet(
-                            OperationSetDesktopSharingClient.class,
-                            new OperationSetDesktopSharingClientJabberImpl(this)
-                            );
-                    // Adds extension to support remote control as a sharing
-                    // client (sharee).
-                    supportedFeatures.add(InputEvtIQ.NAMESPACE_CLIENT);
+//                    // initialize desktop sharing OperationSets
+//                    addSupportedOperationSet(
+//                            OperationSetDesktopSharingServer.class,
+//                            new OperationSetDesktopSharingServerJabberImpl(
+//                                basicTelephony));
+//
+//                    // Adds extension to support remote control as a sharing
+//                    // server (sharer).
+//                    supportedFeatures.add(InputEvtIQ.NAMESPACE_SERVER);
+//
+//                    addSupportedOperationSet(
+//                            OperationSetDesktopSharingClient.class,
+//                            new OperationSetDesktopSharingClientJabberImpl(this)
+//                            );
+//                    // Adds extension to support remote control as a sharing
+//                    // client (sharee).
+//                    supportedFeatures.add(InputEvtIQ.NAMESPACE_CLIENT);
                 }
             }
 

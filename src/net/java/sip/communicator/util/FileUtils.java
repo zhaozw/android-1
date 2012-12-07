@@ -9,7 +9,7 @@ package net.java.sip.communicator.util;
 import java.io.*;
 
 import javax.swing.*;
-import javax.swing.filechooser.*;
+//import javax.swing.filechooser.*;
 
 /**
  * Utility class that allows to check if a given file is an image or to obtain
@@ -58,31 +58,31 @@ public class FileUtils
      * returns null.
      * TODO: Use JNA to implement this under Linux.
      */
-    public static Icon getIcon(File file)
-    {
-        Icon fileIcon = null;
-
-        try
-        {
-            fileIcon = FileSystemView.getFileSystemView().getSystemIcon(file);
-        }
-        catch (Exception e)
-        {
-            if (logger.isDebugEnabled())
-                logger.debug("Failed to obtain file icon from ShellFolder.", e);
-
-            /* try with another method to obtain file icon */
-            try
-            {
-                fileIcon = new JFileChooser().getIcon(file);
-            }
-            catch (Exception e1)
-            {
-                if (logger.isDebugEnabled())
-                    logger.debug("Failed to obtain file icon from JFileChooser.", e1);
-            }
-        }
-
-        return fileIcon;
-    }
+//    public static Icon getIcon(File file)
+//    {
+//        Icon fileIcon = null;
+//
+//        try
+//        {
+//            fileIcon = FileSystemView.getFileSystemView().getSystemIcon(file);
+//        }
+//        catch (Exception e)
+//        {
+//            if (logger.isDebugEnabled())
+//                logger.debug("Failed to obtain file icon from ShellFolder.", e);
+//
+//            /* try with another method to obtain file icon */
+//            try
+//            {
+//                fileIcon = new JFileChooser().getIcon(file);
+//            }
+//            catch (Exception e1)
+//            {
+//                if (logger.isDebugEnabled())
+//                    logger.debug("Failed to obtain file icon from JFileChooser.", e1);
+//            }
+//        }
+//
+//        return fileIcon;
+//    }
 }

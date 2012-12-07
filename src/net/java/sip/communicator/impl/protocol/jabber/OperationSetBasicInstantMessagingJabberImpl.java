@@ -425,7 +425,8 @@ public class OperationSetBasicInstantMessagingJabberImpl
 
             if(message.getContentType().equals(HTML_MIME_TYPE))
             {
-                msg.setBody(Html2Text.extractText(content));
+//                msg.setBody(Html2Text.extractText(content));
+                msg.setBody(content);
 
                 // Check if the other user supports XHTML messages
                 // make sure we use our discovery manager as it caches calls

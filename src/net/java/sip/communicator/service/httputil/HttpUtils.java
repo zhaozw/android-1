@@ -14,7 +14,7 @@ import java.util.*;
 import javax.net.ssl.*;
 
 import net.java.sip.communicator.util.Logger;
-import net.java.sip.communicator.util.swing.*;
+// import net.java.sip.communicator.util.swing.*;
 
 import org.apache.http.*;
 import org.apache.http.Header;
@@ -26,8 +26,8 @@ import org.apache.http.client.utils.*;
 import org.apache.http.conn.scheme.*;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.*;
-import org.apache.http.entity.mime.*;
-import org.apache.http.entity.mime.content.*;
+// import org.apache.http.entity.mime.*;
+// import org.apache.http.entity.mime.content.*;
 import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.*;
 import org.apache.http.message.*;
@@ -277,38 +277,38 @@ public class HttpUtils
                                    String usernamePropertyName,
                                    String passwordPropertyName)
     {
-        DefaultHttpClient httpClient = null;
-        try
-        {
-            HttpPost postMethod = new HttpPost(address);
-
-            httpClient = getHttpClient(
-                usernamePropertyName, passwordPropertyName,
-                postMethod.getURI().getHost(), null);
-
-            String mimeType = URLConnection.guessContentTypeFromName(
-                file.getPath());
-            if(mimeType == null)
-                mimeType = "application/octet-stream";
-
-            FileBody bin = new FileBody(file, mimeType);
-
-            MultipartEntity reqEntity = new MultipartEntity();
-            reqEntity.addPart(fileParamName, bin);
-
-            postMethod.setEntity(reqEntity);
-
-            HttpEntity resEntity = executeMethod(httpClient, postMethod);
-
-            if(resEntity == null)
-                return null;
-
-            return new HTTPResponseResult(resEntity, httpClient);
-        }
-        catch(Throwable e)
-        {
-            logger.error("Cannot post file to:" + address, e);
-        }
+//TODO         DefaultHttpClient httpClient = null;
+//        try
+//        {
+//            HttpPost postMethod = new HttpPost(address);
+//
+//            httpClient = getHttpClient(
+//                usernamePropertyName, passwordPropertyName,
+//                postMethod.getURI().getHost(), null);
+//
+//            String mimeType = URLConnection.guessContentTypeFromName(
+//                file.getPath());
+//            if(mimeType == null)
+//                mimeType = "application/octet-stream";
+//
+//            FileBody bin = new FileBody(file, mimeType);
+//
+//            MultipartEntity reqEntity = new MultipartEntity();
+//            reqEntity.addPart(fileParamName, bin);
+//
+//            postMethod.setEntity(reqEntity);
+//
+//            HttpEntity resEntity = executeMethod(httpClient, postMethod);
+//
+//            if(resEntity == null)
+//                return null;
+//
+//            return new HTTPResponseResult(resEntity, httpClient);
+//        }
+//        catch(Throwable e)
+//        {
+//            logger.error("Cannot post file to:" + address, e);
+//        }
 
         return null;
     }
@@ -554,10 +554,10 @@ public class HttpUtils
             throw new IOException(e.getMessage());
         }
 
-        Scheme sch =
-            new Scheme("https", 443, new SSLSocketFactory(sslCtx,
-                SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER));
-        httpClient.getConnectionManager().getSchemeRegistry().register(sch);
+//        Scheme sch =
+//            new Scheme("https", 443, new SSLSocketFactory(sslCtx,
+//                SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER));
+//        httpClient.getConnectionManager().getSchemeRegistry().register(sch);
         //TODO: wrap the SSLSocketFactory to use our own DNS resolution
         //TODO: register socketfactory for http to use our own DNS resolution
 
@@ -675,39 +675,39 @@ public class HttpUtils
             if(pass == null)
             {
                 
-                AuthenticationWindow authWindow =
-                    new AuthenticationWindow(
-                        authUsername, null,
-                        authscope.getHost(), true, null, errorMessage,
-                        HttpUtilActivator.getResources().getSettingsString(
-                            "plugin.provisioning.SIGN_UP_LINK"));
-                authWindow.setVisible(true);
-
-                if(!authWindow.isCanceled())
-                {
-                    Credentials cred = new UsernamePasswordCredentials(
-                        authWindow.getUserName(),
-                        new String(authWindow.getPassword())
-                    );
-
-                    authUsername = authWindow.getUserName();
-                    authPassword = new String(authWindow.getPassword());
-
-                    // if password remember is checked lets save passwords,
-                    // if they seem not correct later will be removed.
-                    if(authWindow.isRememberPassword())
-                    {
-                        HttpUtilActivator.getConfigurationService().setProperty(
-                            usernamePropertyName,
-                            authWindow.getUserName());
-                        HttpUtilActivator.getCredentialsService().storePassword(
-                            passwordPropertyName,
-                            new String(authWindow.getPassword())
-                        );
-                    }
-
-                    return cred;
-                }
+//                AuthenticationWindow authWindow =
+//                    new AuthenticationWindow(
+//                        authUsername, null,
+//                        authscope.getHost(), true, null, errorMessage,
+//                        HttpUtilActivator.getResources().getSettingsString(
+//                            "plugin.provisioning.SIGN_UP_LINK"));
+//                authWindow.setVisible(true);
+//
+//                if(!authWindow.isCanceled())
+//                {
+//                    Credentials cred = new UsernamePasswordCredentials(
+//                        authWindow.getUserName(),
+//                        new String(authWindow.getPassword())
+//                    );
+//
+//                    authUsername = authWindow.getUserName();
+//                    authPassword = new String(authWindow.getPassword());
+//
+//                    // if password remember is checked lets save passwords,
+//                    // if they seem not correct later will be removed.
+//                    if(authWindow.isRememberPassword())
+//                    {
+//                        HttpUtilActivator.getConfigurationService().setProperty(
+//                            usernamePropertyName,
+//                            authWindow.getUserName());
+//                        HttpUtilActivator.getCredentialsService().storePassword(
+//                            passwordPropertyName,
+//                            new String(authWindow.getPassword())
+//                        );
+//                    }
+//
+//                    return cred;
+//                }
 
                 // well user canceled credentials input stop retry asking him
                 // if credentials are not correct

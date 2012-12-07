@@ -268,7 +268,7 @@ public class SoundNotificationHandlerImpl
         {
             try
             {
-                java.awt.Toolkit.getDefaultToolkit().beep();
+                //java.awt.Toolkit.getDefaultToolkit().beep();
                 return true;
             }
             catch (Throwable t)

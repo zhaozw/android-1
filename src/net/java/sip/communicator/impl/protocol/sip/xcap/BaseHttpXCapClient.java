@@ -469,10 +469,10 @@ public abstract class BaseHttpXCapClient implements HttpXCapClient
             SSLContext ctx =
                 certificateVerification.getSSLContext(
                     certificateVerification.getTrustManager(uri.getHost()));
-            org.apache.http.conn.ssl.SSLSocketFactory ssf =
-                new org.apache.http.conn.ssl.SSLSocketFactory(ctx,
-                    SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-            sr.register(new Scheme("https", 443, ssf));
+//            org.apache.http.conn.ssl.SSLSocketFactory ssf =
+//                new org.apache.http.conn.ssl.SSLSocketFactory(ctx,
+//                    SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+//            sr.register(new Scheme("https", 443, ssf));
         }
         catch(Throwable e)
         {

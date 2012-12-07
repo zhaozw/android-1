@@ -10,7 +10,7 @@ import java.util.*;
 
 import net.java.sip.communicator.service.credentialsstorage.*;
 import net.java.sip.communicator.util.*;
-import net.java.sip.communicator.util.swing.*;
+//import net.java.sip.communicator.util.swing.*;
 
 import org.jitsi.service.configuration.*;
 import org.osgi.framework.*;
@@ -466,15 +466,16 @@ public class CredentialsStorageServiceImpl
         // cancel button is pressed and null returned
         boolean correct = true;
 
-        do
-        {
-            master = MasterPasswordInputDialog.showInput(correct);
-            if (master == null)
-                return null;
-            correct = ((master.length() != 0) && verifyMasterPassword(master));
-        }
-        while (!correct);
-        return master;
+//        do
+//        {
+//            master = MasterPasswordInputDialog.showInput(correct);
+//            if (master == null)
+//                return null;
+//            correct = ((master.length() != 0) && verifyMasterPassword(master));
+//        }
+//        while (!correct);
+//        return master;
+        return null;
     }
 
     /**

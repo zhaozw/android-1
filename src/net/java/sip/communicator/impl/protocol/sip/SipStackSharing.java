@@ -105,7 +105,7 @@ public class SipStackSharing
         try
         {
             SipFactory sipFactory = SipFactory.getInstance();
-            sipFactory.setPathName("gov.nist");
+            sipFactory.setPathName("org.jitsi.gov.nist");
 
             Properties sipStackProperties = new SipStackProperties();
 

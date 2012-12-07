@@ -18,13 +18,13 @@ import java.util.*;
 
 import javax.net.ssl.*;
 import javax.security.auth.callback.*;
-import javax.swing.*;
+//import javax.swing.*;
 
 import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.credentialsstorage.*;
 import net.java.sip.communicator.service.httputil.*;
 import net.java.sip.communicator.util.Logger;
-import net.java.sip.communicator.util.swing.*;
+//import net.java.sip.communicator.util.swing.*;
 
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.*;
@@ -421,20 +421,20 @@ public class CertificateServiceImpl
                             }
                             else
                             {
-                                AuthenticationWindow aw =
-                                    new AuthenticationWindow(
-                                        f.getName(),
-                                        null,
-                                        kt.getName(),
-                                        false,
-                                        null
-                                    );
-                                aw.setAllowSavePassword(false);
-                                aw.setVisible(true);
-                                if (!aw.isCanceled())
-                                    pwcb.setPassword(aw.getPassword());
-                                else
-                                    throw new IOException("User cancel");
+//                                AuthenticationWindow aw =
+//                                    new AuthenticationWindow(
+//                                        f.getName(),
+//                                        null,
+//                                        kt.getName(),
+//                                        false,
+//                                        null
+//                                    );
+//                                aw.setAllowSavePassword(false);
+//                                aw.setVisible(true);
+//                                if (!aw.isCanceled())
+//                                    pwcb.setPassword(aw.getPassword());
+//                                else
+//                                    throw new IOException("User cancel");
                             }
                         }
                     }
@@ -983,32 +983,32 @@ public class CertificateServiceImpl
         if(config.getBoolean(PNAME_NO_USER_INTERACTION, false))
             return DO_NOT_TRUST;
 
-        final VerifyCertificateDialog dialog =
-            new VerifyCertificateDialog(chain, null, message);
-        try
-        {
-            // show the dialog in the swing thread and wait for the user
-            // choice
-            SwingUtilities.invokeAndWait(new Runnable()
-            {
-                public void run()
-                {
-                    dialog.setVisible(true);
-                }
-            });
-        }
-        catch (Exception e)
-        {
-            logger.error("Cannot show certificate verification dialog", e);
-            return DO_NOT_TRUST;
-        }
-
-        if(!dialog.isTrusted)
-            return DO_NOT_TRUST;
-        else if(dialog.alwaysTrustCheckBox.isSelected())
+//        final VerifyCertificateDialog dialog =
+//            new VerifyCertificateDialog(chain, null, message);
+//        try
+//        {
+//            // show the dialog in the swing thread and wait for the user
+//            // choice
+//            SwingUtilities.invokeAndWait(new Runnable()
+//            {
+//                public void run()
+//                {
+//                    dialog.setVisible(true);
+//                }
+//            });
+//        }
+//        catch (Exception e)
+//        {
+//            logger.error("Cannot show certificate verification dialog", e);
+//            return DO_NOT_TRUST;
+//        }
+//
+//        if(!dialog.isTrusted)
+//            return DO_NOT_TRUST;
+//        else if(dialog.alwaysTrustCheckBox.isSelected())
             return TRUST_ALWAYS;
-        else
-            return TRUST_THIS_SESSION_ONLY;
+//        else
+//            return TRUST_THIS_SESSION_ONLY;
     }
 
     /**

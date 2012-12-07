@@ -71,16 +71,16 @@ public class DnsUtilActivator
     {
         bundleContext = context;
 
-        if(getConfigurationService().getBoolean(
-            PNAME_DNSSEC_RESOLVER_ENABLED,
-            PDEFAULT_DNSSEC_RESOLVER_ENABLED))
-        {
-            getNotificationService().
-                registerDefaultNotificationForEvent(
-                    ConfigurableDnssecResolver.EVENT_TYPE,
-                    NotificationAction.ACTION_POPUP_MESSAGE,
-                    null, null);
-        }
+//        if(getConfigurationService().getBoolean(
+//            PNAME_DNSSEC_RESOLVER_ENABLED,
+//            PDEFAULT_DNSSEC_RESOLVER_ENABLED))
+//        {
+//            getNotificationService().
+//                registerDefaultNotificationForEvent(
+//                    ConfigurableDnssecResolver.EVENT_TYPE,
+//                    NotificationAction.ACTION_POPUP_MESSAGE,
+//                    null, null);
+//        }
         refreshResolver();
     }
 
@@ -95,18 +95,18 @@ public class DnsUtilActivator
             PDEFAULT_DNSSEC_RESOLVER_ENABLED))
         {
             logger.trace("DNSSEC is enabled");
-            ConfigurableDnssecResolver res = new ConfigurableDnssecResolver();
-            for(int i = 1;;i++)
-            {
-                String anchor = getResources().getSettingsString(
-                    "net.java.sip.communicator.util.dns.DS_ROOT." + i);
-                if(anchor == null)
-                    break;
-                res.addTrustAnchor(anchor);
-                if(logger.isTraceEnabled())
-                    logger.trace("Loaded trust anchor " + anchor);
-            }
-            Lookup.setDefaultResolver(res);
+//            ConfigurableDnssecResolver res = new ConfigurableDnssecResolver();
+//            for(int i = 1;;i++)
+//            {
+//                String anchor = getResources().getSettingsString(
+//                    "net.java.sip.communicator.util.dns.DS_ROOT." + i);
+//                if(anchor == null)
+//                    break;
+//                res.addTrustAnchor(anchor);
+//                if(logger.isTraceEnabled())
+//                    logger.trace("Loaded trust anchor " + anchor);
+//            }
+//            Lookup.setDefaultResolver(res);
         }
         else
         {

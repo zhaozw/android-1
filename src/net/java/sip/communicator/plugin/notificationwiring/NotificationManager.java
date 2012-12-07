@@ -6,13 +6,13 @@
  */
 package net.java.sip.communicator.plugin.notificationwiring;
 
-import java.awt.image.*;
+//import java.awt.image.*;
 import java.lang.ref.*;
 import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-import javax.imageio.*;
+//import javax.imageio.*;
 
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.gui.*;
@@ -91,8 +91,8 @@ public class NotificationManager
      * loaded by <tt>ImageID</tt> and which we store so that we do not have to
      * load them again.
      */
-    private static final Map<ImageID, BufferedImage> images
-        = new Hashtable<ImageID, BufferedImage>();
+//    private static final Map<ImageID, BufferedImage> images
+//        = new Hashtable<ImageID, BufferedImage>();
 
     /**
      * Default event type for receiving calls (incoming calls).
@@ -166,11 +166,11 @@ public class NotificationManager
                 chatPanel = uiService.getChat(contact);
 
             contactIcon = contact.getImage();
-            if(contactIcon == null)
-            {
-                contactIcon =
-                    ImageUtils.toByteArray(getImage(DEFAULT_USER_PHOTO));
-            }
+//            if(contactIcon == null)
+//            {
+//                contactIcon =
+//                    ImageUtils.toByteArray(getImage(DEFAULT_USER_PHOTO));
+//            }
         }
         else if (chatContact instanceof ChatRoom)
         {
@@ -350,36 +350,36 @@ public class NotificationManager
      * @param imageID The identifier of the image.
      * @return The image for the given identifier.
      */
-    public static BufferedImage getImage(ImageID imageID)
-    {
-        /*
-         * If we were mapping ImageID to null, we would be using the method
-         * Map.containsKey. However, that does not seem to be the case.
-         */
-        BufferedImage image = images.get(imageID);
-
-        if (image == null)
-        {
-            URL path
-                = NotificationWiringActivator.getResources().getImageURL(
-                        imageID.getId());
-
-            if (path != null)
-            {
-                try
-                {
-                    image = ImageIO.read(path);
-                    images.put(imageID, image);
-                }
-                catch (Exception ex)
-                {
-                    logger.error("Failed to load image: " + path, ex);
-                }
-            }
-        }
-
-        return image;
-    }
+//    public static BufferedImage getImage(ImageID imageID)
+//    {
+//        /*
+//         * If we were mapping ImageID to null, we would be using the method
+//         * Map.containsKey. However, that does not seem to be the case.
+//         */
+//        BufferedImage image = images.get(imageID);
+//
+//        if (image == null)
+//        {
+//            URL path
+//                = NotificationWiringActivator.getResources().getImageURL(
+//                        imageID.getId());
+//
+//            if (path != null)
+//            {
+//                try
+//                {
+//                    image = ImageIO.read(path);
+//                    images.put(imageID, image);
+//                }
+//                catch (Exception ex)
+//                {
+//                    logger.error("Failed to load image: " + path, ex);
+//                }
+//            }
+//        }
+//
+//        return image;
+//    }
 
     /**
      * Returns all <tt>ProtocolProviderFactory</tt>s obtained from the bundle
