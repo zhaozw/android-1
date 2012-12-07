@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/remoteVideoContainer"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"/>
+
+    <SurfaceView
+        android:id="@+id/previewDisplay"
+        android:layout_width="320dp"
+        android:layout_height="240dp"
+        android:layout_alignParentBottom="true"/>
+
+    <LinearLayout
+            android:layout_alignParentTop="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/screen_padding"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/calleeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/label_text_size"
+            android:paddingRight="@dimen/between_padding"/>
+
+        <TextView
+            android:id="@+id/callStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/label_text_size"
+            android:paddingRight="@dimen/between_padding"/>
+
+        <TextView
+            android:id="@+id/callTime"
+            android:text="00:00:00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/label_text_size"/>
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:paddingRight="@dimen/screen_padding"
+        android:paddingBottom="@dimen/screen_padding">
+
+        <ImageView
+            android:id="@+id/hangupButton"
+            android:src="@drawable/hangup"
+            android:contentDescription="@string/hang_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"/>
+    </LinearLayout>
+</RelativeLayout>

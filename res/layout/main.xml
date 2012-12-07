@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1.0"
+    android:orientation="vertical">
+
+    <!--ViewStub
+          android:id="@+id/new_account_form"
+
+          android:layout="@layout/new_account"
+
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center" />
+
+        <TableRow>
+            <SurfaceView
+                android:id="@+id/previewDisplay"
+                android:layout_width="412dp"
+                android:layout_height="519dp" />
+    
+            <LinearLayout
+                android:id="@+id/remoteVideoContainer"
+                android:layout_width="fill_parent"
+                android:layout_height="362dp"
+                android:orientation="vertical" />
+        </TableRow-->
+</LinearLayout>

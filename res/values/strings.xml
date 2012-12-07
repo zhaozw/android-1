@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Jitsi</string>
+    <string name="send_process_signal">Send Process Signal</string>
+    <string name="stop_osgi_framework">Stop OSGi Framework</string>
+    <string name="call">Call</string>
+    <string name="settings">Settings</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="network">Network</string>
+    <string name="choose_network">Choose a network</string>
+    <string-array name="networks_array">
+        <item name="sip">SIP</item>
+        <item name="xmpp">XMPP</item>
+    </string-array>
+    <string name="sign_in">Sign in</string>
+    <string name="enter_name_or_number">Enter name or number</string>
+    <string name="hang_up">Hang up call</string>
+    <string name="video_resolution">Video resolution</string>
+    <string name="low_video_resolution">320x240</string>
+    <string name="high_video_resolution">640x480</string>
+</resources>

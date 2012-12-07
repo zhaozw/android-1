@@ -1,3 +1,9 @@
+/*
+ * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
+ *
+ * Distributable under LGPL license.
+ * See terms of license at gnu.org.
+ */
 #include "org_jitsi_impl_neomedia_codec_audio_opus_Opus.h"
 #include <stdint.h>
 #include <opus.h>
