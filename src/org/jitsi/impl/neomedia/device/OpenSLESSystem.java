@@ -148,7 +148,7 @@ public class OpenSLESSystem
                         "OpenSL ES",
                         new MediaLocator(LOCATOR_PROTOCOL + ":"),
                         formats.toArray(new Format[formats.size()]),
-                        null, null);
+                        null, null, null);
             List<ExtendedCaptureDeviceInfo> captureDevices
                 = new ArrayList<ExtendedCaptureDeviceInfo>(1);
 
