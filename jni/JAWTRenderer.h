@@ -9,9 +9,9 @@
 #define _JAWTRENDERER_H_
 
 #ifndef __ANDROID__
-#include <jawt.h>
+    #include <jawt.h>
 #else /* #ifndef __ANDROID__ */
-typedef void JAWT_DrawingSurfaceInfo;
+    typedef void JAWT_DrawingSurfaceInfo;
 #endif /* #ifndef __ANDROID__ */
 #include <jni.h>
 
@@ -21,33 +21,24 @@ typedef void JAWT_DrawingSurfaceInfo;
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif /* #ifdef __cplusplus */
 
 void JAWTRenderer_close
-    (JNIEnv *jniEnv, jclass clazz, jlong handle, jobject component);
-jlong JAWTRenderer_open(JNIEnv *jniEnv, jclass clazz, jobject component);
+    (JNIEnv *env, jclass clazz, jlong handle, jobject component);
+jlong JAWTRenderer_open(JNIEnv *env, jclass clazz, jobject component);
 jboolean JAWTRenderer_paint
-    (JAWT_DrawingSurfaceInfo *dsi, jclass clazz, jlong handle, jobject g);
+    (jint version, JAWT_DrawingSurfaceInfo *dsi, jclass clazz, jlong handle,
+        jobject g, jint zOrder);
 jboolean JAWTRenderer_process
-    (JNIEnv *jniEnv, jclass clazz,
-     jlong handle, jobject component,
-     jint *data, jint length,
-     jint width, jint height);
+    (JNIEnv *env, jclass clazz,jlong handle, jobject component, jint *data,
+        jint length, jint width, jint height);
 
 #ifdef __APPLE__
-void JAWTRenderer_addNotifyLightweightComponent
-    (jlong handle, jobject component, jlong parentHandle);
-jboolean JAWTRenderer_paintLightweightComponent
-    (jlong handle, jobject component, jobject g);
-void JAWTRenderer_processLightweightComponentEvent
-    (jlong handle, jint x, jint y, jint width, jint height);
-void JAWTRenderer_removeNotifyLightweightComponent
-    (jlong handle, jobject component);
-jstring JAWTRenderer_sysctlbyname(JNIEnv *jniEnv, jstring name);
+jstring JAWTRenderer_sysctlbyname(JNIEnv *env, jstring name);
 #endif /* #ifdef __APPLE__ */
 
 #ifdef __cplusplus
 } /* extern "C" { */
-#endif
+#endif /* #ifdef __cplusplus */
 
 #endif /* _JAWTRENDERER_H_ */

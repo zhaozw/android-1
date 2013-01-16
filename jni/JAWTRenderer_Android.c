@@ -180,8 +180,7 @@ JAWTRenderer_checkGLError(const char *func, int line, GLenum err)
 }
 
 void
-JAWTRenderer_close
-    (JNIEnv *jniEnv, jclass clazz, jlong handle, jobject component)
+JAWTRenderer_close(JNIEnv *env, jclass clazz, jlong handle, jobject component)
 {
     JAWTRenderer *thiz = (JAWTRenderer *) (intptr_t) handle;
 
@@ -191,7 +190,7 @@ JAWTRenderer_close
 }
 
 jlong
-JAWTRenderer_open(JNIEnv *jniEnv, jclass clazz, jobject component)
+JAWTRenderer_open(JNIEnv *env, jclass clazz, jobject component)
 {
     JAWTRenderer *thiz;
 
@@ -206,7 +205,8 @@ JAWTRenderer_open(JNIEnv *jniEnv, jclass clazz, jobject component)
 
 jboolean
 JAWTRenderer_paint
-    (JAWT_DrawingSurfaceInfo *dsi, jclass clazz, jlong handle, jobject g)
+    (jint version, JAWT_DrawingSurfaceInfo *dsi, jclass clazz, jlong handle,
+        jobject g, jint zOrder)
 {
     JAWTRenderer *thiz = (JAWTRenderer *) (intptr_t) handle;
     EGLContext eglContext;
@@ -457,10 +457,8 @@ JAWTRenderer_paint
 
 jboolean
 JAWTRenderer_process
-    (JNIEnv *jniEnv, jclass clazz,
-     jlong handle, jobject component,
-     jint *data, jint length,
-     jint width, jint height)
+    (JNIEnv *env, jclass clazz, jlong handle, jobject component, jint *data,
+        jint length, jint width, jint height)
 {
     if (data && length)
     {

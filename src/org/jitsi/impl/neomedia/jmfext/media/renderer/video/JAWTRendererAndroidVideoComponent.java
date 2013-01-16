@@ -15,7 +15,6 @@ import java.awt.*;
 import javax.microedition.khronos.egl.*;
 import javax.microedition.khronos.opengles.*;
 
-import net.java.sip.communicator.impl.neomedia.jmfext.media.renderer.video.*;
 import net.java.sip.communicator.util.*;
 
 import org.jitsi.service.neomedia.*;
@@ -132,7 +131,7 @@ public class JAWTRendererAndroidVideoComponent
             {
                 Graphics g = null;
 
-                JAWTRenderer.paint(handle, this, g);
+                JAWTRenderer.paint(handle, this, g, /* zOrder */ -1);
             }
         }
     }
