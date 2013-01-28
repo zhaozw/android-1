@@ -15,8 +15,8 @@ import java.net.*;
 import java.text.*;
 
 import net.java.sip.communicator.impl.protocol.sip.*;
+import net.java.sip.communicator.service.dns.*;
 import net.java.sip.communicator.util.*;
-import net.java.sip.communicator.util.dns.*;
 
 /**
  * Implementation of the manually configured SIP proxy connection. IP Address

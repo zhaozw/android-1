@@ -20,11 +20,11 @@ import javax.net.ssl.*;
 import javax.security.auth.callback.*;
 //import javax.swing.*;
 
+//import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.credentialsstorage.*;
 import net.java.sip.communicator.service.httputil.*;
 import net.java.sip.communicator.util.Logger;
-//import net.java.sip.communicator.util.swing.*;
 
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.x509.*;
@@ -174,7 +174,15 @@ public class CertificateServiceImpl
         String tsFile = (String)config.getProperty(PNAME_TRUSTSTORE_FILE);
         String tsPassword = credService.loadPassword(PNAME_TRUSTSTORE_PASSWORD);
 
-        if(tsType != null)
+        // use the OS store as default store on Windows
+        if (tsType == null
+            && !"meta:default".equals(tsType)
+            && OSUtils.IS_WINDOWS)
+        {
+            config.setProperty(PNAME_TRUSTSTORE_TYPE, "Windows-ROOT");
+        }
+
+        if(tsType != null && !"meta:default".equals(tsType))
             System.setProperty("javax.net.ssl.trustStoreType", tsType);
         else
             System.getProperties().remove("javax.net.ssl.trustStoreType");
