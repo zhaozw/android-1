@@ -33,63 +33,6 @@ import org.osgi.framework.startlevel.*;
  */
 public class OSGiServiceImpl
 {
-//    /**
-//     */
-//    private static final String[][] BUNDLES
-//        = {
-//            {
-//                "net.java.sip.communicator.impl.libjitsi.LibJitsiActivator",
-//                "net.java.sip.communicator.util.UtilActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.impl.fileaccess.FileAccessActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.impl.configuration.ConfigurationActivator",
-//                "net.java.sip.communicator.impl.resources.ResourceManagementActivator",
-//                "net.java.sip.communicator.impl.netaddr.NetaddrActivator",
-//                "net.java.sip.communicator.impl.sysactivity.SysActivityActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.impl.credentialsstorage.CredentialsStorageActivator",
-//                "net.java.sip.communicator.plugin.defaultresourcepack.DefaultResourcePackActivator",
-//                "net.java.sip.communicator.impl.packetlogging.PacketLoggingActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.impl.version.VersionActivator",
-//                "net.java.sip.communicator.impl.certificate.CertificateVerificationActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.service.protocol.ProtocolProviderActivator",
-//                "net.java.sip.communicator.service.protocol.media.ProtocolMediaActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.impl.neomedia.NeomediaActivator",
-//                "net.java.sip.communicator.impl.protocol.sip.SipActivator",
-//    //                "net.java.sip.communicator.impl.protocol.jabber.JabberActivator",
-//                "net.java.sip.communicator.plugin.reconnectplugin.ReconnectPluginActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.service.notification.NotificationServiceActivator"
-//            },
-//            {
-//                "net.java.sip.communicator.impl.notification.NotificationActivator",
-//                "net.java.sip.communicator.plugin.notificationwiring.NotificationWiringActivator",
-//                "net.java.sip.communicator.plugin.loggingutils.LoggingUtilsActivator"
-//            },
-//            {
-//                "org.jitsi.android.gui.GuiActivator",
-//                "net.java.sip.communicator.plugin.sipaccregwizz.SIPAccountRegistrationActivator"
-//            },
-//    //            {
-//    //                "net.java.sip.communicator.slick.protocol.sip.SipProtocolProviderServiceLick",
-//    //                "net.java.sip.communicator.slick.runner.SipCommunicatorSlickRunner"
-//    //            },
-//            {
-//                "org.jitsi.impl.osgi.OSGiServiceActivator"
-//            }
-//        };
-
     private final OSGiServiceBundleContextHolder bundleContextHolder
         = new OSGiServiceBundleContextHolder();
 
@@ -107,18 +50,48 @@ public class OSGiServiceImpl
      */
     private final Object frameworkSyncRoot = new Object();
 
+    /**
+     * The Android {@link Service} which uses this instance as its very
+     * implementation.
+     */
     private final OSGiService service;
 
+    /**
+     * Initializes a new <tt>OSGiServiceImpl</tt> instance which is to be used
+     * by a specific Android <tt>OSGiService</tt> as its very implementation.
+     *
+     * @param service the Android <tt>OSGiService</tt> which is to use the new
+     * instance as its very implementation
+     */
     public OSGiServiceImpl(OSGiService service)
     {
         this.service = service;
     }
 
+    /**
+     * Invoked by the Android system to initialize a communication channel to
+     * {@link #service}. Returns an implementation of the public API of the
+     * <tt>OSGiService</tt> i.e. {@link BundleContextHolder} in the form of an
+     * {@link IBinder}.
+     *
+     * @param intent the <tt>Intent</tt> which was used to bind to
+     * <tt>service</tt>
+     * @return an <tt>IBinder</tt> through which clients may call on to the
+     * public API of <tt>OSGiService</tt> 
+     * @see Service#onBind(Intent)
+     */
     public IBinder onBind(Intent intent)
     {
         return bundleContextHolder;
     }
 
+    /**
+     * Invoked by the Android system when {@link #service} is first created.
+     * Asynchronously starts the OSGi framework (implementation) represented by
+     * this instance.
+     *
+     * @see Service#onCreate()
+     */
     public void onCreate()
     {
         try
@@ -143,6 +116,13 @@ public class OSGiServiceImpl
         executor.execute(new OnCreateCommand());
     }
 
+    /**
+     * Invoked by the Android system when {@link #service} is no longer used and
+     * is being removed. Asynchronously stops the OSGi framework
+     * (implementation) represented by this instance.
+     *
+     * @see Service#onDestroy()
+     */
     public void onDestroy()
     {
         synchronized (executor)
@@ -152,6 +132,20 @@ public class OSGiServiceImpl
         }
     }
 
+    /**
+     * Invoked by the Android system every time a client explicitly starts
+     * {@link #service} by calling {@link Context#startService(Intent)}. Always
+     * returns {@link Service#START_STICKY}.
+     *
+     * @param intent the <tt>Intent</tt> supplied to
+     * <tt>Context.startService(Intent}</tt>
+     * @param flags additional data about the start request
+     * @param startId a unique integer which represents this specific request
+     * to start
+     * @return a value which indicates what semantics the Android system should
+     * use for <tt>service</tt>'s current started state
+     * @see Service#onStartCommand(Intent, int, int)
+     */
     public int onStartCommand(Intent intent, int flags, int startId)
     {
         return Service.START_STICKY;
@@ -221,6 +215,10 @@ public class OSGiServiceImpl
         }
     }
 
+    /**
+     * Asynchronously starts the OSGi framework (implementation) represented by
+     * this instance.
+     */
     private class OnCreateCommand
         implements Runnable
     {
@@ -249,8 +247,8 @@ public class OSGiServiceImpl
                         bundleContextHolder,
                         null);
 
-                for(Map.Entry<Integer, List<String>> startLevelEntry :
-                    BUNDLES.entrySet())
+                for(Map.Entry<Integer, List<String>> startLevelEntry
+                        : BUNDLES.entrySet())
                 {
                     int startLevel = startLevelEntry.getKey();
 
@@ -284,90 +282,48 @@ public class OSGiServiceImpl
         }
 
         /**
-         * Loads bundles configuration from the configured or default
-         * file name location.
+         * Loads bundles configuration from the configured or default file name
+         * location.
          *
          * @param context the context to use
-         * @return the locations of the OSGi bundles (or rather of the class files
-         *  of their <tt>BundleActivator</tt> implementations) comprising the
-         *  Jitsi core/library and the application which is currently using it.
-         *  And the corresponding start levels
+         * @return the locations of the OSGi bundles (or rather of the class
+         * files of their <tt>BundleActivator</tt> implementations) comprising
+         * the Jitsi core/library and the application which is currently using
+         * it. And the corresponding start levels.
          */
         private TreeMap<Integer, List<String>> getBundlesConfig(Context context)
         {
+            String fileName = System.getProperty("osgi.config.properties");
+
+            if (fileName == null)
+                fileName = "lib/osgi.client.run.properties";
+
             InputStream is = null;
+            Properties props = new Properties();
 
             try
             {
-                String fileName
-                    = System.getProperty("osgi.config.properties");
-
-                if (fileName == null)
-                    fileName = "lib/osgi.client.run.properties";
-
                 if (OSUtils.IS_ANDROID)
                 {
-                        if (context != null)
-                        {
-                            is = context.getAssets().open(
-                                        fileName,
-                                        AssetManager.ACCESS_UNKNOWN);
-                        }
+                    if (context != null)
+                    {
+                        is
+                            = context.getAssets().open(
+                                    fileName,
+                                    AssetManager.ACCESS_UNKNOWN);
+                    }
                 }
                 else
                 {
                     is = new FileInputStream(fileName);
                 }
 
-                Properties properties = new Properties();
-                properties.load(is);
-
-                TreeMap<Integer, List<String>>
-                    startLevels = new TreeMap<Integer, List<String>>();
-
-                Enumeration<String> propNames =
-                    (Enumeration<String>)properties.propertyNames();
-                while(propNames.hasMoreElements())
-                {
-                    String prop = propNames.nextElement().trim();
-
-                    if(prop.contains("auto.start."))
-                    {
-                        String startLevel =
-                            prop.substring("auto.start.".length());
-
-                        try
-                        {
-                            int startLevelInt = Integer.parseInt(startLevel);
-
-                            StringTokenizer classTokens =
-                                new StringTokenizer((String)properties.get(prop),
-                                                    " ");
-
-                            ArrayList<String> classNameList =
-                                new ArrayList<String>();
-
-                            while(classTokens.hasMoreTokens())
-                            {
-                                String className = classTokens.nextToken().trim();
-
-                                if(className != null && className.length() > 0
-                                    && !className.startsWith("#"))
-                                    classNameList.add(className);
-                            }
-
-                            startLevels.put(startLevelInt, classNameList);
-                        }
-                        catch(Throwable t)
-                        {}
-                    }
-                }
-
-                return startLevels;
+                if (is != null)
+                    props.load(is);
             }
-            catch(IOException e)
+            catch(IOException ioe)
             {
-                throw new RuntimeException(e);
+                throw new RuntimeException(ioe);
             }
             finally
             {
@@ -376,11 +332,60 @@ public class OSGiServiceImpl
                     if (is != null)
                         is.close();
                 }
-                catch(IOException e){}
+                catch(IOException ioe) {}
             }
+
+            TreeMap<Integer, List<String>> startLevels
+                = new TreeMap<Integer, List<String>>();
+
+            for (Map.Entry<Object, Object> e : props.entrySet())
+            {
+                String prop = e.getKey().toString().trim();
+                Object value;
+
+                if(prop.contains("auto.start.")
+                        && ((value = e.getValue()) != null))
+                {
+                    String startLevelStr
+                        = prop.substring("auto.start.".length());
+
+                    try
+                    {
+                        int startLevelInt = Integer.parseInt(startLevelStr);
+
+                        StringTokenizer classTokens
+                            = new StringTokenizer(value.toString(), " ");
+                        List<String> classNames = new ArrayList<String>();
+
+                        while(classTokens.hasMoreTokens())
+                        {
+                            String className = classTokens.nextToken().trim();
+
+                            if((className != null)
+                                    && (className.length() > 0)
+                                    && !className.startsWith("#"))
+                                classNames.add(className);
+                        }
+
+                        if (!classNames.isEmpty())
+                            startLevels.put(startLevelInt, classNames);
+                    }
+                    catch(Throwable t)
+                    {
+                        if (t instanceof ThreadDeath)
+                            throw (ThreadDeath) t;
+                    }
+                }
+            }
+
+            return startLevels;
         }
     }
 
+    /**
+     * Asynchronously stops the OSGi framework (implementation) represented by
+     * this instance.
+     */
     private class OnDestroyCommand
         implements Runnable
     {

@@ -6,22 +6,34 @@
  */
 package org.jitsi.service.osgi;
 
+import org.jitsi.impl.osgi.*;
+
 import android.app.*;
 import android.content.*;
 import android.os.*;
 
-import net.java.sip.communicator.util.*;
-import org.jitsi.impl.osgi.*;
-
 /**
+ * Implements an Android {@link Service} which (automatically) starts and stops
+ * an OSGi framework (implementation).
  *
  * @author Lyubomir Marinov
  */
 public class OSGiService
     extends Service
 {
+    /**
+     * The very implementation of this Android <tt>Service</tt> which is split
+     * out of the class <tt>OSGiService</tt> so that the class
+     * <tt>OSGiService</tt> may remain in a <tt>service</tt> package and be
+     * treated as public from the Android point of view and the class
+     * <tt>OSGiServiceImpl</tt> may reside in an <tt>impl</tt> package and be
+     * recognized as internal from the Jitsi point of view.
+     */
     private final OSGiServiceImpl impl;
 
+    /**
+     * Initializes a new <tt>OSGiService</tt> implementation.
+     */
     public OSGiService()
     {
         impl = new OSGiServiceImpl(this);

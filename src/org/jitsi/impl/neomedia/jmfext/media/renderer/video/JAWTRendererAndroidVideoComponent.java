@@ -130,8 +130,9 @@ public class JAWTRendererAndroidVideoComponent
             if (handle != 0)
             {
                 Graphics g = null;
+                int zOrder = -1;
 
-                JAWTRenderer.paint(handle, this, g, /* zOrder */ -1);
+                JAWTRenderer.paint(handle, this, g, zOrder);
             }
         }
     }
