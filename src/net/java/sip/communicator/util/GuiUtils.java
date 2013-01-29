@@ -6,11 +6,6 @@
  */
 package net.java.sip.communicator.util;
 
-import java.awt.*;
-//import java.awt.font.*;
-//import java.awt.geom.*;
-import java.lang.reflect.*;
-
 import java.util.*;
 
 /**
@@ -118,54 +113,6 @@ public class GuiUtils
     }
 
     /**
-<<<<<<< .working
-     * Returns the width in pixels of a text.
-     * @param c the component where the text is contained
-     * @param text the text to measure
-     * @return the width in pixels of a text.
-     */
-//    public static int getStringWidth(Component c, String text)
-//    {
-//        return SwingUtilities.computeStringWidth(c
-//                .getFontMetrics(c.getFont()), text);
-//    }
-
-    /**
-     * Returns the size of the given text computed towards to the given
-     * component.
-     * @param c the component where the text is contained
-     * @param text the text to measure
-     * @return the dimensions of the text
-     */
-//    public static Dimension getStringSize(Component c, String text)
-//    {
-//        // get metrics from the graphics
-//        FontMetrics metrics = c.getFontMetrics(c.getFont());
-//        // get the height of a line of text in this font and render context
-//        int hgt = metrics.getHeight();
-//        // get the advance of my text in this font and render context
-//        int adv = metrics.stringWidth(text);
-//        // calculate the size of a box to hold the text with some padding.
-//        return new Dimension(adv+2, hgt+2);
-//    }
-
-    /**
-     * Returns the bounds of the given string.
-     * @param text the string to measure
-     * @return the bounds of the given string
-     */
-//    public static Rectangle2D getDefaultStringSize(String text)
-//    {
-//        Font font = UIManager.getFont("Label.font");
-//        FontRenderContext frc = new FontRenderContext(null, true, false);
-//        TextLayout layout = new TextLayout(text, font, frc);
-//
-//        return layout.getBounds();
-//    }
-
-    /**
-=======
->>>>>>> .merge-right.r10361
      * Counts occurrences of the <tt>needle</tt> character in the given
      * <tt>text</tt>.
      * @param text the text in which we search
