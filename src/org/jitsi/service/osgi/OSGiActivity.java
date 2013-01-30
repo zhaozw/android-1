@@ -183,4 +183,28 @@ public class OSGiActivity
         throws Exception
     {
     }
+
+    /**
+     * Convenience method which starts a new activity
+     * for given <tt>activityClass</tt> class
+     *
+     * @param activityClass the activity class
+     */
+    protected void startActivity(Class<?> activityClass)
+    {
+        Intent intent
+                = new Intent(this, activityClass);
+        startActivity(intent);
+    }
+
+    /**
+     * Convinience class thats switches from one activity to another.
+     *
+     * @param activityClass the activity class
+     */
+    protected void switchActivity(Class<?> activityClass)
+    {
+        startActivity(activityClass);
+        finish();
+    }
 }
