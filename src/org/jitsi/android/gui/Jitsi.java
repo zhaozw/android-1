@@ -43,19 +43,19 @@ public class Jitsi
     /**
      * The display name of {@link #USER_ID}
      */
-    private static final String DISPLAY_NAME = "damenchodev1";
+    private static final String DISPLAY_NAME = "";
 
     /**
      * The password of {@link #USER_ID}.
      */
-    private static final String PASSWORD = "damencho404";
+    private static final String PASSWORD = "";
 
     /**
      * The SIP address of an account to be created if the configuration does not
      * define any accounts. If the value is <tt>null</tt> or empty, no attempt
      * will be made to create an account.
      */
-    private static final String USER_ID = "damenchodev1@ippi.fr";
+    private static final String USER_ID = "";
 
     private BundleContext bundleContext;
 
