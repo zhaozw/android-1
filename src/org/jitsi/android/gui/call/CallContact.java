@@ -58,7 +58,7 @@ public class CallContact
 
         setContentView(R.layout.call_contact);
 
-        final ImageView callButton = (ImageView) findViewById(R.id.callButton);
+        final View callButton = (View) findViewById(R.id.callButton);
 
         if (protocolProvider == null || !protocolProvider.isRegistered())
             callButton.setEnabled(false);
@@ -67,8 +67,7 @@ public class CallContact
         {
             public void onClick(View v)
             {
-                final EditText callField
-                    = (EditText) findViewById(R.id.callField);
+                EditText callField = (EditText) findViewById(R.id.callField);
 
                 createVideoCall(callField.getText().toString());
             }
@@ -81,24 +80,22 @@ public class CallContact
         {
             public void run()
             {
-                OperationSetVideoTelephony opSetVideoTelephony
+                OperationSetVideoTelephony videoTelephony
                     = protocolProvider.getOperationSet(
-                        OperationSetVideoTelephony.class);
+                            OperationSetVideoTelephony.class);
 
-                if (opSetVideoTelephony != null)
+                if (videoTelephony != null)
                 {
-                    Call call = null;
                     try
                     {
-                        call = opSetVideoTelephony
-                            .createVideoCall(destination);
+                        Call call = videoTelephony.createVideoCall(destination);
 
                         CallManager.addActiveCall(call);
 
                         Intent videoCallIntent
                             = new Intent(CallContact.this, VideoCall.class);
 
-                        CallContact.this.startActivity(videoCallIntent);
+                        startActivity(videoCallIntent);
                     }
                     catch (OperationFailedException e)
                     {
@@ -268,16 +265,16 @@ public class CallContact
 
     private void setCallButtonEnabled()
     {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                final ImageView callButton
-                    = (ImageView) findViewById(R.id.callButton);
+        runOnUiThread(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        View callButton = (View) findViewById(R.id.callButton);
 
-                callButton.setEnabled(true);
-            }
-        });
+                        callButton.setEnabled(true);
+                    }
+                });
     }
 
     /**

@@ -6,22 +6,25 @@
  */
 package org.jitsi.android.gui.call;
 
+import java.awt.*;
 import java.util.*;
 
-//import net.java.sip.communicator.service.neomedia.*;
-import org.jitsi.service.osgi.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.call.*;
 import net.java.sip.communicator.util.call.CallPeerAdapter;
-//import net.java.sip.communicator.util.event.*;
+
+import org.jitsi.*;
+import org.jitsi.service.neomedia.*;
+import org.jitsi.service.osgi.*;
+import org.jitsi.util.event.*;
 
 import android.content.*;
 import android.os.*;
+import android.util.*;
 import android.view.*;
 import android.widget.*;
-import org.jitsi.*;
 
 public class VideoCall
     extends OSGiActivity
@@ -49,16 +52,17 @@ public class VideoCall
             if (callPeerIter.hasNext())
             {
                 CallPeer callPeer = callPeerIter.next();
-
                 CallPeerAdapter callPeerAdapter
                     = new CallPeerAdapter(callPeer, this);
+
                 callPeer.addCallPeerListener(callPeerAdapter);
                 callPeer.addCallPeerSecurityListener(callPeerAdapter);
                 callPeer.addPropertyChangeListener(callPeerAdapter);
 
                 addVideoListener(callPeer);
-                calleeName.setText(calleeName.getText()
-                    + " " + callPeer.getDisplayName());
+
+                calleeName.setText(
+                        calleeName.getText() + " " + callPeer.getDisplayName());
             }
         }
 
@@ -82,163 +86,165 @@ public class VideoCall
 
         if (previewDisplay != null)
         {
-//            previewDisplay.getHolder().addCallback(
-//                    new SurfaceHolder.Callback()
-//                    {
-//                        public void surfaceChanged(
-//                                SurfaceHolder holder,
-//                                int format,
-//                                int width, int height)
-//                        {
-//                            // TODO Auto-generated method stub
-//                        }
-//
-//                        public void surfaceCreated(SurfaceHolder holder)
-//                        {
-//                            /*
-//                             * TODO Setting a static previewDisplay on the
-//                             * MediaRecorder DataSource is a workaround which
-//                             * allows not changing the
-//                             * OperationSetVideoTelephony and related APIs.
-//                             */
-//                            net.java.sip.communicator.impl.neomedia.jmfext.media
-//                                    .protocol.mediarecorder.DataSource
-//                                            .setDefaultPreviewDisplay(
-//                                                    holder.getSurface());
-//                        }
-//
-//                        public void surfaceDestroyed(SurfaceHolder holder)
-//                        {
-//                            /*
-//                             * TODO Setting a static previewDisplay on the
-//                             * MediaRecorder DataSource is a workaround which
-//                             * allows not changing the
-//                             * OperationSetVideoTelephony and related APIs.
-//                             */
-//                            net.java.sip.communicator.impl.neomedia.jmfext.media
-//                                    .protocol.mediarecorder.DataSource
-//                                            .setDefaultPreviewDisplay(
-//                                                    null);
-//                        }
-//                    });
+            previewDisplay.getHolder().addCallback(
+                    new SurfaceHolder.Callback()
+                    {
+                        public void surfaceChanged(
+                                SurfaceHolder holder,
+                                int format,
+                                int width, int height)
+                        {
+                            // TODO Auto-generated method stub
+                        }
+
+                        public void surfaceCreated(SurfaceHolder holder)
+                        {
+                            /*
+                             * TODO Setting a static previewDisplay on the
+                             * MediaRecorder DataSource is a workaround which
+                             * allows not changing the
+                             * OperationSetVideoTelephony and related APIs.
+                             */
+                            org.jitsi.impl.neomedia.jmfext.media.protocol
+                                    .mediarecorder.DataSource
+                                            .setDefaultPreviewDisplay(
+                                                    holder.getSurface());
+                        }
+
+                        public void surfaceDestroyed(SurfaceHolder holder)
+                        {
+                            /*
+                             * TODO Setting a static previewDisplay on the
+                             * MediaRecorder DataSource is a workaround which
+                             * allows not changing the
+                             * OperationSetVideoTelephony and related APIs.
+                             */
+                            org.jitsi.impl.neomedia.jmfext.media
+                                    .protocol.mediarecorder.DataSource
+                                            .setDefaultPreviewDisplay(
+                                                    null);
+                        }
+                    });
         }
 
         remoteVideoContainer
             = (ViewGroup) findViewById(R.id.remoteVideoContainer);
     }
 
-//    public void handleVideoEvent(CallPeer callPeer,
-//                                 final VideoEvent event)
-//    {
-//        if (!event.isConsumed() && (event.getOrigin() == VideoEvent.REMOTE))
-//        {
-//            ProtocolProviderService pps = callPeer.getProtocolProvider();
-//            final Component visualComponent;
-//
-//            if (pps != null)
-//            {
-//                OperationSetVideoTelephony osvt
-//                    = pps.getOperationSet(OperationSetVideoTelephony.class);
-//
-//                if (osvt != null)
-//                    visualComponent = osvt.getVisualComponent(callPeer);
-//                else
-//                    visualComponent = null;
-//            }
-//            else
-//                visualComponent = null;
-//
-//            if (remoteVideoContainer != null)
-//            {
-//                event.consume();
-//
-//                remoteVideoContainer.post(
-//                    new Runnable()
-//                    {
-//                        public void run()
-//                        {
-//                            View view = null;
-//
-//                            if (visualComponent instanceof ViewAccessor)
-//                            {
-//                                view
-//                                    = ((ViewAccessor) visualComponent)
-//                                            .getView(VideoCall.this);
-//                            }
-//
-//                            int width = -1;
-//                            int height = -1;
-//
-//                            DisplayMetrics displaymetrics = new DisplayMetrics();
-//                            getWindowManager().getDefaultDisplay()
-//                                .getMetrics(displaymetrics);
-//                            int viewHeight = displaymetrics.heightPixels;
-//                            int viewWidth = displaymetrics.widthPixels;
-//
-//                            if (view != null)
-//                            {
-//                                /*
-//                                 * If the visualComponent displaying the
-//                                 * video of the remote callPeer has a
-//                                 * preferredSize, attempt to respect it.
-//                                 */
-//                                Dimension preferredSize
-//                                    = visualComponent.getPreferredSize();
-//
-//                                if ((preferredSize != null)
-//                                        && (preferredSize.width > 0)
-//                                        && (preferredSize.height > 0))
-//                                {
-//                                    width = preferredSize.width;
-//                                    height = preferredSize.height;
-//                                }
-//                                else if (event instanceof SizeChangeVideoEvent)
-//                                {
-//                                    /*
-//                                     * The SizeChangeVideoEvent may have
-//                                     * been delivered with a delay and thus
-//                                     * may not represent the up-to-date size
-//                                     * of the remote video. But since the
-//                                     * visualComponent does not have a
-//                                     * preferredSize, anything like the size
-//                                     * reported by the SizeChangeVideoEvent
-//                                     * may be used as a hint.
-//                                     */
-//                                    SizeChangeVideoEvent scve
-//                                        = (SizeChangeVideoEvent) event;
-//
-//                                    if ((scve.getHeight() > 0)
-//                                            && (scve.getWidth() > 0))
-//                                    {
-//                                        height = scve.getHeight();
-//                                        width = scve.getWidth();
-//                                    }
-//                                }
-//                            }
-//
-//                            remoteVideoContainer.removeAllViews();
-//
-//                            if (view != null)
-//                            {
-//                                float ratio = width / (float) height;
-//
-//                                if (height < viewHeight)
-//                                {
-//                                    height = viewHeight;
-//                                    width = (int) (height*ratio);
-//                                }
-//
-//                                remoteVideoContainer.addView(
-//                                        view,
-//                                        new ViewGroup.LayoutParams(
-//                                                width,
-//                                                height));
-//                            }
-//                        }
-//                    });
-//            }
-//        }
-//    }
+    public void handleVideoEvent(CallPeer callPeer,
+                                 final VideoEvent event)
+    {
+        if (!event.isConsumed()
+                && (event.getOrigin() == VideoEvent.REMOTE)
+                && (remoteVideoContainer != null))
+        {
+            ProtocolProviderService pps = callPeer.getProtocolProvider();
+            final Component visualComponent;
+
+            if (pps != null)
+            {
+                OperationSetVideoTelephony videoTelephony
+                    = pps.getOperationSet(OperationSetVideoTelephony.class);
+
+                visualComponent
+                    = (videoTelephony == null)
+                        ? null
+                        : videoTelephony.getVisualComponent(callPeer);
+            }
+            else
+                visualComponent = null;
+
+            event.consume();
+
+            remoteVideoContainer.post(
+                    new Runnable()
+                    {
+                        public void run()
+                        {
+                            View view = null;
+
+                            if (visualComponent instanceof ViewAccessor)
+                            {
+                                view
+                                    = ((ViewAccessor) visualComponent)
+                                            .getView(VideoCall.this);
+                            }
+
+                            int width = -1;
+                            int height = -1;
+
+                            if (view != null)
+                            {
+                                /*
+                                 * If the visualComponent displaying the video
+                                 * of the remote callPeer has a preferredSize,
+                                 * attempt to respect it.
+                                 */
+                                Dimension prefSize
+                                    = visualComponent.getPreferredSize();
+
+                                if ((prefSize != null)
+                                        && (prefSize.width > 0)
+                                        && (prefSize.height > 0))
+                                {
+                                    width = prefSize.width;
+                                    height = prefSize.height;
+                                }
+                                else if (event instanceof SizeChangeVideoEvent)
+                                {
+                                    /*
+                                     * The SizeChangeVideoEvent may have been
+                                     * delivered with a delay and thus may not
+                                     * represent the up-to-date size of the
+                                     * remote video. But since the
+                                     * visualComponent does not have a prefSize,
+                                     * anything like the size reported by the
+                                     * SizeChangeVideoEvent may be used as a
+                                     * hint.
+                                     */
+                                    SizeChangeVideoEvent scve
+                                        = (SizeChangeVideoEvent) event;
+
+                                    if ((scve.getHeight() > 0)
+                                            && (scve.getWidth() > 0))
+                                    {
+                                        height = scve.getHeight();
+                                        width = scve.getWidth();
+                                    }
+                                }
+                            }
+
+                            remoteVideoContainer.removeAllViews();
+
+                            if (view != null)
+                            {
+                                DisplayMetrics displaymetrics
+                                    = new DisplayMetrics();
+
+                                getWindowManager()
+                                    .getDefaultDisplay()
+                                        .getMetrics(displaymetrics);
+
+                                int viewHeight = displaymetrics.heightPixels;
+
+                                if (height < viewHeight)
+                                {
+                                    float ratio = width / (float) height;
+
+                                    height = viewHeight;
+                                    width = (int) (height * ratio);
+                                }
+
+                                remoteVideoContainer.addView(
+                                        view,
+                                        new ViewGroup.LayoutParams(
+                                                width,
+                                                height));
+                            }
+                        }
+                    });
+        }
+    }
 
     private void addVideoListener(final CallPeer callPeer)
     {
@@ -247,31 +253,31 @@ public class VideoCall
         if (pps == null)
             return;
 
-        OperationSetVideoTelephony osvt
+        OperationSetVideoTelephony videoTelephony
             = pps.getOperationSet(OperationSetVideoTelephony.class);
 
-        if (osvt == null)
+        if (videoTelephony == null)
             return;
 
-//        osvt.addVideoListener(
-//                callPeer,
-//                new VideoListener()
-//                {
-//                    public void videoAdded(VideoEvent event)
-//                    {
-//                        handleVideoEvent(callPeer, event);
-//                    }
-//
-//                    public void videoRemoved(VideoEvent event)
-//                    {
-//                        handleVideoEvent(callPeer, event);
-//                    }
-//
-//                    public void videoUpdate(VideoEvent event)
-//                    {
-//                        handleVideoEvent(callPeer, event);
-//                    }
-//                });
+        videoTelephony.addVideoListener(
+                callPeer,
+                new VideoListener()
+                {
+                    public void videoAdded(VideoEvent event)
+                    {
+                        handleVideoEvent(callPeer, event);
+                    }
+
+                    public void videoRemoved(VideoEvent event)
+                    {
+                        handleVideoEvent(callPeer, event);
+                    }
+
+                    public void videoUpdate(VideoEvent event)
+                    {
+                        handleVideoEvent(callPeer, event);
+                    }
+                });
     }
 
     public void setPeerName(final String name)

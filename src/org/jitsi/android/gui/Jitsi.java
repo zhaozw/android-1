@@ -40,11 +40,22 @@ public class Jitsi
      */
     private static final String CALLEE = "";
 
-    private static final String DISPLAY_NAME = "";
+    /**
+     * The display name of {@link #USER_ID}
+     */
+    private static final String DISPLAY_NAME = "damenchodev1";
 
-    private static final String PASSWORD = "";
+    /**
+     * The password of {@link #USER_ID}.
+     */
+    private static final String PASSWORD = "damencho404";
 
-    private static final String USER_ID = "";
+    /**
+     * The SIP address of an account to be created if the configuration does not
+     * define any accounts. If the value is <tt>null</tt> or empty, no attempt
+     * will be made to create an account.
+     */
+    private static final String USER_ID = "damenchodev1@ippi.fr";
 
     private BundleContext bundleContext;
 
@@ -306,14 +317,14 @@ public class Jitsi
 
         this.bundleContext = bundleContext;
 
-        runOnUiThread(new Runnable()
-        {
-            
-            public void run()
-            {
-                initActivity();
-            }
-        });
+        runOnUiThread(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        initActivity();
+                    }
+                });
 
         /*
          * If there is no account stored from previous runs of the application,
@@ -402,21 +413,16 @@ public class Jitsi
 
         AccountManager accountManager
             = ServiceUtils.getService(bundleContext, AccountManager.class);
-
         Iterator<AccountID> storedAccounts
             = accountManager.getStoredAccounts().iterator();
+        Intent nextIntent
+            = new Intent(
+                    this,
+                    storedAccounts.hasNext()
+                        ? CallContact.class
+                        : NewAccount.class);
 
-        Intent nextIntent = null;
-        if (storedAccounts.hasNext())
-        {
-            nextIntent = new Intent(Jitsi.this, CallContact.class);
-        }
-        else
-            nextIntent = new Intent(Jitsi.this, NewAccount.class);
-
-//        ((ViewStub) findViewById(R.id.new_account_form)).inflate();
-
-        Jitsi.this.startActivity(nextIntent);
+        startActivity(nextIntent);
     }
 
 }
