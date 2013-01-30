@@ -333,7 +333,7 @@ JAWTRenderer_paint
             glTexImage2D(
                     JAWT_RENDERER_TEXTURE,
                     0,
-                    JAWT_RENDERER_TEXTURE_FORMAT,
+                    GL_RGBA,
                     dataWidth, dataHeight,
                     0,
                     JAWT_RENDERER_TEXTURE_FORMAT,
@@ -357,7 +357,7 @@ JAWTRenderer_paint
                     glTexImage2D(
                             JAWT_RENDERER_TEXTURE,
                             0,
-                            JAWT_RENDERER_TEXTURE_FORMAT,
+                            GL_RGBA,
                             texRealWidth, texRealHeight,
                             0,
                             JAWT_RENDERER_TEXTURE_FORMAT,
