@@ -6,20 +6,20 @@
 	<classpathentry kind="lib" path="lib/installer-exclude/dnsjava.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/fmj.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/ice4j.jar"/>
+	<classpathentry kind="lib" path="lib/installer-exclude/jain-sdp.jar"/>
+	<classpathentry kind="lib" path="lib/installer-exclude/java-stubs.jar" sourcepath="lib/installer-exclude/java-stubs.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/jnsapi.jar"/>
+	<classpathentry kind="lib" path="lib/installer-exclude/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/lcrypto-jdk16-143.jar"/>
+	<classpathentry kind="lib" path="lib/installer-exclude/libjitsi.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/log4j-1.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/osgi.core.jar"/>
+	<classpathentry kind="lib" path="lib/installer-exclude/sdes4j.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/smack.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/smackx.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/zrtp4j-light.jar"/>
-	<classpathentry kind="lib" path="lib/installer-exclude/jain-sdp.jar"/>
-	<classpathentry kind="lib" path="lib/installer-exclude/libjitsi.jar"/>
-	<classpathentry kind="lib" path="lib/installer-exclude/sdes4j.jar"/>
-	<classpathentry kind="lib" path="lib/installer-exclude/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/os-specific/android/installer-exclude/apache-ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/os-specific/android/installer-exclude/asm-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/os-specific/android/installer-exclude/asm-commons-4.1.jar"/>
-	<classpathentry kind="lib" path="lib/installer-exclude/java-stubs.jar" sourcepath="lib/installer-exclude/java-stubs.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
