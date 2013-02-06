@@ -7,14 +7,12 @@
 package org.jitsi.impl.neomedia.device;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 import javax.media.*;
 import javax.media.format.*;
 
 import org.jitsi.impl.neomedia.jmfext.media.renderer.audio.*;
-
 import org.jitsi.service.neomedia.codec.*;
 
 /**

@@ -217,6 +217,7 @@ public class DataSource
         this.dataSourceKey = getNextDataSourceKey();
     }
 
+    @SuppressWarnings("unused")
     private static String boxTypeToString(long type)
     {
         byte[] bytes = new byte[4];

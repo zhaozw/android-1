@@ -12,7 +12,6 @@ import android.view.*;
 
 import java.awt.*;
 
-import javax.microedition.khronos.egl.*;
 import javax.microedition.khronos.opengles.*;
 
 import net.java.sip.communicator.util.*;
@@ -103,7 +102,9 @@ public class JAWTRendererAndroidVideoComponent
                             // TODO Auto-generated method stub
                         }
 
-                        public void onSurfaceCreated(GL10 gl, EGLConfig config)
+                        public void onSurfaceCreated(
+                                GL10 gl,
+                                javax.microedition.khronos.egl.EGLConfig config)
                         {
                             // TODO Auto-generated method stub
                         }

@@ -7,7 +7,6 @@
 package org.jitsi.impl.neomedia.device;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 import javax.media.*;
