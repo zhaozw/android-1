@@ -29,6 +29,12 @@ public class OSGiActivity
 
     private ServiceConnection serviceConnection;
 
+    /**
+     * Starts this osgi activity.
+     *
+     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @throws Exception
+     */
     private void internalStart(BundleContext bundleContext)
         throws Exception
     {
@@ -48,6 +54,12 @@ public class OSGiActivity
         }
     }
 
+    /**
+     * Stops this osgi activity.
+     *
+     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @throws Exception
+     */
     private void internalStop(BundleContext bundleContext)
         throws Exception
     {
@@ -61,6 +73,15 @@ public class OSGiActivity
         }
     }
 
+    /**
+     * Called when the activity is starting. Initializes the corresponding
+     * call interface.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after
+     * previously being shut down then this Bundle contains the data it most
+     * recently supplied in onSaveInstanceState(Bundle).
+     * Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -103,6 +124,9 @@ public class OSGiActivity
         }
     }
 
+    /**
+     * Called when an activity is destroyed.
+     */
     @Override
     protected void onDestroy()
     {

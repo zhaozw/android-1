@@ -3,74 +3,79 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    android:background="@drawable/loginbackground">
 
-    <TableLayout 
-        android:id="@+id/new_account_form"
+    <!-- ImageView
+        android:id="@+id/loginLogo"
+        android:src="@drawable/logoblue"
+        android:contentDescription="@string/app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:weightSum="1.0"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/screen_padding"
+        android:paddingBottom="@dimen/between_padding"/-->
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/screen_padding"
+        android:layout_centerHorizontal="true"
         android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:layout_below="@+id/loginLogo">
 
-        <TableRow>
-            <TextView
-                android:id="@+id/networkLabel"
-                android:text="@string/network"
-                android:textSize="@dimen/label_text_size"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_weight="0"/>
-            <Spinner
-                android:id="@+id/networkSpinner"
-                android:prompt="@string/choose_network"
-                android:layout_width="@dimen/login_field_width"
-                android:layout_height="50dp" />
-        </TableRow>
-        <TableRow>
-            <TextView
-                android:id="@+id/usernameLabel"
-                android:text="@string/username"
-                android:textSize="@dimen/label_text_size"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_weight="0"/>
-            <EditText
-                android:id="@+id/usernameField"
-                android:layout_width="@dimen/login_field_width"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:inputType="text"/>
-        </TableRow>
+        <Spinner
+            android:id="@+id/networkSpinner"
+            android:prompt="@string/choose_network"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/between_padding"
+            android:background="@drawable/whitespinner"/>
 
-        <TableRow>
-            <TextView
-                android:id="@+id/paswordLabel"
-                android:text="@string/password"
-                android:textSize="@dimen/label_text_size"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_weight="0"/>
-            <EditText
-                android:id="@+id/passwordField"
-                android:layout_width="@dimen/login_field_width"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:inputType="textPassword"/>
-        </TableRow>
+        <EditText
+            android:id="@+id/usernameField"
+            style="@style/JitsiLoginTextView"
+            android:hint="@string/username"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:inputType="text"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/between_padding"/>
 
-        <TableRow>
-            <TextView
-                android:id="@+id/emptyLabel"
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"/>
-            <Button
-                android:id="@+id/signInButton"
-                android:text="@string/sign_in"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_weight="0"/>
-        </TableRow>
-    </TableLayout>
+        <EditText
+            android:id="@+id/passwordField"
+            style="@style/JitsiLoginTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:padding="10dp"
+            android:inputType="textPassword"
+            android:hint="@string/password"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/between_padding"/>
+
+        <Button
+            android:id="@+id/signInButton"
+            android:text="@string/service_gui_SIGN_IN"
+            android:focusable="true"
+            android:textColor="#ffffff"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/signin_button"
+            android:layout_marginBottom="@dimen/between_padding"/>
+
+        <Button
+            android:id="@+id/createAccountButton"
+            android:text="@string/service_gui_CREATE_ACCOUNT"
+            android:focusable="true" 
+            android:textColor="#ffffff"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/loginbutton"/>
+    </LinearLayout>
 </RelativeLayout>

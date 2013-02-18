@@ -11,6 +11,7 @@ import java.util.*;
 import org.jitsi.*;
 
 import android.app.*;
+import android.app.TaskStackBuilder;
 import android.app.ActivityManager.*;
 import android.content.*;
 import android.content.DialogInterface.OnClickListener;

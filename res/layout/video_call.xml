@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:id="@+id/videoCallLayout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    android:background="@drawable/background">
 
     <LinearLayout
         android:id="@+id/remoteVideoContainer"
@@ -15,56 +17,115 @@
         android:id="@+id/previewDisplay"
         android:layout_width="320dp"
         android:layout_height="240dp"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="gone"/>
 
     <LinearLayout
             android:layout_alignParentTop="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/screen_padding"
-            android:orientation="horizontal"
-            android:layout_centerHorizontal="true">
+            android:orientation="vertical"
+            android:layout_centerInParent="true">
+
+        <ImageView
+             android:id="@+id/calleeAvatar"
+             android:src="@drawable/personphoto"
+             android:contentDescription="@string/call"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="center_horizontal"
+             android:paddingBottom="@dimen/between_padding"/>
 
         <TextView
             android:id="@+id/calleeName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/label_text_size"
-            android:paddingRight="@dimen/between_padding"/>
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="@dimen/between_padding"/>
 
         <TextView
             android:id="@+id/callStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/label_text_size"
-            android:paddingRight="@dimen/between_padding"/>
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="@dimen/between_padding"/>
 
         <TextView
             android:id="@+id/callTime"
             android:text="00:00:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/label_text_size"/>
-        
+            android:textSize="@dimen/label_text_size"
+            android:layout_gravity="center_horizontal"/>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
         android:orientation="horizontal"
-        android:paddingRight="@dimen/screen_padding"
-        android:paddingBottom="@dimen/screen_padding">
+        android:paddingBottom="0px"
+        android:background="#40000000">
 
-        <ImageView
-            android:id="@+id/hangupButton"
-            android:src="@drawable/hangup"
+        <ImageButton
+            android:id="@+id/callVolumeButton"
+            android:src="@drawable/callvolume"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/service_gui_VOLUME_CONTROL_TOOL_TIP"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"/>
+
+        <ImageButton
+            android:id="@+id/callMicrophoneButton"
+            android:src="@drawable/callmicrophone"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/service_gui_MUTE_BUTTON_TOOL_TIP"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"/>
+
+        <ImageButton
+            android:id="@+id/callVideoButton"
+            android:src="@drawable/callvideo"
+            android:background="@drawable/image_button_background"
+            android:contentDescription="@string/service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"/>
+
+        <ImageButton
+                android:id="@+id/callHoldButton"
+                android:src="@drawable/callhold"
+                android:background="@drawable/image_button_background"
+                android:contentDescription="@string/hold"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:onClick="onHoldButtonClicked"/>
+
+        <ImageButton
+            android:id="@+id/callHangupButton"
+            android:src="@drawable/callhangup"
+            android:background="@drawable/image_button_background"
             android:contentDescription="@string/hang_up"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"/>
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:focusable="true"/>
     </LinearLayout>
 </RelativeLayout>

@@ -9,17 +9,18 @@ package org.jitsi.android.gui;
 import android.content.*;
 import android.os.Bundle; // disambiguation
 import android.view.*;
-import android.view.Window;
+import android.view.animation.*;
+import android.widget.*;
 
-import java.util.*;
-
+import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.util.account.*;
 
+import org.jitsi.*;
 import org.jitsi.android.gui.account.*;
-import org.jitsi.android.gui.call.*;
-import org.jitsi.service.osgi.*;
+import org.jitsi.android.gui.menu.*;
+import org.jitsi.android.gui.util.*;
 import org.osgi.framework.*;
 
 /**
@@ -27,281 +28,91 @@ import org.osgi.framework.*;
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
+ * @author Yana Stamcheva
  */
 public class Jitsi
-    extends OSGiActivity
+    extends MainMenuActivity
 {
     /**
-     * The SIP address of the callee to establish a call to from the SIP account
-     * defined by {@link #USER_ID} and {@link #PASSWORD}. The value committed to
-     * the version control system is empty and each developer is to fill in the
-     * desired value in their local sandbox. If the value is (left) empty, no
-     * attempt to establish a call to <tt>CALLEE</tt> will be made.
+     * The OSGI bundle context.
      */
-    private static final String CALLEE = "";
+    public static BundleContext bundleContext;
 
     /**
-     * The display name of {@link #USER_ID}
+     * The android context.
      */
-    private static final String DISPLAY_NAME = "";
+    private static Context androidContext;
 
     /**
-     * The password of {@link #USER_ID}.
+     * A call back parameter.
      */
-    private static final String PASSWORD = "";
+    public static final int OBTAIN_CREDENTIALS = 1;
 
     /**
-     * The SIP address of an account to be created if the configuration does not
-     * define any accounts. If the value is <tt>null</tt> or empty, no attempt
-     * will be made to create an account.
+     * The login manager.
      */
-    private static final String USER_ID = "";
+    private static LoginManager loginManager;
 
-    private BundleContext bundleContext;
-
-    private final RegistrationStateChangeListener
-        registrationStateChangeListener
-            = new RegistrationStateChangeListener()
-        {
-            public void registrationStateChanged(
-                    RegistrationStateChangeEvent event)
-            {
-                Jitsi.this.registrationStateChanged(event);
-            }
-        };
-
-    private final SecurityAuthority securityAuthority
-        = new SecurityAuthority()
-        {
-            public boolean isUserNameEditable()
-            {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            public UserCredentials obtainCredentials(
-                    String realm,
-                    UserCredentials defaultValues)
-            {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            public UserCredentials obtainCredentials(
-                    String realm,
-                    UserCredentials defaultValues,
-                    int reasonCode)
-            {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            public void setUserNameEditable(boolean isUserNameEditable)
-            {
-                // TODO Auto-generated method stub
-            }
-        };
-
-    private final ServiceListener serviceListener
-        = new ServiceListener()
-        {
-            public void serviceChanged(ServiceEvent event)
-            {
-                Jitsi.this.serviceChanged(event);
-            }
-        };
-
+    /**
+     * Called when the activity is starting. Initializes the corresponding
+     * call interface.
+     *
+     * @param savesInstanceState If the activity is being re-initialized after
+     * previously being shut down then this Bundle contains the data it most
+     * recently supplied in onSaveInstanceState(Bundle).
+     * Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        androidContext = this;
+
         if (bundleContext == null)
         {
             requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
             setProgressBarIndeterminateVisibility(true);
         }
 
-//        setContentView(R.layout.main);
+        setContentView(R.layout.main);
 
-//        Button sendProcessSignal
-//            = (Button) findViewById(R.id.sendProcessSignal);
-//
-//        if (sendProcessSignal != null)
-//        {
-//            sendProcessSignal.setOnClickListener(
-//                    new View.OnClickListener()
-//                    {
-//                        public void onClick(View view)
-//                        {
-//                            Process.sendSignal(Process.myPid(), 3);
-//                        }
-//                    });
-//        }
-//
-//        Button stopOSGiFramework
-//            = (Button) findViewById(R.id.stopOSGiFramework);
-//
-//        if (stopOSGiFramework != null)
-//        {
-//            stopOSGiFramework.setOnClickListener(
-//                    new View.OnClickListener()
-//                    {
-//                        public void onClick(View view)
-//                        {
-//                            synchronized (this)
-//                            {
-//                                if (bundleContext != null)
-//                                {
-//                                    try
-//                                    {
-//                                        bundleContext.getBundle(0).stop();
-//                                    }
-//                                    catch (BundleException be)
-//                                    {
-//                                        be.printStackTrace(System.err);
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    });
-//        }
+        ImageView myImageView
+            = (ImageView)findViewById(R.id.loadingImage);
+        Animation myFadeInAnimation
+            = AnimationUtils.loadAnimation(this, R.anim.fadein);
+        myImageView.startAnimation(myFadeInAnimation);
     }
 
+    /**
+     * Called when an activity is destroyed.
+     */
     @Override
     protected void onDestroy()
     {
-        try
+        super.onDestroy();
+
+        synchronized (this)
         {
-            synchronized (this)
-            {
-                if (bundleContext != null)
-                    try
-                    {
-                        stop(bundleContext);
-                    }
-                    catch (Throwable t)
-                    {
-                        if (t instanceof ThreadDeath)
-                            throw (ThreadDeath) t;
-                    }
-            }
-        }
-        finally
-        {
-            super.onDestroy();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    private void registrationStateChanged(RegistrationStateChangeEvent event)
-    {
-//        ProtocolProviderService pps = event.getProvider();
-//
-//        if ((CALLEE != null)
-//                && (CALLEE.length() != 0)
-//                && RegistrationState.REGISTERED.equals(event.getNewState())
-//                && pps.isRegistered())
-//        {
-//            OperationSetBasicTelephony<?> osbt
-//                = pps.getOperationSet(OperationSetBasicTelephony.class);
-//            OperationSetVideoTelephony osvt
-//                = pps.getOperationSet(OperationSetVideoTelephony.class);
-//
-//            if ((osbt != null) && (osvt != null))
-//            {
-//                Call call = null;
-//
-//                try
-//                {
-//                    call = osvt.createVideoCall(CALLEE);
-//                }
-//                catch (OperationFailedException ofe)
-//                {
-//                    ofe.printStackTrace(System.err);
-//                }
-//                catch (java.text.ParseException pe)
-//                {
-//                    pe.printStackTrace(System.err);
-//                }
-//                if (call != null)
-//                {
-//                    Iterator<? extends CallPeer> callPeerIter
-//                        = call.getCallPeers();
-//
-//                    if (callPeerIter.hasNext())
-//                        addVideoListener(callPeerIter.next());
-//                }
-//            }
-//        }
-    }
-
-    private void serviceChanged(ServiceEvent event)
-    {
-        switch (event.getType())
-        {
-        case ServiceEvent.REGISTERED:
-            {
-            ServiceReference<?> serviceReference = event.getServiceReference();
-
-            synchronized (this)
-            {
-                if (bundleContext != null)
+            if (bundleContext != null)
+                try
                 {
-                    Object service = bundleContext.getService(serviceReference);
-
-                    if (service instanceof ProtocolProviderService)
-                    {
-                        ProtocolProviderService pps
-                            = (ProtocolProviderService) service;
-
-                        pps.addRegistrationStateChangeListener(
-                                registrationStateChangeListener);
-                        try
-                        {
-                            pps.register(securityAuthority);
-                        }
-                        catch (OperationFailedException ofe)
-                        {
-                            ofe.printStackTrace(System.err);
-                        }
-                    }
+                    stop(bundleContext);
                 }
-            }
-            }
-            break;
-
-        case ServiceEvent.UNREGISTERING:
-            {
-            ServiceReference<?> serviceReference = event.getServiceReference();
-
-            synchronized (this)
-            {
-                if (bundleContext != null)
+                catch (Throwable t)
                 {
-                    Object service = bundleContext.getService(serviceReference);
-
-                    if (service instanceof ProtocolProviderService)
-                    {
-                        ProtocolProviderService pps
-                            = (ProtocolProviderService) service;
-
-                        pps.removeRegistrationStateChangeListener(
-                                registrationStateChangeListener);
-                    }
+                    if (t instanceof ThreadDeath)
+                        throw (ThreadDeath) t;
                 }
-            }
-            }
-            break;
         }
     }
 
+    /**
+     * Starts this osgi activity.
+     *
+     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @throws Exception
+     */
     @Override
     protected synchronized void start(BundleContext bundleContext)
         throws Exception
@@ -315,114 +126,108 @@ public class Jitsi
                 != null)
             return;
 
-        this.bundleContext = bundleContext;
+        Jitsi.bundleContext = bundleContext;
 
-        runOnUiThread(
-                new Runnable()
-                {
-                    public void run()
-                    {
-                        initActivity();
-                    }
-                });
+        // Register the alert service android implementation.
+        AlertUIServiceImpl alertServiceImpl = new AlertUIServiceImpl(this);
 
-        /*
-         * If there is no account stored from previous runs of the application,
-         * create a new SIP account using USER_ID and PASSWORD.
-         */
-        bundleContext.addServiceListener(serviceListener);
+        bundleContext.registerService(  AlertUIService.class.getName(),
+                                        alertServiceImpl,
+                                        null);
 
-        AccountManager accountManager
-            = ServiceUtils.getService(
-                    bundleContext,
-                    AccountManager.class);
+        AndroidLoginRenderer loginRenderer = new AndroidLoginRenderer(this);
+        loginManager = new LoginManager(loginRenderer);
 
-        if ((USER_ID != null)
-                && (USER_ID.length() != 0)
-                && !accountManager.hasStoredAccounts(ProtocolNames.SIP, false))
-        {
-            Collection<ServiceReference<ProtocolProviderFactory>> ppfs
-                = bundleContext.getServiceReferences(
-                        ProtocolProviderFactory.class,
-                        '('
-                            + ProtocolProviderFactory.PROTOCOL
-                            + '='
-                            + ProtocolNames.SIP
-                            + ')');
-            Iterator<ServiceReference<ProtocolProviderFactory>> ppfi
-                = ppfs.iterator();
-
-            if (ppfi.hasNext())
-            {
-                ProtocolProviderFactory ppf
-                    = bundleContext.getService(ppfi.next());
-
-                if (ppf != null)
-                {
-                    Map<String, String> accountProperties
-                        = new HashMap<String, String>();
-                    String userID = USER_ID;
-                    String serverAddress
-                        = userID.substring(userID.indexOf('@') + 1);
-
-                    accountProperties.put(
-                            ProtocolProviderFactory.DEFAULT_ENCRYPTION,
-                            Boolean.FALSE.toString());
-                    accountProperties.put(
-                            ProtocolProviderFactory.DEFAULT_SIPZRTP_ATTRIBUTE,
-                            Boolean.FALSE.toString());
-                    accountProperties.put(
-                            ProtocolProviderFactory.DISPLAY_NAME,
-                            DISPLAY_NAME);
-                    accountProperties.put(
-                            ProtocolProviderFactory.PASSWORD,
-                            PASSWORD);
-                    accountProperties.put(
-                            ProtocolProviderFactory.PROTOCOL,
-                            ProtocolNames.SIP);
-                    accountProperties.put(
-                            ProtocolProviderFactory.PROXY_ADDRESS,
-                            serverAddress);
-                    accountProperties.put(
-                            ProtocolProviderFactory.SERVER_ADDRESS,
-                            serverAddress);
-                    accountProperties.put(
-                            ProtocolProviderFactory.USER_ID,
-                            userID);
-
-                    ppf.installAccount(userID, accountProperties);
-                }
-            }
-        }
+        initActivity();
     }
 
+    /**
+     * Stops this osgi activity.
+     *
+     * @param bundleContext the osgi <tt>BundleContext</tt>
+     * @throws Exception
+     */
     @Override
     protected synchronized void stop(BundleContext bundleContext)
         throws Exception
     {
         if (this.bundleContext != null)
         {
-            this.bundleContext.removeServiceListener(serviceListener);
             this.bundleContext = null;
         }
     }
 
-    private void initActivity()
+    /**
+     * Returns the login manager.
+     *
+     * @return the login manager
+     */
+    public static LoginManager getLoginManager()
     {
-        setProgressBarIndeterminateVisibility(false);
-
-        AccountManager accountManager
-            = ServiceUtils.getService(bundleContext, AccountManager.class);
-        Iterator<AccountID> storedAccounts
-            = accountManager.getStoredAccounts().iterator();
-        Intent nextIntent
-            = new Intent(
-                    this,
-                    storedAccounts.hasNext()
-                        ? CallContact.class
-                        : NewAccount.class);
-
-        startActivity(nextIntent);
+        return loginManager;
     }
 
+    /**
+     * Returns the android context.
+     *
+     * @return the android application context
+     */
+    public static Context getAndroidContext()
+    {
+        return androidContext;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode,
+                                    int resultCode,
+                                    Intent accountLoginIntent)
+    {
+        super.onActivityResult(requestCode, resultCode, accountLoginIntent);
+
+        switch(requestCode)
+        {
+            case OBTAIN_CREDENTIALS:
+                if(resultCode == RESULT_OK)
+                {
+                    System.err.println("ACCOUNT DATA STRING===="
+                        + accountLoginIntent.getDataString());
+                }
+        }
+    }
+
+    /**
+     * Initializes the first activity.
+     */
+    private void initActivity()
+    {
+        this.setProgressBarIndeterminateVisibility(false);
+
+        AccountManager accountManager
+            = ServiceUtils.getService(
+                Jitsi.bundleContext, AccountManager.class);
+
+        if (accountManager.getStoredAccounts().size() > 0)
+        {
+            new Thread(new Runnable()
+            {
+                public void run()
+                {
+                    loginManager.runLogin();
+                }
+            }).start();
+        }
+        else
+        {
+            runOnUiThread(
+                new Runnable()
+                {
+                    public void run()
+                    {
+                        androidContext.startActivity(
+                            new Intent( androidContext,
+                                        AccountLoginActivity.class));
+                    }
+                });
+        }
+    }
 }
