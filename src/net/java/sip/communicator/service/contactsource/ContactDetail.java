@@ -36,60 +36,265 @@ import net.java.sip.communicator.service.protocol.*;
 public class ContactDetail
 {
     /**
-     * The standard/well-known category of a <tt>ContactDetail</tt> representing
-     * an e-mail address.
+     * Defines all possible categories for a <tt>ContactDetail</tt>.
      */
-    public static final String CATEGORY_EMAIL = "Email";
+    public enum Category
+    {
+        /**
+         * The standard/well-known category of a <tt>ContactDetail</tt>
+         * representing personal details, like name, last name, nickname.
+         */
+        Personal("Personal"),
+
+        /**
+         * The standard/well-known category of a <tt>ContactDetail</tt>
+         * representing organization details, like organization name and job
+         * title.
+         */
+        Organization("Organization"),
+
+        /**
+         * The standard/well-known category of a <tt>ContactDetail</tt>
+         * representing an e-mail address.
+         */
+        Email("Email"),
+
+        /**
+         * The standard/well-known category of a <tt>ContactDetail</tt>
+         * representing a contact address for instant messaging.
+         */
+        InstantMessaging("InstantMessaging"),
+
+        /**
+         * The standard/well-known category of a <tt>ContactDetail</tt>
+         * representing a phone number.
+         */
+        Phone("Phone"),
+
+        /**
+         * The standard/well-known category of a <tt>ContactDetail</tt>
+         * representing a postal address.
+         */
+        Address("Address");
+
+        /**
+         * Current enum value.
+         */
+        private final String value;
+
+        /**
+         * Creates enum whith the specified value.
+         *
+         * @param value the value to set.
+         */
+        Category(String value)
+        {
+            this.value = value;
+        }
+
+        /**
+         * Gets the value.
+         *
+         * @return the value
+         */
+        public String value()
+        {
+            return value;
+        }
+
+        /**
+         * Creates enum from its value.
+         *
+         * @param value the enum's value.
+         * @return created enum.
+         */
+        public static Category fromString(String value)
+        {
+            if (value != null)
+            {
+                for (Category category : Category.values())
+                {
+                    if (value.equalsIgnoreCase(category.value()))
+                    {
+                        return category;
+                    }
+                }
+                return null;
+            }
+            return null;
+        }
+    }
 
     /**
-     * The standard/well-known category of a <tt>ContactDetail</tt> representing
-     * a contact address for instant messaging.
+     * Defines all possible sub-categories for a <tt>ContactDetail</tt>.
      */
-    public static final String CATEGORY_INSTANT_MESSAGING = "Instant Messaging";
+    public enum SubCategory
+    {
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a name. It could be an organization name or a personal
+         * name.
+         */
+        Name("Name"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a last name.
+         */
+        LastName("LastName"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a nickname.
+         */
+        Nickname("Nickname"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a postal code.
+         */
+        HomePage("HomePage"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing an address of a contact at their home.
+         */
+        Home("Home"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a mobile contact address (e.g. a cell phone number).
+         */
+        Mobile("Mobile"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing an address of a contact at their work.
+         */
+        Work("Work"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a fax number.
+         */
+        Fax("Fax"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a different number.
+         */
+        Other("Other"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing an IM network (like for example jabber).
+         */
+        AIM("AIM"),
+        ICQ("ICQ"),
+        MSN("MSN"),
+        Jabber("Jabber"),
+        Skype("Skype"),
+        Yahoo("Yahoo"),
+        Facebook("Facebook"),
+        GoogleTalk("GoogleTalk"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a country name.
+         */
+        Country("Country"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a city name.
+         */
+        City("City"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a street address.
+         */
+        Street("Street"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a postal code.
+         */
+        PostalCode("PostalCode"),
+
+        /**
+         * The standard/well-known label of a <tt>ContactDetail</tt>
+         * representing a job title.
+         */
+        JobTitle("JobTitle");
+
+        /**
+         * Current enum value.
+         */
+        private final String value;
+
+        /**
+         * Creates enum whith the specified value.
+         *
+         * @param value the value to set.
+         */
+        SubCategory(String value)
+        {
+            this.value = value;
+        }
+
+        /**
+         * Gets the value.
+         *
+         * @return the value
+         */
+        public String value()
+        {
+            return value;
+        }
+
+        /**
+         * Creates enum from its value.
+         *
+         * @param value the enum's value.
+         * @return created enum.
+         */
+        public static SubCategory fromString(String value)
+        {
+            if (value != null)
+            {
+                for (SubCategory subCategory : SubCategory.values())
+                {
+                    if (value.equalsIgnoreCase(subCategory.value()))
+                    {
+                        return subCategory;
+                    }
+                }
+                return null;
+            }
+            return null;
+        }
+    }
 
     /**
-     * The standard/well-known category of a <tt>ContactDetail</tt> representing
-     * a phone number.
+     * The category of this <tt>ContactQuery</tt>.
      */
-    public static final String CATEGORY_PHONE = "Phone";
-
-    /**
-     * The standard/well-known label of a <tt>ContactDetail</tt> representing an
-     * address of a contact at their home.
-     */
-    public static final String LABEL_HOME = "Home";
-
-    /**
-     * The standard/well-known label of a <tt>ContactDetail</tt> representing a
-     * mobile contact address (e.g. a cell phone number).
-     */
-    public static final String LABEL_MOBILE = "Mobile";
-
-    /**
-     * The standard/well-known label of a <tt>ContactDetail</tt> representing an
-     * address of a contact at their work.
-     */
-    public static final String LABEL_WORK = "Work";
-
-    /**
-     * The category of this <tt>ContactQuery</tt>. For example,
-     * {@link #CATEGORY_PHONE} or {@link #CATEGORY_EMAIL}.
-     */
-    private final String category;
+    private final Category category;
 
     /**
      * The address of this contact detail. This should be the address through
      * which the contact could be reached by one of the supported
      * <tt>OperationSet</tt>s (e.g. by IM, call).
      */
-    private final String contactAddress;
+    protected String contactDetailValue;
 
     /**
      * The set of labels of this <tt>ContactDetail</tt>. The labels may be
      * arbitrary and may include any of the standard/well-known labels defined
      * by the <tt>LABEL_XXX</tt> constants of the <tt>ContactDetail</tt> class.
      */
-    private final Collection<String> labels = new LinkedList<String>();
+    private final Collection<SubCategory> subCategories
+        = new LinkedList<SubCategory>();
 
     /**
      * A mapping of <tt>OperationSet</tt> classes and preferred protocol
@@ -112,11 +317,12 @@ public class ContactDetail
     /**
      * Creates a <tt>ContactDetail</tt> by specifying the contact address,
      * corresponding to this detail.
-     * @param contactAddress the contact address corresponding to this detail
+     * @param contactDetailValue the contact detail value corresponding to this
+     * detail
      */
-    public ContactDetail(String contactAddress)
+    public ContactDetail(String contactDetailValue)
     {
-        this(contactAddress, null);
+        this(contactDetailValue, null, null);
     }
 
     /**
@@ -124,81 +330,31 @@ public class ContactDetail
      * specific contact address and which is to be optionally labeled with a
      * specific set of labels.
      *
-     * @param contactAddress the contact address to be represented by the new
-     * <tt>ContactDetail</tt> instance
-     * @param labels the set of labels with which the new <tt>ContactDetail</tt>
-     * instance is to be labeled. The labels may be arbitrary and may include
-     * any of the standard/well-known labels defined by the <tt>LABEL_XXX</tt>
-     * constants of the <tt>ContactDetail</tt> class. For the sake of
-     * convenience, <tt>null</tt> and duplicate values in the specified
-     * <tt>String[]</tt> <tt>labels</tt> will be ignored i.e. will not appear in
-     * the set of labels reported by the new <tt>ContactDetail</tt> instance
-     * later on. Additionally, the <tt>category</tt> of the new
-     * <tt>ContactDetail</tt> instance will be implied from the specified
-     * <tt>labels</tt> by looking for the standard/well-known categories defined
-     * by the <tt>CATEGORY_XXX</tt> constants of the <tt>ContactDetail</tt>
-     * class
+     * @param contactDetailValue the contact detail value to be represented by
+     * the new <tt>ContactDetail</tt> instance
+     * @param category
+     * @param subCategories the set of sub categories with which the new
+     * <tt>ContactDetail</tt> instance is to be labeled.
      */
-    public ContactDetail(String contactAddress, String[] labels)
+    public ContactDetail(   String contactDetailValue,
+                            Category category,
+                            SubCategory[] subCategories)
     {
-        // contactAddress
-        this.contactAddress = contactAddress;
+        // the value of the detail
+        this.contactDetailValue = contactDetailValue;
 
         // category & labels
-        String category = null;
+        this.category = category;
 
-        if (labels != null)
+        if (subCategories != null)
         {
-            for (String label : labels)
+            for (SubCategory subCategory : subCategories)
             {
-                if ((label != null) && !this.labels.contains(label))
+                if ((subCategory != null)
+                    && !this.subCategories.contains(subCategory))
                 {
-                    if (label.equals(CATEGORY_EMAIL)
-                            || label.equals(CATEGORY_INSTANT_MESSAGING)
-                            || label.equals(CATEGORY_PHONE))
-                        category = label;
-                    else
-                        this.labels.add(label);
+                    this.subCategories.add(subCategory);
                 }
-            }
-        }
-        this.category = category;
-    }
-
-    /**
-     * Initializes a new <tt>ContactDetail</tt> instance which is to represent a
-     * specific contact address and which is to be optionally labeled with a
-     * specific category and a specific set of labels.
-     *
-     * @param contactAddress the contact address to be represented by the new
-     * <tt>ContactDetail</tt> instance
-     * @param category the category (such as one of the <tt>CATEGORY_XXX</tt>
-     * constants defined by the <tt>ContactDetail</tt> class, for example) to be
-     * assigned to the new <tt>ContactDetail</tt> instance
-     * @param labels the set of labels with which the new <tt>ContactDetail</tt>
-     * instance is to be labeled. The labels may be arbitrary and may include
-     * any of the standard/well-known labels defined by the <tt>LABEL_XXX</tt>
-     * constants of the <tt>ContactDetail</tt> class. For the sake of
-     * convenience, <tt>null</tt> and duplicate values in the specified
-     * <tt>String[]</tt> <tt>labels</tt> will be ignored i.e. will not appear in
-     * the set of labels reported by the new <tt>ContactDetail</tt> instance
-     * later on.
-     */
-    public ContactDetail(
-            String contactAddress,
-            String category, String[] labels)
-    {
-        // contactAddress
-        this.contactAddress = contactAddress;
-        // category
-        this.category = category;
-        // labels
-        if (labels != null)
-        {
-            for (String label : labels)
-            {
-                if ((label != null) && !this.labels.contains(label))
-                    this.labels.add(label);
             }
         }
     }
@@ -252,29 +408,30 @@ public class ContactDetail
     }
 
     /**
-     * Gets the category, if any, of this <tt>ContactQuery</tt>. For example,
-     * {@link #CATEGORY_PHONE} or {@link #CATEGORY_EMAIL}.
+     * Gets the category, if any, of this <tt>ContactQuery</tt>.
      *
      * @return the category of this <tt>ContactQuery</tt> if it has any;
      * otherwise, <tt>null</tt>
      */
-    public String getCategory()
+    public Category getCategory()
     {
         return category;
     }
 
     /**
      * Returns the contact address corresponding to this detail.
+     *
      * @return the contact address corresponding to this detail
      */
-    public String getContactAddress()
+    public String getDetail()
     {
-        return contactAddress;
+        return contactDetailValue;
     }
 
     /**
      * Returns the preferred <tt>ProtocolProviderService</tt> when using the
      * given <tt>opSetClass</tt>.
+     *
      * @param opSetClass the <tt>OperationSet</tt> class corresponding to a
      * certain action (e.g. sending an instant message, making a call, etc.).
      * @return the preferred <tt>ProtocolProviderService</tt> corresponding to
@@ -329,14 +486,14 @@ public class ContactDetail
      * any of the standard/well-known labels defined by the <tt>LABEL_XXX</tt>
      * constants of the <tt>ContactDetail</tt> class.
      * 
-     * @param label the label to be determined whether it is contained in the
-     * set of labels of this <tt>ContactDetail</tt>
+     * @param subCategory the subCategory to be determined whether
+     * it is contained in this <tt>ContactDetail</tt>
      * @return <tt>true</tt> if the specified <tt>label</tt> is contained in the
      * set of labels of this <tt>ContactDetail</tt>
      */
-    public boolean containsLabel(String label)
+    public boolean containsSubCategory(SubCategory subCategory)
     {
-        return labels.contains(label);
+        return subCategories.contains(subCategory);
     }
 
     /**
@@ -348,8 +505,8 @@ public class ContactDetail
      * <tt>ContactDetail</tt> has no labels, the returned <tt>Collection</tt> is
      * empty.
      */
-    public Collection<String> getLabels()
+    public Collection<SubCategory> getSubCategories()
     {
-        return Collections.unmodifiableCollection(labels);
+        return Collections.unmodifiableCollection(subCategories);
     }
 }

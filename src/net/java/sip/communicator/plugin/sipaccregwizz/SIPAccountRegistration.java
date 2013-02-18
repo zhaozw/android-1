@@ -8,7 +8,6 @@ package net.java.sip.communicator.plugin.sipaccregwizz;
 import java.util.*;
 
 import net.java.sip.communicator.util.wizard.*;
-
 /**
  * The <tt>SIPAccountRegistration</tt> is used to store all user input data
  * through the <tt>SIPAccountRegistrationWizard</tt>.
@@ -115,16 +114,16 @@ public class SIPAccountRegistration
      * Whether message waiting indications is enabled.
      */
     private boolean messageWaitingIndications = true;
-
+    
      /**
      * Whether to override global encoding settings.
      */
     private boolean overrideEncodingSettings = false;
-
+    
     /**
      * Encoding properties associated with this account.
      */
-    private Map<String, String> encodingProperties
+    private Map<String, String> encodingProperties 
             = new HashMap<String, String>();
 
     /**
@@ -605,7 +604,7 @@ public class SIPAccountRegistration
      * If default domain is set this means we cannot create registerless
      * accounts through this wizard. And every time we write only the username,
      * will will end up with username@defaultDomain.
-     *
+     * 
      * @param defaultDomain the defaultDomain to set
      */
     public void setDefaultDomain(String defaultDomain)
@@ -881,7 +880,7 @@ public class SIPAccountRegistration
     {
         return overrideEncodingSettings;
     }
-
+    
     /**
     * Set the override encodings setting to <tt>override</tt>
     * @param override The value to set the override ecoding settings to.
@@ -890,7 +889,7 @@ public class SIPAccountRegistration
     {
         overrideEncodingSettings = override;
     }
-
+    
     /**
     * Get the stored encoding properties
     * @return The stored encoding properties.
@@ -899,7 +898,7 @@ public class SIPAccountRegistration
     {
         return encodingProperties;
     }
-
+    
     /**
     * Set the encoding properties
     * @param encodingProperties The encoding properties to set.

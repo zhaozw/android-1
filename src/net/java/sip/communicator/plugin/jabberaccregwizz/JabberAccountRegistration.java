@@ -882,7 +882,7 @@ public class JabberAccountRegistration
     {
         return overrideEncodingSettings;
     }
-
+    
     /**
     * Set the override encodings setting to <tt>override</tt>
     * @param override The value to set the override ecoding settings to.
@@ -891,7 +891,7 @@ public class JabberAccountRegistration
     {
         overrideEncodingSettings = override;
     }
-
+    
     /**
     * Get the stored encoding properties
     * @return The stored encoding properties.
@@ -900,7 +900,7 @@ public class JabberAccountRegistration
     {
         return encodingProperties;
     }
-
+    
     /**
     * Set the encoding properties
     * @param encodingProperties The encoding properties to set.

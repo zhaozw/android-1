@@ -24,7 +24,7 @@ public class GenericSourceContact
     /**
      * The <tt>ContactDetail</tt>s of this <tt>SourceContact</tt>.
      */
-    private final List<ContactDetail> contactDetails;
+    protected final List<ContactDetail> contactDetails;
 
     /**
      * The <tt>ContactSourceService</tt> which has created this
@@ -115,13 +115,14 @@ public class GenericSourceContact
      * @return a list of all <tt>ContactDetail</tt>s corresponding to the given
      * category
      */
-    public List<ContactDetail> getContactDetails(String category)
+    public List<ContactDetail> getContactDetails(
+        ContactDetail.Category category)
     {
         List<ContactDetail> contactDetails = new LinkedList<ContactDetail>();
 
         for (ContactDetail contactDetail : getContactDetails())
         {
-            String detailCategory = contactDetail.getCategory();
+            ContactDetail.Category detailCategory = contactDetail.getCategory();
             if (detailCategory != null && detailCategory.equals(category))
                 contactDetails.add(contactDetail);
         }

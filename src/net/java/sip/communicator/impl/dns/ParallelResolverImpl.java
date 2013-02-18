@@ -92,32 +92,22 @@ public class ParallelResolverImpl
      */
     ParallelResolverImpl()
     {
-        try
-        {
-            defaultResolver = new ExtendedResolver();
-        }
-        catch (UnknownHostException e)
-        {
-            //should never happen
-            throw new RuntimeException("Failed to initialize resolver");
-        }
-
         DnsUtilActivator.getConfigurationService()
             .addPropertyChangeListener(this);
         initProperties();
-        Lookup.setDefaultResolver(this);
+        reset();
     }
 
     private void initProperties()
     {
         String rslvrAddrStr
-            = UtilActivator.getConfigurationService().getString(
+            = DnsUtilActivator.getConfigurationService().getString(
                 DnsUtilActivator.PNAME_BACKUP_RESOLVER,
                 DnsUtilActivator.DEFAULT_BACKUP_RESOLVER);
         String customResolverIP
-            = UtilActivator.getConfigurationService().getString(
+            = DnsUtilActivator.getConfigurationService().getString(
                 DnsUtilActivator.PNAME_BACKUP_RESOLVER_FALLBACK_IP,
-                UtilActivator.getResources().getSettingsString(
+                DnsUtilActivator.getResources().getSettingsString(
                     DnsUtilActivator.PNAME_BACKUP_RESOLVER_FALLBACK_IP));
 
         InetAddress resolverAddress = null;
@@ -147,7 +137,7 @@ public class ParallelResolverImpl
             }
         }
 
-        int resolverPort = UtilActivator.getConfigurationService().getInt(
+        int resolverPort = DnsUtilActivator.getConfigurationService().getInt(
             DnsUtilActivator.PNAME_BACKUP_RESOLVER_PORT,
             SimpleResolver.DEFAULT_PORT);
 
@@ -382,38 +372,21 @@ public class ParallelResolverImpl
      * Resets resolver configuration and populate our default resolver
      * with the newly configured servers.
      */
-    public void reset()
+    public final void reset()
     {
         Lookup.refreshDefault();
-        ExtendedResolver resolver = (ExtendedResolver)defaultResolver;
-
-        // remove old ones
-        for(Resolver r : resolver.getResolvers())
-        {
-            resolver.deleteResolver(r);
-        }
 
         // populate with new servers after refreshing configuration
         try
         {
-            String [] servers = ResolverConfig.getCurrentConfig().servers();
-            if (servers != null)
-            {
-                for (int i = 0; i < servers.length; i++)
-                {
-                    Resolver r = new SimpleResolver(servers[i]);
-                    //r.setTimeout(quantum);
-                    resolver.addResolver(r);
-                }
-            }
-            else
-            {
-                resolver.addResolver(new SimpleResolver());
-            }
+            Lookup.setDefaultResolver(this);
+            ExtendedResolver temp = new ExtendedResolver();
+            temp.setTimeout(10);
+            defaultResolver = temp;
         }
         catch (UnknownHostException e)
         {
-            //should never happen
+            // should never happen
             throw new RuntimeException("Failed to initialize resolver");
         }
     }

@@ -101,6 +101,7 @@ public class DnsUtilActivator
     public void start(BundleContext context)
         throws Exception
     {
+        logger.info("DNS service ... [STARTING]");
         bundleContext = context;
         context.addServiceListener(this);
 
@@ -115,6 +116,7 @@ public class DnsUtilActivator
                 CustomResolver.class.getName(),
                 new ParallelResolverImpl(),
                 null);
+            logger.info("ParallelResolver ... [REGISTERED]");
         }
 
         /*if(getConfigurationService().getBoolean(
@@ -125,10 +127,12 @@ public class DnsUtilActivator
                 CustomResolver.class.getName(),
                 new ConfigurableDnssecResolver(),
                 null);
+            logger.info("DnssecResolver ... [REGISTERED]");
         }
 
         dnsConfigActivator = new DnsConfigActivator();
         dnsConfigActivator.start(context);*/
+        logger.info("DNS service ... [STARTED]");
     }
 
     /**
@@ -162,7 +166,7 @@ public class DnsUtilActivator
     {
         // reread system dns configuration
         ResolverConfig.refresh();
-        if(logger.isTraceEnabled())
+        if(logger.isInfoEnabled())
         {
             StringBuilder sb = new StringBuilder();
             sb.append("Reloaded resolver config, default DNS servers are: ");
@@ -171,13 +175,24 @@ public class DnsUtilActivator
                 sb.append(s);
                 sb.append(", ");
             }
-            logger.trace(sb.toString());
+            logger.info(sb.toString());
         }
 
         // now reset an eventually present custom resolver
         if(Lookup.getDefaultResolver() instanceof CustomResolver)
         {
+            if (logger.isInfoEnabled())
+            {
+                logger.info("Resetting custom resolver "
+                    + Lookup.getDefaultResolver().getClass().getSimpleName());
+            }
+
             ((CustomResolver)Lookup.getDefaultResolver()).reset();
+        }
+        else
+        {
+            // or the default otherwise
+            Lookup.refreshDefault();
         }
     }
 
