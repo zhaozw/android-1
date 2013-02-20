@@ -10,6 +10,7 @@ import android.os.*;
 
 import java.util.*;
 
+import net.java.sip.communicator.util.*;
 import org.jitsi.service.osgi.*;
 
 import org.osgi.framework.*;
@@ -23,6 +24,12 @@ public class OSGiServiceBundleContextHolder
     implements BundleActivator,
                BundleContextHolder
 {
+    /**
+     * The logger.
+     */
+    private static final Logger logger
+        = Logger.getLogger(OSGiServiceBundleContextHolder.class);
+
     private final List<BundleActivator> bundleActivators
         = new ArrayList<BundleActivator>();
 
@@ -46,6 +53,10 @@ public class OSGiServiceBundleContextHolder
                     }
                     catch (Throwable t)
                     {
+                        logger.error(   "Error starting bundle: "
+                                        + bundleActivator,
+                                        t);
+
                         if (t instanceof ThreadDeath)
                             throw (ThreadDeath) t;
                     }
@@ -93,6 +104,10 @@ public class OSGiServiceBundleContextHolder
                 }
                 catch (Throwable t)
                 {
+                    logger.error(   "Error starting bundle: "
+                                    + bundleActivator,
+                                    t);
+
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
                 }
