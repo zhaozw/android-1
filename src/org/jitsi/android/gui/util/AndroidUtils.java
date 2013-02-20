@@ -135,7 +135,8 @@ public class AndroidUtils
                                                 Class<?> resultActivityClass)
     {
         return updateGeneralNotification(   context,
-                                            (int) System.currentTimeMillis(),
+                                            (int)(System.currentTimeMillis()
+                                                    % Integer.MAX_VALUE),
                                             title,
                                             message,
                                             date,
