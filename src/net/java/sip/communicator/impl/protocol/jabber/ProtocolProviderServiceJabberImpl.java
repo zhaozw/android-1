@@ -575,9 +575,9 @@ public class ProtocolProviderServiceJabberImpl
             {
                 // Checks if an error has occurred during login, if so we fire
                 // it here in order to avoid a deadlock which occurs in
-                // reconnect plugin. The deadlock is cause we fired an event during
-                // login process and have locked initializationLock and we cannot
-                // unregister from reconnect, cause unregister method
+                // reconnect plugin. The deadlock is cause we fired an event
+                // during login process and have locked initializationLock and
+                // we cannot unregister from reconnect, cause unregister method
                 // also needs this lock.
                 if(eventDuringLogin != null)
                 {
@@ -1272,10 +1272,18 @@ public class ProtocolProviderServiceJabberImpl
 
         // Insert our sasl mechanism implementation
         // in order to support some incompatible servers
-//        SASLAuthentication.unregisterSASLMechanism("DIGEST-MD5");
-//        SASLAuthentication.registerSASLMechanism("DIGEST-MD5",
-//            SASLDigestMD5Mechanism.class);
-//        SASLAuthentication.supportSASLMechanism("DIGEST-MD5");
+        /*boolean disableCustomDigestMD5
+            = accountID.getAccountPropertyBoolean(
+            "DISABLE_CUSTOM_DIGEST_MD5",
+            false);
+
+        if(!disableCustomDigestMD5)
+        {
+            SASLAuthentication.unregisterSASLMechanism("DIGEST-MD5");
+            SASLAuthentication.registerSASLMechanism("DIGEST-MD5",
+                SASLDigestMD5Mechanism.class);
+            SASLAuthentication.supportSASLMechanism("DIGEST-MD5");
+        }*/
 
         connection.login(userName, password, resource);
 

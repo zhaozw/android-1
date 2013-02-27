@@ -279,7 +279,7 @@ public abstract class CallPeerMediaHandler
      * Creates a new handler that will be managing media streams for
      * <tt>peer</tt>.
      *
-     * @param peer that <tt>CallPeer</tt> instance that we will be managing
+     * @param peer the <tt>CallPeer</tt> instance that we will be managing
      * media for.
      * @param srtpListener the object that receives SRTP security events.
      */
@@ -947,14 +947,11 @@ public abstract class CallPeerMediaHandler
          * the user without prior consent will happen.
          */
         direction = direction.and(getDirectionUserPreference(mediaType));
-        if (device != null)
-        {
-            /*
-             * If the device does not support a direction, there is really
-             * nothing to be done at this point to make it use it.
-             */
-            direction = direction.and(device.getDirection());
-        }
+        /*
+         * If the device does not support a direction, there is really nothing
+         * to be done at this point to make it use it.
+         */
+        direction = direction.and(device.getDirection());
 
         MediaStream stream
             = mediaHandler.initStream(
