@@ -7,6 +7,7 @@
 package org.jitsi.android.gui;
 
 import android.content.*;
+import android.content.res.*;
 import android.os.Bundle; // disambiguation
 import android.view.*;
 import android.view.animation.*;
@@ -44,6 +45,16 @@ public class Jitsi
     private static Context androidContext;
 
     /**
+     * The {@link Resources} for application
+     */
+    private static Resources applicationResources;
+
+    /**
+     * The package name of the application
+     */
+    private static String packageName;
+
+    /**
      * A call back parameter.
      */
     public static final int OBTAIN_CREDENTIALS = 1;
@@ -57,7 +68,7 @@ public class Jitsi
      * Called when the activity is starting. Initializes the corresponding
      * call interface.
      *
-     * @param savesInstanceState If the activity is being re-initialized after
+     * @param savedInstanceState If the activity is being re-initialized after
      * previously being shut down then this Bundle contains the data it most
      * recently supplied in onSaveInstanceState(Bundle).
      * Note: Otherwise it is null.
@@ -65,15 +76,18 @@ public class Jitsi
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
-
-        androidContext = this;
-
         if (bundleContext == null)
         {
             requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
             setProgressBarIndeterminateVisibility(true);
         }
+
+        super.onCreate(savedInstanceState);
+
+        androidContext = this;
+
+        applicationResources = getBaseContext().getResources();
+        packageName = getBaseContext().getPackageName();
 
         setContentView(R.layout.main);
 
@@ -138,7 +152,13 @@ public class Jitsi
         AndroidLoginRenderer loginRenderer = new AndroidLoginRenderer(this);
         loginManager = new LoginManager(loginRenderer);
 
-        initActivity();
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                initActivity();
+            }
+        });
     }
 
     /**
@@ -175,6 +195,26 @@ public class Jitsi
     public static Context getAndroidContext()
     {
         return androidContext;
+    }
+
+    /**
+     * Returns the {@link Resources} of the application context
+     *
+     * @return the {@link Resources} object for the application
+     */
+    public static Resources getAppResources()
+    {
+        return applicationResources;
+    }
+
+    /**
+     * Returns the package name of this application
+     *
+     * @return the Android application's package name
+     */
+    public static String getAppPackageName()
+    {
+        return packageName;
     }
 
     @Override
@@ -218,16 +258,9 @@ public class Jitsi
         }
         else
         {
-            runOnUiThread(
-                new Runnable()
-                {
-                    public void run()
-                    {
-                        androidContext.startActivity(
-                            new Intent( androidContext,
-                                        AccountLoginActivity.class));
-                    }
-                });
+            androidContext.startActivity(
+                    new Intent(androidContext,
+                            AccountLoginActivity.class));
         }
     }
 }

@@ -307,7 +307,7 @@ public class AndroidLoginRenderer
                 protocolProvider.getAccountID().getAccountAddress()
                     + " " + status,
                 date,
-                VideoCallActivity.class);
+                CallContactActivity.class);
         else
             AndroidUtils.updateGeneralNotification(
                 androidContext,

@@ -188,4 +188,13 @@
             tofile="./bin/classes/jitsi-android.apk"/>
     </target>
 
+    <target name="adb-install">
+        <exec executable="${sdk.dir}/platform-tools/adb" >
+            <arg line=" install -r ./bin/jitsi-android-debug.apk"/>
+        </exec>
+    </target>
+
+    <target name="rebuild-and-deploy"
+        depends="-pre-compile,compile,-post-compile,debug-install,adb-install"
+        />
 </project>
