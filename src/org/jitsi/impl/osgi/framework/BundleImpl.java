@@ -11,6 +11,7 @@ import java.net.*;
 import java.security.cert.*;
 import java.util.*;
 
+import net.java.sip.communicator.util.*;
 import org.jitsi.impl.osgi.framework.launch.*;
 import org.jitsi.impl.osgi.framework.startlevel.*;
 
@@ -24,6 +25,11 @@ import org.osgi.framework.startlevel.*;
 public class BundleImpl
     implements Bundle
 {
+    /**
+     * The Logger
+     */
+    private Logger logger = Logger.getLogger(BundleImpl.class);
+
     private BundleActivator bundleActivator;
 
     private BundleContext bundleContext;
@@ -289,6 +295,8 @@ public class BundleImpl
             }
             catch (Throwable t)
             {
+                logger.error("Error starting bundle: "+bundleActivator, t);
+
                 if (t instanceof ThreadDeath)
                     throw (ThreadDeath) t;
                 else
