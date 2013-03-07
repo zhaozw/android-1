@@ -107,6 +107,20 @@
         <!-- renames packages as different versions are used in devices -->
         <jarjar jarfile="libs/jain-sdp-1.jar">
             <zipfileset src="libs/jain-sdp.jar"/>
+
+            <!-- Reported by Pawel Domas
+                renaming this strings leads to Exception -
+                ClassNotFoundException: org.jitsi.gov.nist.org.jitsi.javax.sip.header.HeaderFactoryImpl
+                The cause is javax.sip.SipFactory constructing the header
+                factories by name and renaming causes wrong classnames.
+            -->
+            <rule pattern="javax.sip.header.HeaderFactoryImpl"
+                  result="javax.sip.header.HeaderFactoryImpl"/>
+            <rule pattern="javax.sip.message.MessageFactoryImpl"
+                  result="javax.sip.message.MessageFactoryImpl"/>
+            <rule pattern="javax.sip.address.AddressFactoryImpl"
+                  result="javax.sip.address.AddressFactoryImpl"/>
+
             <rule pattern="javax.sip.**"
                   result="org.jitsi.javax.sip.@1"/>
             <rule pattern="gov.nist.core.**"
