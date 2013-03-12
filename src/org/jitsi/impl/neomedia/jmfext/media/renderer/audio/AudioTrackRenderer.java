@@ -680,7 +680,27 @@ public class AudioTrackRenderer
                         else
                         {
                             processed = BUFFER_PROCESSED_OK;
-                            if (written < length)
+                            if (written == 0)
+                            {
+                                /*
+                                 * If AudioTrack.write() persistently does not
+                                 * write any data to the hardware for playback
+                                 * and we return INPUT_BUFFER_NOT_CONSUMED, we
+                                 * will enter an infinite loop. We might do
+                                 * better to not give up on the first try.
+                                 * Unfortunately, there is no documentation from
+                                 * Google on the subject to guide us.
+                                 * Consequently, we will base our
+                                 * actions/decisions on our test
+                                 * results/observations and we will not return
+                                 * INPUT_BUFFER_NOT_CONSUMED (which will
+                                 * effectively drop the input Buffer).
+                                 */
+                                logger.warn(
+                                        "Dropping " + length
+                                            + " bytes of audio data!");
+                            }
+                            else if (written < length)
                             {
                                 processed |= INPUT_BUFFER_NOT_CONSUMED;
                                 buffer.setLength(length - written);
