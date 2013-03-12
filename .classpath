@@ -3,6 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="lib" path="lib/installer-exclude/android-support-v4.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/dnsjava.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/fmj.jar"/>
 	<classpathentry kind="lib" path="lib/installer-exclude/ice4j.jar"/>
@@ -21,5 +22,6 @@
 	<classpathentry kind="lib" path="lib/os-specific/android/installer-exclude/apache-ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/os-specific/android/installer-exclude/asm-4.1.jar"/>
 	<classpathentry kind="lib" path="lib/os-specific/android/installer-exclude/asm-commons-4.1.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

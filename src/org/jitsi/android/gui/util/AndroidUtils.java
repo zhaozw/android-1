@@ -10,12 +10,10 @@ import java.util.*;
 
 import org.jitsi.*;
 
+import android.annotation.*;
 import android.app.*;
-import android.app.TaskStackBuilder;
-import android.app.ActivityManager.*;
 import android.content.*;
-import android.content.DialogInterface.OnClickListener;
-import android.support.v4.app.*;
+import android.os.*;
 
 /**
  * The <tt>AndroidUtils</tt> class provides a set of utility methods allowing
@@ -62,13 +60,14 @@ public class AndroidUtils
      * @param title the title identifier in the resources
      * @param message the message identifier in the resources
      * @param button the confirm button string identifier
-     * @param listener the OnClickListener to attach to the confirm button
+     * @param listener the <tt>DialogInterface.OnClickListener</tt> to attach to
+     * the confirm button
      */
     public static void showAlertConfirmDialog(  Context context,
                                                 final String title,
                                                 final String message,
                                                 final String button,
-                                                final OnClickListener listener)
+                                                final DialogInterface.OnClickListener listener)
     {
         final Activity mainActivity = (Activity) context;
 
@@ -157,6 +156,7 @@ public class AndroidUtils
      *
      * @return the identifier of this notification
      */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static int updateGeneralNotification(Context context,
                                                 int notificationID,
                                                 String title,
@@ -223,7 +223,7 @@ public class AndroidUtils
             = (ActivityManager) context
                 .getSystemService (Context.ACTIVITY_SERVICE);
 
-        List<RunningTaskInfo> services
+        List<ActivityManager.RunningTaskInfo> services
             = activityManager.getRunningTasks(Integer.MAX_VALUE);
 
         boolean isServiceFound = false;
