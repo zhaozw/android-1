@@ -75,7 +75,7 @@ public class AndroidLoginRenderer
      */
     public void addProtocolProviderUI(ProtocolProviderService protocolProvider)
     {
-        OperationSetBasicTelephony<ProtocolProviderService> telOpSet
+        OperationSetBasicTelephony<?> telOpSet
             = protocolProvider.getOperationSet(
                 OperationSetBasicTelephony.class);
 
@@ -84,8 +84,8 @@ public class AndroidLoginRenderer
             telOpSet.addCallListener(androidCallListener);
         }
 
-        OperationSetPresence presenceOpSet = (OperationSetPresence)
-            protocolProvider.getOperationSet(OperationSetPresence.class);
+        OperationSetPresence presenceOpSet
+            = protocolProvider.getOperationSet(OperationSetPresence.class);
 
         if (presenceOpSet != null)
         {
@@ -106,17 +106,17 @@ public class AndroidLoginRenderer
     public void removeProtocolProviderUI(
         ProtocolProviderService protocolProvider)
     {
-        OperationSetBasicTelephony<ProtocolProviderService> telOpSet
+        OperationSetBasicTelephony<?> telOpSet
             = protocolProvider.getOperationSet(
-                OperationSetBasicTelephony.class);
+                    OperationSetBasicTelephony.class);
 
         if (telOpSet != null)
         {
             telOpSet.removeCallListener(androidCallListener);
         }
 
-        OperationSetPresence presenceOpSet = (OperationSetPresence)
-            protocolProvider.getOperationSet(OperationSetPresence.class);
+        OperationSetPresence presenceOpSet
+            = protocolProvider.getOperationSet(OperationSetPresence.class);
 
         if (presenceOpSet != null && androidPresenceListener != null)
         {

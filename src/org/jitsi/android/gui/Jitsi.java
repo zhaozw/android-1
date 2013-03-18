@@ -171,10 +171,8 @@ public class Jitsi
     protected synchronized void stop(BundleContext bundleContext)
         throws Exception
     {
-        if (this.bundleContext != null)
-        {
-            this.bundleContext = null;
-        }
+        if (Jitsi.bundleContext != null)
+            Jitsi.bundleContext = null;
     }
 
     /**
