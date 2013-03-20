@@ -61,11 +61,17 @@ public class CallManager
                 return;
 
             Iterator<String> activeCallsIter = activeCalls.keySet().iterator();
+            ArrayList<String> toRemove = new ArrayList<String>();
             while (activeCallsIter.hasNext())
             {
                 String key = activeCallsIter.next();
                 if (activeCalls.get(key).equals(call))
-                    removeActiveCall(key);
+                    toRemove.add(key);
+            }
+
+            for(String removeKey:toRemove)
+            {
+                removeActiveCall(removeKey);
             }
         }
     }
