@@ -98,11 +98,6 @@ public class VideoCallActivity
     private boolean isMuted = false;
 
     /**
-     * On hold call status
-     */
-    private boolean isOnHold = false;
-
-    /**
      * Called when the activity is starting. Initializes the corresponding
      * call interface.
      *
@@ -604,14 +599,28 @@ public class VideoCallActivity
      */
     public void onHoldButtonClicked(View holdButtonView)
     {
-        CallManager.putOnHold(call, !isOnHold);
+        CallManager.putOnHold(call, !isOnHold());
     }
 
-    public void setOnHold(boolean isOnHold)
+    private boolean isOnHold()
     {
-        this.isOnHold = isOnHold;
-        updateHoldStatus();
+        boolean onHold = false;
+        Iterator<? extends CallPeer> peers = call.getCallPeers();
+        if(peers.hasNext())
+        {
+            CallPeerState peerState = call.getCallPeers().next().getState();
+            onHold = CallPeerState.ON_HOLD_LOCALLY.equals(peerState)
+                    || CallPeerState.ON_HOLD_MUTUALLY.equals(peerState);
+        }
+        else 
+        {
+            logger.warn("No peer belongs to call: "+call.toString());    
+        }
+
+        return onHold;
     }
+
+    public void setOnHold(boolean isOnHold){}
 
     /**
      * Updates on hold button to represent it's actual state
@@ -636,7 +645,7 @@ public class VideoCallActivity
         final ImageView holdButton
                 = (ImageView) findViewById(R.id.callHoldButton);
 
-        if (isOnHold)
+        if (isOnHold())
         {
             holdButton.setBackgroundColor(0x50000000);
         }
@@ -897,7 +906,10 @@ public class VideoCallActivity
     {
     }
 
-    public void updateHoldButtonState() {}
+    public void updateHoldButtonState() 
+    {
+        updateHoldStatus();
+    }
 
     public void dispose() {}
 
