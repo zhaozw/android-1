@@ -28,4 +28,14 @@
         <item name="android:displayOptions">useLogo|showHome</item>
         <item name="android:logo">@drawable/logoblue</item>
     </style>
+
+    <style name="MediumFont" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="ScreenPadding">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+    </style>
+
 </resources>

@@ -7,6 +7,7 @@
 package org.jitsi.android.gui.account;
 
 import android.accounts.*;
+import android.accounts.Account;
 import android.app.*;
 import android.content.*;
 import android.os.*;

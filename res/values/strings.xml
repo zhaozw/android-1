@@ -23,6 +23,10 @@
     <string name="low_video_resolution">320x240</string>
     <string name="high_video_resolution">640x480</string>
 
+    <!-- Main Menu items -->
+    <string name="service_gui_ACCOUNTS_STATUS">Accounts status</string>
+    <string name="service_gui_ACCOUNTS_SETTINGS">Accounts settings</string>
+    
     <!-- Sign in -->
     <string name="service_gui_SIGN_IN">Sign in</string>
     <string name="service_gui_SIGN_OUT">Sign out</string>
@@ -68,5 +72,7 @@
     <!-- Presence status -->
     <string name="service_gui_EDIT_STATUS_MSG_TIP">Set status message</string>
     <string name="service_gui_SET_STATUS">Change status</string>
+    <string name="service_gui_PRESENCE_EDIT_TITLE">Presence status {0}</string>
+    <string name="service_gui_SELECT_AVATAR">Select new avatar image</string>
 
 </resources>

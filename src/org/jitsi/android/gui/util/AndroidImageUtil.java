@@ -7,6 +7,7 @@
 package org.jitsi.android.gui.util;
 
 import android.graphics.*;
+import android.graphics.drawable.*;
 
 /**
  * Class containing utility methods for Android's Displayable and Bitmap
@@ -29,5 +30,22 @@ public class AndroidImageUtil
             return icon;
         }
         return null;
+    }
+
+    /**
+     * Creates the {@link Drawable} from raw image data
+     *
+     * @param imageBlob the array of bytes containing raw image data
+     *
+     * @return the {@link Drawable} created from given <tt>imageBlob</tt>
+     */
+    static public Drawable drawableFromBytes(byte[] imageBlob)
+    {
+        Bitmap bmp = bitmapFromBytes(imageBlob);
+
+        if(bmp == null)
+            return null;
+
+        return new BitmapDrawable(bmp);
     }
 }

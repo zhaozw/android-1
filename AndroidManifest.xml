@@ -13,15 +13,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".android.gui.account.AccountsListActivity"
-                    android:label="@string/app_name">
+        <activity android:name=".android.gui.account.AccountsStatusActivity"
+                  android:label="@string/app_name">
+        </activity>
+        <activity android:name=".android.gui.account.AccountEnableActivity"
+                  android:label="@string/app_name">
+        </activity>
+        <activity android:name=".android.gui.account.PresenceStatusActivity"
+                  android:label="@string/app_name">
         </activity>
         <activity android:name=".android.gui.account.AccountLoginActivity"
                     android:label="@string/app_name">
         </activity>
         <activity android:name=".android.gui.call.CallContactActivity"
                     android:label="@string/app_name"
-                    android:icon="@drawable/icon">
+                    android:icon="@drawable/icon"
+                    android:launchMode="singleTop">
             <intent-filter> 
                 <action android:name="android.intent.action.CALL" />
                 <action android:name="android.intent.action.CALL_PRIVILEGED" />
@@ -35,7 +42,7 @@
         <activity android:name=".android.gui.call.ReceivedCallActivity"
                     android:label="@string/app_name">
         </activity>
-        <activity android:name=".android.gui.account.AccountPreferencesActivity"
+        <!--<activity android:name=".android.gui.account.AccountPreferencesActivity"
             android:configChanges="orientation|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -45,7 +52,7 @@
                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </activity>-->
         <service android:name=".service.osgi.OSGiService" />
         <service android:name=".android.gui.account.AccountAuthenticatorService"
               android:exported="true" android:process=":auth">

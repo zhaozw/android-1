@@ -3,24 +3,25 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
-              android:layout_height="fill_parent">
-
+              android:layout_height="@dimen/status_spin_height">
     <ImageView
             android:id="@+id/presenceStatusIconView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_alignTop="@+id/presenceStatusNameView"
+            android:layout_alignBottom="@+id/presenceStatusNameView"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp" />
+            android:layout_centerVertical="true"
+            android:src="@drawable/jabber_status_ffc"/>
     <TextView
+            style="@style/MediumFont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@id/presenceStatusIconView"
             android:id="@+id/presenceStatusNameView"
-            android:layout_gravity="right|center_vertical"
-            android:gravity="center|right"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/presenceStatusIconView"
-            android:layout_alignBottom="@+id/presenceStatusIconView"
-            android:layout_marginRight="10dp"/>
+            android:layout_centerVertical="true"
+            android:text="Offline"/>
 </RelativeLayout>

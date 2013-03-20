@@ -21,6 +21,7 @@ import org.jitsi.service.resources.*;
 import org.osgi.framework.*;
 
 import android.accounts.*;
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.*;
 import android.content.*;
@@ -110,7 +111,7 @@ public class AccountLoginActivity
      * Called when the activity is starting. Initializes the corresponding
      * call interface.
      *
-     * @param savesInstanceState If the activity is being re-initialized after
+     * @param savedInstanceState If the activity is being re-initialized after
      * previously being shut down then this Bundle contains the data it most
      * recently supplied in onSaveInstanceState(Bundle).
      * Note: Otherwise it is null.

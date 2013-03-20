@@ -8,6 +8,7 @@ package org.jitsi.android.gui.menu;
 
 import java.util.*;
 
+import android.app.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.*;
 
@@ -43,7 +44,12 @@ public class MainMenuActivity
     {
         super.onCreate(savedInstanceState);
 
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+
+        ActionBar ab = getActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+//        ab.setDisplayShowTitleEnabled(false);
+//        ab.setDisplayShowHomeEnabled(false);
     }
 
     /**
@@ -91,8 +97,14 @@ public class MainMenuActivity
                 }
             }
             return true;
-        case R.id.show_accounts:
-            startActivity(AccountsListActivity.class);
+        case R.id.accounts_status:
+            startActivity(AccountsStatusActivity.class);
+            return true;
+        case R.id.accounts_settings:
+            startActivity(AccountEnableActivity.class);
+            return true;
+        case android.R.id.home:
+            System.err.println("DO home action !!");
             return true;
         case R.id.main_settings:
             // do something
