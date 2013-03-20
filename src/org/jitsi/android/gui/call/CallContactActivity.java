@@ -38,14 +38,15 @@ public class CallContactActivity
         extends MainMenuActivity
 {
     /**
+     * The logger
+     */
+    private static final Logger logger = 
+            Logger.getLogger(CallContactActivity.class);
+
+    /**
      * The bundle context.
      */
     private BundleContext bundleContext;
-
-    /**
-     * The protocol provider used for calling.
-     */
-    private ProtocolProviderService protocolProvider;
 
     /**
      * Starts this osgi activity.
@@ -89,8 +90,6 @@ public class CallContactActivity
         final ImageView callButton
                 = (ImageView) findViewById(R.id.callButtonFull);
 
-        if (protocolProvider == null || !protocolProvider.isRegistered())
-            callButton.setEnabled(false);
         callButton.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -126,20 +125,36 @@ public class CallContactActivity
 
     private void createCall(final String destination)
     {
+        Iterator<ProtocolProviderService> allProviders = 
+                AccountUtils.getRegisteredProviders().iterator();
+
+        if(!allProviders.hasNext())
+        {
+            logger.error("No registered providers found");
+            return;
+        }
+
+        createCall(destination, allProviders.next());
+    }
+
+    private void createCall( final String destination,
+                             final ProtocolProviderService provider)
+    {
         new Thread()
         {
             public void run()
             {
                 try
                 {
-                    CallManager.createCall(protocolProvider, destination);
+                    CallManager.createCall(provider, destination);
                 }
                 catch(Throwable t)
                 {
+                    logger.error("Error creating the call: "+t.getMessage(), t);
                     AndroidUtils.showAlertDialog(
-                        CallContactActivity.this,
-                        getString(R.string.service_gui_ERROR),
-                        t.getMessage());
+                            CallContactActivity.this,
+                            getString(R.string.service_gui_ERROR),
+                            t.getMessage());
                 }
             }
         }.start();
@@ -187,10 +202,8 @@ public class CallContactActivity
                 ProtocolProviderService protocolProvider
                     = AccountUtils.getRegisteredProviderForAccount(accountID);
 
-                if (this.protocolProvider == null && protocolProvider != null)
+                if (protocolProvider != null)
                 {
-                    this.protocolProvider = protocolProvider;
-
                     if (!protocolProvider.isRegistered())
                     {
                         Jitsi.getLoginManager().login(protocolProvider);
@@ -198,7 +211,6 @@ public class CallContactActivity
                     else
                     {
                         System.err.print("Acc "+accountID+" is logged in");
-                        setCallButtonEnabled();
                     }
                     break;
                 }else
@@ -216,19 +228,19 @@ public class CallContactActivity
     /**
      * Enables the call button.
      */
-    private void setCallButtonEnabled()
-    {
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                final ImageView callButton
-                    = (ImageView) findViewById(R.id.callButtonFull);
-
-                callButton.setEnabled(true);
-            }
-        });
-    }
+//    private void setCallButtonEnabled()
+//    {
+//        runOnUiThread(new Runnable()
+//        {
+//            public void run()
+//            {
+//                final ImageView callButton
+//                    = (ImageView) findViewById(R.id.callButtonFull);
+//
+//                callButton.setEnabled(true);
+//            }
+//        });
+//    }
 
     /**
      * 
@@ -243,13 +255,11 @@ public class CallContactActivity
 
         Iterator<ProtocolProviderService> registeredProviders
             = AccountUtils.getRegisteredProviders().iterator();
-        Map<Integer, ProtocolProviderService> providerIds
-            = new Hashtable<Integer, ProtocolProviderService>();
 
         while (registeredProviders.hasNext())
         {
-            String accountAddress
-                = registeredProviders.next().getAccountID().getAccountAddress();
+            final ProtocolProviderService provider = registeredProviders.next(); 
+            String accountAddress = provider.getAccountID().getAccountAddress();
 
             MenuItem menuItem = menu.add(   Menu.NONE,
                                             Menu.NONE,
@@ -261,7 +271,7 @@ public class CallContactActivity
             {
                 public boolean onMenuItemClick(MenuItem item)
                 {
-                    createCall(destination);
+                    createCall(destination, provider);
 
                     return false;
                 }
