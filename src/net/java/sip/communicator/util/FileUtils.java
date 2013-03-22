@@ -6,11 +6,6 @@
  */
 package net.java.sip.communicator.util;
 
-import java.io.*;
-
-import javax.swing.*;
-//import javax.swing.filechooser.*;
-
 /**
  * Utility class that allows to check if a given file is an image or to obtain
  * the file thumbnail icon.

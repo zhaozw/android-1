@@ -26,7 +26,6 @@ import org.apache.http.auth.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.conn.*;
 import org.apache.http.conn.scheme.*;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.*;
 import org.apache.http.impl.client.*;
 import org.apache.http.params.*;

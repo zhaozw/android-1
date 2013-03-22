@@ -69,7 +69,8 @@ class Account
      * to this {@link Account}
      */
     private ChangeEventListenerList<ChangeEventListener<Account>, Account>
-        listeners = new ChangeEventListenerList();
+        listeners
+            = new ChangeEventListenerList<ChangeEventListener<Account>, Account>();
 
     /**
      * The {@link Drawable} representing protocol's image

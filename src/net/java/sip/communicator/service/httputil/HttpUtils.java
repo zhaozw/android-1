@@ -14,20 +14,14 @@ import java.util.*;
 import javax.net.ssl.*;
 
 import net.java.sip.communicator.util.Logger;
-//import net.java.sip.communicator.plugin.desktoputil.*;
 
 import org.apache.http.*;
-import org.apache.http.Header;
 import org.apache.http.auth.*;
 import org.apache.http.client.*;
 import org.apache.http.client.methods.*;
 import org.apache.http.client.params.*;
 import org.apache.http.client.utils.*;
-import org.apache.http.conn.scheme.*;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.*;
-// import org.apache.http.entity.mime.*;
-// import org.apache.http.entity.mime.content.*;
 import org.apache.http.impl.client.*;
 import org.apache.http.impl.conn.*;
 import org.apache.http.message.*;

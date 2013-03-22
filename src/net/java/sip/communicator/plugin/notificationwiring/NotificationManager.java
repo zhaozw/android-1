@@ -6,15 +6,10 @@
  */
 package net.java.sip.communicator.plugin.notificationwiring;
 
-//import java.awt.image.*;
 import java.lang.ref.*;
-import java.net.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-//import javax.imageio.*;
-
-//import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.notification.*;
