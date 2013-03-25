@@ -102,11 +102,7 @@ public class ReceivedCallActivity
                 {
                     CallManager.hangupCall(call);
 
-                    Intent callContactIntent
-                        = new Intent(   ReceivedCallActivity.this,
-                                        CallContactActivity.class);
-
-                    startActivity(callContactIntent);
+                    switchActivity(CallContactActivity.class);
                 }
             }
         });
@@ -160,6 +156,7 @@ public class ReceivedCallActivity
                 videoCallIntent.putExtra(   CallManager.CALL_IDENTIFIER,
                                             callIdentifier);
                 startActivity(videoCallIntent);
+                finish();
             }
         });
     }

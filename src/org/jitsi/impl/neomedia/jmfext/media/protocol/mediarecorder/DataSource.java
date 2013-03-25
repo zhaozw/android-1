@@ -37,6 +37,7 @@ import android.view.*;
  * Android's <tt>MediaRecorder</tt>.
  *
  * @author Lyubomir Marinov
+ * @author Pawel Domas
  */
 public class DataSource
     extends AbstractPushBufferCaptureDevice
@@ -123,8 +124,6 @@ public class DataSource
     private static final Map<String, DataSource> dataSources
         = new HashMap<String, DataSource>();
 
-    private static Surface defaultPreviewDisplay;
-
     private static LocalServerSocket localServerSocket;
 
     private static int maxDataSourceKeySize;
@@ -177,8 +176,6 @@ public class DataSource
 
     private byte[] pic_parameter_set_rbsp;
 
-    private Surface previewDisplay;
-
     /**
      * The <tt>nal_unit_type</tt> of the NAL unit preceding {@link #nal}.
      */
@@ -195,6 +192,11 @@ public class DataSource
      * <tt>Buffer</tt>s are to be increased. 
      */
     private long videoFrameInterval;
+
+    /**
+     * Holds the default preview surface provider
+     */
+    private static PreviewSurfaceProvider surfaceProvider;
 
     /**
      * Initializes a new <tt>DataSource</tt> instance.
@@ -502,7 +504,15 @@ public class DataSource
                 }
                 else
                     mediaRecorder.setOutputFile(OUTPUT_FILE);
-                mediaRecorder.setPreviewDisplay(getPreviewDisplay());
+                
+                Surface previewSurface = surfaceProvider.obtainPreviewSurface();
+                if(previewSurface == null)
+                {
+                    logger.error( 
+                            "Preview surface must not be null",
+                            new NullPointerException());
+                }
+                mediaRecorder.setPreviewDisplay(previewSurface);
                 mediaRecorder.prepare();
 
                 this.mediaRecorder = mediaRecorder;
@@ -678,7 +688,9 @@ public class DataSource
                     {
                         if (cameras.indexOfValue(camera) < 0)
                         {
-                            camera.release();
+                            camera.stopPreview();
+                            surfaceProvider.onPreviewSurfaceReleased();
+                            camera.release();                            
                         }
                         else
                         {
@@ -698,6 +710,9 @@ public class DataSource
 
                                                 try
                                                 {
+                                                    camera.stopPreview();
+                                                    surfaceProvider
+                                                      .onPreviewSurfaceReleased();
                                                     camera.release();
                                                 }
                                                 finally
@@ -864,20 +879,6 @@ public class DataSource
     private synchronized String getNextLocalSocketKey()
     {
         return Long.toString(nextLocalSocketKey++);
-    }
-
-    public Surface getPreviewDisplay()
-    {
-        Surface previewDisplay = this.previewDisplay;
-
-        if (previewDisplay == null)
-        {
-            synchronized (DataSource.class)
-            {
-                previewDisplay = DataSource.defaultPreviewDisplay;
-            }
-        }
-        return previewDisplay;
     }
 
     private Format[] getStreamFormats()
@@ -1451,12 +1452,15 @@ public class DataSource
         }
     }
 
-    public static void setDefaultPreviewDisplay(Surface defaultPreviewDisplay)
+    /**
+     * Sets the {@link PreviewSurfaceProvider} that will be used with camera
+     * 
+     * @param provider the surface provider to set
+     */
+    public static void setPreviewSurfaceProvider(
+            PreviewSurfaceProvider provider)
     {
-        synchronized (DataSource.class)
-        {
-            DataSource.defaultPreviewDisplay = defaultPreviewDisplay;
-        }
+        surfaceProvider = provider;
     }
 
     /**
@@ -1573,11 +1577,6 @@ public class DataSource
                 }
             }
         }
-    }
-
-    public void setPreviewDisplay(Surface previewDisplay)
-    {
-        this.previewDisplay = previewDisplay;
     }
 
     /**
@@ -1793,5 +1792,35 @@ public class DataSource
             if (transferHandler != null)
                 transferHandler.transferData(this);
         }
+    }
+
+    /**
+     * It's a workaround which allows not changing
+     * the OperationSetVideoTelephony and related APIs.<br/>
+     * Preview surface is required before {@link Camera} is
+     * started and because of that {@link org.jitsi.util.event.VideoEvent}s
+     * are no use as they occur to late for start and to early for stop
+     * operations. This interface defines methods to obtain and release
+     * the surface in synchronization with <tt>Camera</tt> object state.
+     *
+     * @author Pawel Domas
+     */
+    public static interface PreviewSurfaceProvider
+    {
+
+        /**
+         * Method is called before <tt>Camera</tt> is started and shall return
+         * non <tt>null</tt> {@link Surface} instance.
+         *
+         * @return {@link Surface} instance that will be used for local video
+         *  preview
+         */
+        public Surface obtainPreviewSurface();
+
+        /**
+         * Method is called when <tt>Camera</tt> is stopped and it's safe to
+         * release the {@link Surface} object.
+         */
+        public void onPreviewSurfaceReleased();
     }
 }

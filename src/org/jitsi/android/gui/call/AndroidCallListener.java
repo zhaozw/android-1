@@ -69,7 +69,8 @@ public class AndroidCallListener
         switch (evt.getEventID())
         {
         case CallEvent.CALL_ENDED:
-            startCallContactActivity(evt);
+            // Call Activity must close itself
+            //startCallContactActivity(evt);
             break;
         case CallEvent.CALL_INITIATED:
             startVideoCallActivity(evt);

@@ -13,6 +13,7 @@ import java.util.*;
 import net.java.sip.communicator.service.protocol.media.*;
 import org.jitsi.*;
 import org.jitsi.android.gui.menu.*;
+import org.jitsi.impl.neomedia.jmfext.media.protocol.mediarecorder.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.util.event.*;
 
@@ -23,7 +24,6 @@ import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.call.*;
 import net.java.sip.communicator.util.call.CallPeerAdapter;
 
-import android.content.*;
 import android.graphics.Color;
 import android.os.*;
 import android.util.*;
@@ -34,6 +34,7 @@ import android.widget.*;
  * The <tt>VideoCallActivity</tt> corresponds the call screen.
  *
  * @author Yana Stamcheva
+ * @author Pawel Domas
  */
 public class VideoCallActivity
     extends MainMenuActivity
@@ -94,6 +95,16 @@ public class VideoCallActivity
     private CallConference callConference;
 
     /**
+     * The preview surface state handler
+     */
+    private CameraPreviewSurfaceHandler previewSurfaceHandler;
+
+    /**
+     * Flag indicates if the shutdown Thread has been started
+     */
+    private volatile boolean finishing = false;
+
+    /**
      * Called when the activity is starting. Initializes the corresponding
      * call interface.
      *
@@ -116,17 +127,13 @@ public class VideoCallActivity
 
         call = CallManager.getActiveCall(callIdentifier);
 
-        if (call != null)
+        callConference = call.getConference();
+
+        Iterator<? extends CallPeer> callPeerIter = call.getCallPeers();
+
+        if (callPeerIter.hasNext())
         {
-            callConference = call.getConference();
-
-            Iterator<? extends CallPeer> callPeerIter
-                = call.getCallPeers();
-
-            if (callPeerIter.hasNext())
-            {
-                addCallPeerUI(callPeerIter.next());
-            }
+            addCallPeerUI(callPeerIter.next());
         }
 
         initVolumeView();
@@ -138,52 +145,19 @@ public class VideoCallActivity
 
         previewDisplay
             = (SurfaceView) findViewById(R.id.previewDisplay);
-
-        if (previewDisplay != null)
-        {
-            previewDisplay.getHolder().addCallback(
-                    new SurfaceHolder.Callback()
-                    {
-                        public void surfaceChanged(
-                                SurfaceHolder holder,
-                                int format,
-                                int width, int height)
-                        {
-                            // TODO Auto-generated method stub
-                        }
-
-                        public void surfaceCreated(SurfaceHolder holder)
-                        {
-                            /*
-                             * TODO Setting a static previewDisplay on the
-                             * MediaRecorder DataSource is a workaround which
-                             * allows not changing the
-                             * OperationSetVideoTelephony and related APIs.
-                             */
-                            org.jitsi.impl.neomedia.jmfext.media
-                                    .protocol.mediarecorder.DataSource
-                                            .setDefaultPreviewDisplay(
-                                                    holder.getSurface());
-                        }
-
-                        public void surfaceDestroyed(SurfaceHolder holder)
-                        {
-                            /*
-                             * TODO Setting a static previewDisplay on the
-                             * MediaRecorder DataSource is a workaround which
-                             * allows not changing the
-                             * OperationSetVideoTelephony and related APIs.
-                             */
-                            org.jitsi.impl.neomedia.jmfext.media
-                                    .protocol.mediarecorder.DataSource
-                                            .setDefaultPreviewDisplay(
-                                                    null);
-                        }
-                    });
-        }
+        
+        // Creates and registers surface handler for events
+        this.previewSurfaceHandler = new CameraPreviewSurfaceHandler();            
+        org.jitsi.impl.neomedia.jmfext.media
+                .protocol.mediarecorder.DataSource
+                .setPreviewSurfaceProvider(previewSurfaceHandler);            
+        previewDisplay.getHolder().addCallback(previewSurfaceHandler);
 
         remoteVideoContainer
             = (ViewGroup) findViewById(R.id.remoteVideoContainer);
+        
+        // Registers as the call state listener
+        call.addCallChangeListener(this);
     }
 
     /**
@@ -197,15 +171,34 @@ public class VideoCallActivity
         {
             public void onClick(View v)
             {
+                // Start the hang up Thread, Activity will be closed later 
+                // on call ended event
                 CallManager.hangupCall(call);
-
-                Intent callContactIntent
-                    = new Intent(   VideoCallActivity.this,
-                                    CallContactActivity.class);
-
-                VideoCallActivity.this.startActivity(callContactIntent);
             }
         });
+    }
+
+    /**
+     * Called on call ended event. Runs on separate thread to release the EDT
+     * Thread and preview surface can be hidden effectively.
+     */
+    private void doFinishActivity()
+    {
+        if(finishing)
+            return;
+        
+        finishing = true;
+        
+        new Thread(new Runnable() 
+        {
+            public void run() 
+            {
+                // Waits for camera to be stopped
+                previewSurfaceHandler.ensureCameraClosed();
+
+                switchActivity(CallContactActivity.class);
+            }
+        }).start();        
     }
 
     /**
@@ -321,26 +314,24 @@ public class VideoCallActivity
 
         if (event.getOrigin() == VideoEvent.LOCAL)
         {
-            final SurfaceView previewDisplay
-                = (SurfaceView) findViewById(R.id.previewDisplay);
-
-            previewDisplay.getHandler().post(new Runnable()
+            // TODO: local video events are not used because the preview surface
+            // is required for camera to start and it must not be removed until
+            // is stopped, so it's handled by direct cooperation with 
+            // .jmfext.media.protocol.mediarecorder.DataSource
+            
+            // Show/hide the local video.
+            if (event.getType() == VideoEvent.VIDEO_ADDED)
             {
-                public void run()
-                {
-                    // Show/hide the local video.
-                    if (event.getType() == VideoEvent.VIDEO_ADDED)
-                    {
-                        // Show the local video in the center or in the left
-                        // corner depending on if we have a remote video shown.
-                        realignPreviewDisplay();
-
-                        previewDisplay.setVisibility(View.VISIBLE);
-                    }
-                    else
-                        previewDisplay.setVisibility(View.GONE);
-                }
-            });
+                
+            }
+            else if(event.getType() == VideoEvent.VIDEO_REMOVED)
+            {
+                
+            }
+            else if(event.getType() == SizeChangeVideoEvent.VIDEO_SIZE_CHANGE)
+            {
+                
+            }
         }
         else if (event.getOrigin() == VideoEvent.REMOTE)
         {
@@ -364,7 +355,16 @@ public class VideoCallActivity
             {
                 event.consume();
 
-                remoteVideoContainer.getHandler().post(
+                Handler remoteVideoHandler = remoteVideoContainer.getHandler();
+                if(remoteVideoHandler == null)
+                {
+                    // Remote video object is no longer attached
+                    // to View hierarchy
+                    logger.warn("Remote video container is not currently"
+                                + " attached to the view hierarchy.");
+                    return;
+                }
+                remoteVideoHandler.post(
                     new Runnable()
                     {
                         public void run()
@@ -680,14 +680,34 @@ public class VideoCallActivity
 
     public void setLocalVideoVisible(final boolean isVisible)
     {
-        previewDisplay.getHandler().post(new Runnable()
+        // It can not be hidden here, because the preview surface will be
+        // destroyed and camera recording system will crash     
+    }
+
+    /**
+     * Sets {@link #previewDisplay} visibility state. As a result onCreate and
+     * onDestroy events are produced when the surface used for camera display is
+     * created/destroyed. 
+     * 
+     * @param isVisible flag indicating if it should be shown or hidden
+     */
+    private void setLocalVideoPreviewVisible(final boolean isVisible)
+    {
+        previewDisplay.getHandler().post(new Runnable() 
         {
-            public void run()
+            public void run() 
             {
                 if (isVisible)
+                {
+                    // Show the local video in the center or in the left
+                    // corner depending on if we have a remote video shown.
+                    realignPreviewDisplay();
                     previewDisplay.setVisibility(View.VISIBLE);
+                }
                 else
+                {
                     previewDisplay.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -829,6 +849,7 @@ public class VideoCallActivity
                             || callConference.getCallPeerCount() == 0))
             {
                 stopCallTimer();
+                doFinishActivity();
             }
         }
         finally
@@ -883,6 +904,134 @@ public class VideoCallActivity
                 System.currentTimeMillis());
 
             VideoCallActivity.this.setTimeString(time);
+        }
+    }
+
+    /**
+     * The class exposes methods for managing preview surface state which must 
+     * be synchronized with currently used {@link android.hardware.Camera} 
+     * state.<br/>
+     * The surface must be present before the camera is started and for this 
+     * purpose {@link #obtainPreviewSurface()} method shall be used.
+     * <br/>
+     * When the call is ended, before the <tt>Activity</tt> is finished we
+     * should ensure that the camera has been stopped(which is done by video
+     * telephony internals), so we should wait for it to be disposed by 
+     * invoking method {@link #ensureCameraClosed()}. It will block current 
+     * <tt>Thread</tt> until it happens or an <tt>Exception</tt> will be thrown
+     * if timeout occurs.
+     * <br/>
+     * It's a workaround which allows not changing the
+     * OperationSetVideoTelephony and related APIs.
+     *  
+     * @see DataSource.PreviewSurfaceProvider
+     * 
+     */
+    private class CameraPreviewSurfaceHandler
+    implements DataSource.PreviewSurfaceProvider,
+            SurfaceHolder.Callback    
+    {
+
+        /**
+         * Timeout for dispose surface operation
+         */
+        private static final long REMOVAL_TIMEOUT=10000L;
+
+        /**
+         * Timeout for create surface operation
+         */
+        private static final long CREATE_TIMEOUT=10000L;
+
+        /**
+         * Pointer to the <tt>Surface</tt> used for preview
+         */
+        private Surface previewSurface;
+
+        /**
+         * Blocks until the {@link android.hardware.Camera} is stopped and 
+         * {@link #previewDisplay} is hidden, or throws an <tt>Exception</tt>
+         * if timeout occurs.
+         */
+        synchronized void ensureCameraClosed()
+        {
+            // If local video is visible wait until camera will be closed
+            if(previewSurface != null)
+            {
+                try
+                {
+                    synchronized (this)
+                    {
+                        this.wait(REMOVAL_TIMEOUT);
+                        if(previewSurface != null)
+                        {
+                            throw new RuntimeException(
+                                    "Timeout waiting for" 
+                                    + " preview surface removal");
+                        }
+                    }
+                }
+                catch (InterruptedException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+        /**
+         * Blocks until {@link #previewDisplay} is shown and the surface is
+         * created or throws en <tt>Exception</tt> if timeout occurs.
+         * 
+         * @return created <tt>Surface</tt> that shall be used for local camera
+         * preview
+         */
+        synchronized public Surface obtainPreviewSurface()
+        {
+            setLocalVideoPreviewVisible(true);
+            if(this.previewSurface == null)
+            {
+                try 
+                {
+                    this.wait(CREATE_TIMEOUT);
+                    if(previewSurface == null)
+                    {
+                        throw new RuntimeException(
+                                "Timeout waiting for surface");
+                    }                    
+                }
+                catch (InterruptedException e) 
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+            return previewSurface;    
+        }
+
+
+        /**
+         * Hides the local video preview component causing the <tt>Surface</tt>
+         * to be destroyed.
+         */
+        public void onPreviewSurfaceReleased()
+        {
+            setLocalVideoPreviewVisible(false);
+        }
+        
+        synchronized public void surfaceCreated(SurfaceHolder holder)
+        {
+            this.previewSurface = holder.getSurface();
+            this.notifyAll();
+        }
+
+        public void surfaceChanged( SurfaceHolder surfaceHolder, 
+                                    int i, int i2, int i3 ) 
+        {
+            
+        }
+
+        synchronized public void surfaceDestroyed(SurfaceHolder holder)
+        {
+            this.previewSurface = null;
+            this.notifyAll();
         }
     }
 
