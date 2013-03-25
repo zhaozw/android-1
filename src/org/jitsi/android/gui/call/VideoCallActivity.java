@@ -10,6 +10,7 @@ import java.awt.*;
 import java.beans.*;
 import java.util.*;
 
+import net.java.sip.communicator.service.protocol.media.*;
 import org.jitsi.*;
 import org.jitsi.android.gui.menu.*;
 import org.jitsi.service.neomedia.*;
@@ -91,11 +92,6 @@ public class VideoCallActivity
      * The {@link CallConference} instance depicted by this <tt>CallPanel</tt>.
      */
     private CallConference callConference;
-
-    /**
-     * Mute call status
-     */
-    private boolean isMuted = false;
 
     /**
      * Called when the activity is starting. Initializes the corresponding
@@ -250,10 +246,18 @@ public class VideoCallActivity
         {
             public void onClick(View v)
             {
-                //boolean isMute = !CallManager.isMute(call);
-                CallManager.setMute(call, !isMuted);
+                CallManager.setMute(call, !isMuted());
             }
         });
+    }
+
+    /**
+     * Returns <tt>true</tt> if call is currently muted.
+     * @return <tt>true</tt> if call is currently muted.
+     */
+    private boolean isMuted()
+    {
+        return ((MediaAwareCall<?,?,?>)this.call).isMute();
     }
 
     private void updateMuteStatus()
@@ -272,9 +276,8 @@ public class VideoCallActivity
     {
         final ImageView microphoneButton
                 = (ImageView) findViewById(R.id.callMicrophoneButton);
-        boolean isMute = isMuted;
 
-        if (isMute)
+        if (isMuted())
         {
             microphoneButton.setBackgroundColor(0x50000000);
             microphoneButton.setImageResource(
@@ -588,7 +591,7 @@ public class VideoCallActivity
 
     public void setMute(boolean isMute)
     {
-        this.isMuted = isMute;
+        // Just invoke mute UI refresh
         updateMuteStatus();
     }
 
