@@ -58,7 +58,13 @@ public class AccountsStatusActivity
 
         this.bundleContext = bundleContext;
 
-        accountsInit();
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                accountsInit();        
+            }
+        });        
     }
 
     @Override

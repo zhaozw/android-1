@@ -23,7 +23,7 @@ import net.java.sip.communicator.util.account.*;
 import org.jitsi.*;
 import org.jitsi.android.gui.menu.*;
 import org.jitsi.android.gui.util.*;
-import org.jitsi.android.gui.util.event.*;
+import org.jitsi.android.gui.util.event.EventListener;/*Disambiguation*/
 
 import org.osgi.framework.*;
 
@@ -35,13 +35,13 @@ import java.util.*;
  * change the avatar for the {@link #account}.
  *
  * The {@link #account} is retrieved from the {@link Intent} extra by it's
- * {@link net.java.sip.communicator.service.protocol.AccountID#getAccountUniqueID()}
+ * {@link AccountID#getAccountUniqueID()}
  *
  * @author Pawel Domas
  */
 public class PresenceStatusActivity
     extends MainMenuActivity
-    implements ChangeEventListener<Account>,
+    implements EventListener<AccountEvent>,
         AdapterView.OnItemSelectedListener
 {
     /**
@@ -107,7 +107,7 @@ public class PresenceStatusActivity
         
         initPresenceStatus();
 
-        account.addChangeListener(this);
+        account.addAccountEventListener(this);
     }
 
     /**
@@ -142,8 +142,7 @@ public class PresenceStatusActivity
         Iterator<PresenceStatus> statusIter =
                 accountPresence.getSupportedStatusSet();
 
-        statusAdapter = new StatusListAdapter( statusIter,
-                getLayoutInflater());
+        statusAdapter = new StatusListAdapter(statusIter);
 
         statusSpinner.setAdapter(statusAdapter);
 
@@ -356,13 +355,18 @@ public class PresenceStatusActivity
      *
      * @param eventObject the instance that has been changed
      */
-    public void onChangeEvent(final Account eventObject)
+    public void onChangeEvent(final AccountEvent eventObject)
     {
+        if(eventObject.getEventType() != AccountEvent.AVATAR_CHANGE)
+        {
+            return;
+        }
+        
         runOnUiThread(new Runnable()
         {
             public void run()
             {
-                updateAvatar(eventObject);
+                updateAvatar(eventObject.getSource());
             }
         });
     }
@@ -421,11 +425,8 @@ public class PresenceStatusActivity
          *
          * @param objects {@link Iterator} for a set of {@link PresenceStatus}
          *
-         * @param layoutInflater the {@link LayoutInflater} used to create
-         *  new {@link View}s
          */
-        public StatusListAdapter( Iterator<PresenceStatus> objects,
-                                  LayoutInflater layoutInflater)
+        public StatusListAdapter( Iterator<PresenceStatus> objects)
         {
             super(PresenceStatusActivity.this, getLayoutInflater(), objects);
         }

@@ -16,6 +16,7 @@ import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.account.*;
 import org.jitsi.android.gui.util.*;
 import org.jitsi.android.gui.util.event.*;
+import org.jitsi.android.gui.util.event.EventListenerList;
 import org.osgi.framework.*;
 
 import java.beans.*;
@@ -24,8 +25,8 @@ import java.beans.*;
  * Class exposes account information for specified {@link AccountID}
  * in a form that can be easily used for building GUI.
  * It tracks changes of {@link PresenceStatus}, {@link RegistrationState}
- * and avatar changes and passes them as a change event
- * to registered {@link ChangeEventListener}.
+ * and avatar changes and passes them as an {@link AccountEvent}
+ * to registered {@link EventListener}s.<br/>
  * It also provides default values for fields that may be currently
  * unavailable from corresponding {@link OperationSet}
  * or {@link ProtocolProviderService}.
@@ -65,13 +66,11 @@ class Account
     private final Context activityContext;
 
     /**
-     * The list of {@link ChangeEventListener} which track changes
-     * to this {@link Account}
+     * List of {@link EventListener}s that listen for {@link AccountEvent}s.
      */
-    private ChangeEventListenerList<ChangeEventListener<Account>, Account>
-        listeners
-            = new ChangeEventListenerList<ChangeEventListener<Account>, Account>();
-
+    private EventListenerList<AccountEvent> listeners =
+            new EventListenerList<AccountEvent>();
+    
     /**
      * The {@link Drawable} representing protocol's image
      */
@@ -262,7 +261,7 @@ class Account
 
             logger.trace("Registered listeners for "+protocolProvider);
         }
-        else if(this.protocolProvider != null && protocolProvider == null)
+        else if(this.protocolProvider != null)
         {
             // Unregister listeners
             this.protocolProvider.removeRegistrationStateChangeListener(this);
@@ -299,14 +298,14 @@ class Account
     }
 
     /**
-     * Adds {@link ChangeEventListener} that will be listening for changed
+     * Adds {@link EventListener} that will be listening for changed
      * that occurred to this {@link Account}. In particular these are
      * the registration status, presence status and avatar events.
      *
-     * @param listener the {@link ChangeEventListener} that listens for changes
+     * @param listener the {@link EventListener} that listens for changes
      *  on this {@link Account} object
      */
-    public void addChangeListener(ChangeEventListener<Account> listener)
+    public void addAccountEventListener(EventListener<AccountEvent> listener)
     {
         logger.trace("Added change listener "+listener);
         listeners.addEventListener(listener);
@@ -315,10 +314,10 @@ class Account
     /**
      * Removes the given <tt>listener</tt> from observers list
      *
-     * @param listener the {@link ChangeEventListener} that doesn't want to be
+     * @param listener the {@link EventListener} that doesn't want to be
      *  notified about the changes to this {@link Account} anymore
      */
-    public void removeChangeListener(ChangeEventListener<Account> listener)
+    public void removeAccountEventListener(EventListener<AccountEvent> listener)
     {
         logger.trace("Removed change listener "+listener);
         listeners.removeEventListener(listener);
@@ -326,29 +325,43 @@ class Account
 
     public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
     {
-        logger.trace("Provider status notifcation");
-        listeners.notifyEventListeners(this);
+        logger.trace("Provider status notifcation");        
+        listeners.notifyEventListeners(
+                new AccountEvent(
+                        this, 
+                        AccountEvent.PRESENCE_STATUS_CHANGE)
+        );
     }
 
     public void providerStatusMessageChanged(PropertyChangeEvent evt)
     {
         logger.trace("Provider status msg notification");
-        listeners.notifyEventListeners(this);
+        listeners.notifyEventListeners(
+                new AccountEvent(
+                        this, 
+                        AccountEvent.STATUS_MSG_CHANGE)
+        );
     }
 
     public void registrationStateChanged(RegistrationStateChangeEvent evt)
     {
         logger.trace("Provider registration notifcation");
-        listeners.notifyEventListeners(this);
+        listeners.notifyEventListeners(
+                new AccountEvent(
+                        this,
+                        AccountEvent.REGISTRATION_CHANGE)
+        );
     }
 
     public void avatarChanged(AvatarEvent event)
     {
         logger.trace("Avatar changed notification");
-
         updateAvatar(event.getNewAvatar());
-
-        listeners.notifyEventListeners(this);
+        listeners.notifyEventListeners(
+                new AccountEvent(
+                        this,
+                        AccountEvent.AVATAR_CHANGE)
+        );
     }
 
     /**
@@ -411,7 +424,8 @@ class Account
 
     /**
      * Returns <tt>true</tt> if this {@link Account} is enabled
-     * @return
+     *
+     * @return <tt>true</tt> if this {@link Account} is enabled
      */
     boolean isEnabled()
     {

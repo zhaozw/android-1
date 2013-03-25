@@ -14,7 +14,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.*;
 import org.jitsi.*;
 import org.jitsi.android.gui.util.*;
-import org.jitsi.android.gui.util.event.*;
+import org.jitsi.android.gui.util.event.EventListener;
 import org.osgi.framework.*;
 
 import java.util.*;
@@ -37,14 +37,14 @@ import java.util.*;
  *  - <tt>R.id.accountStatus</tt> for the presence status name
  *      ({@link TextView})
  * <br/>
- * It implements {@link ChangeEventListener} to refresh the list on any
+ * It implements {@link EventListener} to refresh the list on any
  * changes to the {@link Account}.
  * 
  * @author Pawel Domas
  */
 public class AccountsListAdapter
     extends CollectionAdapter<Account>
-    implements ChangeEventListener<Account>,
+    implements EventListener<AccountEvent>,
         ServiceListener
 {
     /**
@@ -120,7 +120,7 @@ public class AccountsListAdapter
                 && !account.isEnabled() )
                 continue;
 
-            account.addChangeListener(this);
+            account.addAccountEventListener(this);
             accounts.add(account);
         }
 
@@ -258,7 +258,7 @@ public class AccountsListAdapter
 
         logger.debug("Account added: " + account.getAccountName());
         add(account);
-        account.addChangeListener(this);
+        account.addAccountEventListener(this);
     }
 
     /**
@@ -270,7 +270,7 @@ public class AccountsListAdapter
         Account acc = findAccountID(account);
         if(acc != null)
         {
-            acc.removeChangeListener(this);
+            acc.removeAccountEventListener(this);
             logger.debug("Account removed: " + account.getDisplayName());
         }
     }
@@ -278,14 +278,14 @@ public class AccountsListAdapter
     /**
      * Does refresh the list
      *
-     * @param account the {@link Account} that caused the change event
+     * @param accountEvent the {@link AccountEvent} that caused the change event
      */
-    public void onChangeEvent(Account account)
+    public void onChangeEvent(AccountEvent accountEvent)
     {
         if(logger.isTraceEnabled())
         {
-            logger.trace("Received account update "
-                    + account.getAccountName(),
+            logger.trace("Received accountEvent update "
+                    + accountEvent.getSource().getAccountName(),
                     new Throwable());
         }
         doRefreshList();
