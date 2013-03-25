@@ -8,6 +8,7 @@ package org.jitsi.android.gui.account;
 
 import java.beans.*;
 
+import net.java.sip.communicator.util.*;
 import org.jitsi.*;
 import org.jitsi.android.gui.*;
 import org.jitsi.android.gui.call.*;
@@ -20,15 +21,23 @@ import android.content.DialogInterface.OnClickListener;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.account.*;
+import org.jitsi.service.osgi.*;
 
 /**
  * The <tt>AndroidLoginRenderer</tt> is the Android renderer for login events.
  *
  * @author Yana Stamcheva
+ * @author Pawel Domas
  */
 public class AndroidLoginRenderer
     implements LoginRenderer
 {
+    /**
+     * The logger
+     */
+    private final static Logger logger 
+            = Logger.getLogger(AndroidLoginRenderer.class);
+    
     /**
      * The android application context.
      */
@@ -48,11 +57,6 @@ public class AndroidLoginRenderer
      * The credentials lock object.
      */
     private final Object credentialsLock = new Object();
-
-    /**
-     * The status notification notifier.
-     */
-    private int statusNotificationID = -1;
 
     /**
      * Creates an instance of <tt>AndroidLoginRenderer</tt> by specifying the
@@ -300,23 +304,22 @@ public class AndroidLoginRenderer
                                     String status,
                                     long date)
     {
-        if (statusNotificationID < 0)
-            statusNotificationID = AndroidUtils.showGeneralNotification(
-                androidContext,
-                androidContext.getString(R.string.app_name),
-                protocolProvider.getAccountID().getAccountAddress()
-                    + " " + status,
-                date,
-                CallContactActivity.class);
-        else
-            AndroidUtils.updateGeneralNotification(
-                androidContext,
-                statusNotificationID,
-                androidContext.getString(R.string.app_name),
-                protocolProvider.getAccountID().getAccountAddress()
-                    + " " + status,
-                date,
-                CallContactActivity.class);
+        int notificationID = OSGiService.getGeneralNotificationId();
+        if(notificationID == -1)
+        {
+            logger.warn("Failed to display status notification because" +
+                    " there's no global notification icon available.");            
+            return;
+        }
+        
+        AndroidUtils.updateGeneralNotification(
+            androidContext,
+            notificationID,
+            androidContext.getString(R.string.app_name),
+            protocolProvider.getAccountID().getAccountAddress()
+                + " " + status,
+            date,
+            CallContactActivity.class);
     }
 
     /**
@@ -372,6 +375,8 @@ public class AndroidLoginRenderer
                                             CallContactActivity.class);
 
                         androidContext.startActivity(nextIntent);
+                        // Close the Jitsi Actvity
+                        ((Activity) androidContext).finish();
                     }
                 });
     }

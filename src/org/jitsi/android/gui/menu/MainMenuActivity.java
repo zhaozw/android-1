@@ -109,6 +109,10 @@ public class MainMenuActivity
         case R.id.main_settings:
             // do something
             return true;
+        case R.id.menu_exit:
+            // Shutdown the app 
+            shutdownApplication();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }

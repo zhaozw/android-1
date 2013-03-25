@@ -30,6 +30,16 @@ public class OSGiActivity
     private ServiceConnection serviceConnection;
 
     /**
+     * The EXIT action name that is broadcasted to all OSGiActivities 
+     */
+    static final String EXIT_ACTION = "org.jitsi.android.exit";
+
+    /**
+     * EXIT action listener that triggers closes the <tt>Activity</tt>
+     */
+    private ExitActionListener exitListener = new ExitActionListener();
+    
+    /**
      * Starts this osgi activity.
      *
      * @param bundleContext the osgi <tt>BundleContext</tt>
@@ -122,6 +132,11 @@ public class OSGiActivity
             if (!bindService)
                 this.serviceConnection = null;
         }
+        
+        // Registers exit action listener
+        this.registerReceiver(
+                exitListener,
+                new IntentFilter(EXIT_ACTION));
     }
 
     /**
@@ -130,6 +145,9 @@ public class OSGiActivity
     @Override
     protected void onDestroy()
     {
+        // Unregisters exit action listener
+        unregisterReceiver(exitListener);
+        
         ServiceConnection serviceConnection = this.serviceConnection;
 
         this.serviceConnection = null;
@@ -222,7 +240,22 @@ public class OSGiActivity
     }
 
     /**
-     * Convinience class thats switches from one activity to another.
+     * Shutdowns the app by stopping <tt>OSGiService</tt> and broadcasting 
+     * {@link #EXIT_ACTION}.
+     * 
+     */
+    protected void shutdownApplication()
+    {
+        // Shutdown the OSGi service
+        stopService(new Intent(this, OSGiService.class));
+        // Broadcast the exit action
+        Intent exitIntent = new Intent();
+        exitIntent.setAction(EXIT_ACTION);
+        sendBroadcast(exitIntent);
+    }
+
+    /**
+     * Convenience method that switches from one activity to another.
      *
      * @param activityClass the activity class
      */
@@ -230,5 +263,20 @@ public class OSGiActivity
     {
         startActivity(activityClass);
         finish();
+    }
+
+    /**
+     * Broadcast listener that listens for {@link #EXIT_ACTION} and then 
+     * finishes this <tt>Activity</tt>
+     * 
+     */
+    class ExitActionListener 
+        extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            finish();
+        }
     }
 }

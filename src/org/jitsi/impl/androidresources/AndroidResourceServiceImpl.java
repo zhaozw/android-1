@@ -12,7 +12,8 @@ import android.util.*;
 import android.view.*;
 import net.java.sip.communicator.service.resources.*;
 import net.java.sip.communicator.util.*;
-import org.jitsi.android.gui.*;
+import org.jitsi.service.osgi.*;
+import org.osgi.framework.*;
 
 import java.io.*;
 import java.net.*;
@@ -83,12 +84,17 @@ public class AndroidResourceServiceImpl
     /**
      * The {@link Resources} object for application context
      */
-    private Resources resources = null;
+    private static Resources resources = null;
 
     /**
      * The application package name(org.jitsi)
      */
     private String packageName = null;
+
+    /**
+     * The Android application context
+     */
+    private Context androidContext = null;
 
     /**
      * The {@link Resources} cache for language other than default
@@ -99,6 +105,8 @@ public class AndroidResourceServiceImpl
      * The {@link Locale} of cached locale resources
      */
     private Locale cachedResLocale = null;
+    
+    private static boolean factorySet = false;
 
     /**
      * Initializes already registered default resource packs.
@@ -110,42 +118,28 @@ public class AndroidResourceServiceImpl
         androidImagePathPack = ResourceBundle.getBundle(IMAGE_PATH_RESOURCE);
         logger.trace("Loaded image path resource: " + androidImagePathPack);
 
-        URL.setURLStreamHandlerFactory(new AndroidResourceURLHandlerFactory());
+        BundleContext bundleContext = 
+                AndroidResourceManagementActivator.bundleContext;
+        ServiceReference<OSGiService> serviceRef = 
+                bundleContext.getServiceReference(OSGiService.class); 
+        OSGiService osgiService = bundleContext.getService(serviceRef);
+
+        resources = osgiService.getResources();
+        packageName = osgiService.getPackageName();
+        androidContext = osgiService.getApplicationContext();
+
+        if(!factorySet)
+        {
+            URL.setURLStreamHandlerFactory(
+                new AndroidResourceURLHandlerFactory());
+            factorySet = true;
+        }
     }
 
     @Override
     protected void onSkinPackChanged() 
     {
         // Not interested (at least for now)
-    }
-
-    /**
-     * Returns the resources object for application context.
-     *
-     * @return the Android content resources
-     */
-    private Resources getResources()
-    {
-        if(this.resources == null)
-        {
-            resources = Jitsi.getAppResources();
-        }
-        return resources;
-    }
-
-    /**
-     * Returns the application package name.
-     *
-     * @return the application package name
-     */
-    private String getPackageName()
-    {
-        if(this.packageName == null)
-        {
-            this.packageName = Jitsi.getAppPackageName();
-        }
-
-        return packageName;
     }
 
     /**
@@ -175,7 +169,7 @@ public class AndroidResourceServiceImpl
         {
             return 0xFFFFFFFF;
         }
-        return Jitsi.getAppResources().getColor(id);
+        return resources.getColor(id);
     }
 
     /**
@@ -193,14 +187,13 @@ public class AndroidResourceServiceImpl
         {
             return "0xFFFFFFFF";
         }
-        return Jitsi.getAppResources().getString(id);
+        return resources.getString(id);
     }
 
     /**
      * Returns a drawable resource id for given name.
      *
      * @param key the name of drawable
-     * @return a drawable resource id for given name
      */
     private int getDrawableId(String key)
     {
@@ -217,13 +210,7 @@ public class AndroidResourceServiceImpl
      */
     private int getResourceId(String typeName, String key)
     {
-        Resources res = getResources();
-        if(res == null)
-        {
-            logger.error("Resources not initialized");
-            return 0;
-        }
-        int id = res.getIdentifier(key, typeName, getPackageName());
+        int id = resources.getIdentifier(key, typeName, packageName);
         if(id == 0)
             logger.error("Unresolved "+typeName+" key: "+key);
         return id;
@@ -271,8 +258,7 @@ public class AndroidResourceServiceImpl
         int id = getDrawableId(key);
         if(id != 0)
         {
-            InputStream stream = getResources().openRawResource(id);
-            return stream;
+            return resources.openRawResource(id);
         }
         return null;
     }
@@ -353,12 +339,11 @@ public class AndroidResourceServiceImpl
             {
                 // Create the Resources object for recently requested locale
                 // and caches it in case another request may come up
-                Configuration conf = getResources().getConfiguration();
+                Configuration conf = resources.getConfiguration();
                 conf.locale = locale;
-                Context context = Jitsi.getAndroidContext();
-                AssetManager assets = context.getAssets();
+                AssetManager assets = androidContext.getAssets();
                 DisplayMetrics metrics = new DisplayMetrics();
-                WindowManager wm = (WindowManager) context
+                WindowManager wm = (WindowManager) androidContext
                         .getSystemService(Context.WINDOW_SERVICE);
                 wm.getDefaultDisplay().getMetrics(metrics);
                 cachedLocaleResources = new Resources(assets, metrics, conf);
@@ -472,7 +457,7 @@ public class AndroidResourceServiceImpl
      * resources. It allows to produce URL with protocol name of 
      * {@link #PROTOCOL} that will be later handled by this factory.
      */
-    class AndroidResourceURLHandlerFactory
+    static private class AndroidResourceURLHandlerFactory
         implements URLStreamHandlerFactory
     {
         public static final String PROTOCOL = "jitsi.resource";
@@ -491,7 +476,7 @@ public class AndroidResourceServiceImpl
      * The URL handler that handles Android resource paths redirected to Android
      * resources.
      */
-    class AndroidResourceURlHandler
+    static private class AndroidResourceURlHandler
         extends URLStreamHandler
     {
         @Override
@@ -506,7 +491,7 @@ public class AndroidResourceServiceImpl
      * It does open {@link InputStream} from URLs that were produced for 
      * {@link AndroidResourceURLHandlerFactory#PROTOCOL} protocol.
      */
-    class AndroidURLConnection
+    static private class AndroidURLConnection
         extends URLConnection
     {
 

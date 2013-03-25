@@ -22,6 +22,7 @@
     <string name="video_resolution">Video resolution</string>
     <string name="low_video_resolution">320x240</string>
     <string name="high_video_resolution">640x480</string>
+    <string name="exit_app">Exit</string>
 
     <!-- Main Menu items -->
     <string name="service_gui_ACCOUNTS_STATUS">Accounts status</string>

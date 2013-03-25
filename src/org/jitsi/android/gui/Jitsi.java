@@ -35,6 +35,11 @@ public class Jitsi
     extends MainMenuActivity
 {
     /**
+     * The logger
+     */
+    private static final Logger logger = Logger.getLogger(Jitsi.class);
+    
+    /**
      * The OSGI bundle context.
      */
     public static BundleContext bundleContext;
@@ -48,11 +53,6 @@ public class Jitsi
      * The {@link Resources} for application
      */
     private static Resources applicationResources;
-
-    /**
-     * The package name of the application
-     */
-    private static String packageName;
 
     /**
      * A call back parameter.
@@ -87,7 +87,6 @@ public class Jitsi
         androidContext = this;
 
         applicationResources = getBaseContext().getResources();
-        packageName = getBaseContext().getPackageName();
 
         setContentView(R.layout.main);
 
@@ -115,6 +114,9 @@ public class Jitsi
                 }
                 catch (Throwable t)
                 {
+                    logger.error(
+                            "Error stopping application:"
+                                    + t.getLocalizedMessage(), t);
                     if (t instanceof ThreadDeath)
                         throw (ThreadDeath) t;
                 }
@@ -203,16 +205,6 @@ public class Jitsi
     public static Resources getAppResources()
     {
         return applicationResources;
-    }
-
-    /**
-     * Returns the package name of this application
-     *
-     * @return the Android application's package name
-     */
-    public static String getAppPackageName()
-    {
-        return packageName;
     }
 
     @Override

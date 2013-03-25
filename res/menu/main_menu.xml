@@ -25,4 +25,7 @@
                   android:title="@string/high_video_resolution" />
         </menu>
     </item>
+    <item android:id="@+id/menu_exit"
+          android:title="@string/exit_app">
+    </item>
 </menu>

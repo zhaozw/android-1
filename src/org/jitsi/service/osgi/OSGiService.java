@@ -6,6 +6,9 @@
  */
 package org.jitsi.service.osgi;
 
+import android.content.res.*;
+import org.jitsi.*;
+import org.jitsi.android.gui.call.*;
 import org.jitsi.impl.osgi.*;
 
 import android.app.*;
@@ -21,6 +24,22 @@ import android.os.*;
 public class OSGiService
     extends Service
 {
+    /**
+     * The ID of Jitsi notification icon
+     */
+    private static int GENERAL_NOTIFICATION_ID = R.string.app_name;
+
+    /**
+     * Indicates if the service has been started and general notification
+     * icon is available
+     */
+    private static boolean serviceStarted;
+
+    /**
+     * The home activity class
+     */
+    private static final Class<?> HOME_SCREEN_CLASS = CallContactActivity.class;
+
     /**
      * The very implementation of this Android <tt>Service</tt> which is split
      * out of the class <tt>OSGiService</tt> so that the class
@@ -59,6 +78,68 @@ public class OSGiService
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
-        return impl.onStartCommand(intent, flags, startId);
+        int result = impl.onStartCommand(intent, flags, startId);
+
+        startForegroundService();
+
+        return result;
     }
+
+    /**
+     * Start the service in foreground and creates shows general notification
+     * icon.
+     */
+    private void startForegroundService()
+    {
+        //The intent to launch when the user clicks the expanded notification
+        Intent intent = new Intent(this, HOME_SCREEN_CLASS);
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendIntent =
+                PendingIntent.getActivity(this, 0, intent, 0);
+
+        Resources res = getResources();
+        String title = res.getString(R.string.app_name);
+
+        Notification.Builder nBuilder
+                = new Notification.Builder(this)
+                .setContentTitle(title)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.drawable.notificationicon);
+        nBuilder.setContentIntent(pendIntent);
+
+        Notification notice = nBuilder.getNotification();
+        notice.flags |= Notification.FLAG_NO_CLEAR;
+
+        this.startForeground(GENERAL_NOTIFICATION_ID, notice);
+        
+        serviceStarted = true;
+    }
+
+    /**
+     * Stops the foreground service and hides general notification icon
+     */
+    public void stopForegroundService()
+    {
+        serviceStarted = false;
+        stopForeground(true);
+    }
+
+    /**
+     * Returns general notification ID that can be used to post notification
+     * bound to our global icon
+     * 
+     * @return the notification ID greater than 0 or -1 if service is not 
+     *  running
+     */
+    public static int getGeneralNotificationId()
+    {
+        if(serviceStarted)
+        {
+            return GENERAL_NOTIFICATION_ID;
+        }
+        return -1;
+    }
+    
 }

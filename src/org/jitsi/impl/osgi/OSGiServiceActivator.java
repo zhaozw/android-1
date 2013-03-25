@@ -123,7 +123,8 @@ public class OSGiServiceActivator
         {
             try
             {
-                osgiService.stopSelf();
+                // Triggers service shutdown and removes the notification
+                osgiService.stopForegroundService();
             }
             finally
             {
