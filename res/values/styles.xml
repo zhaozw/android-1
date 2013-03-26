@@ -30,7 +30,7 @@
     </style>
 
     <style name="MediumFont" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">15sp</item>
     </style>
     <style name="ScreenPadding">
         <item name="android:layout_marginTop">0dp</item>
