@@ -38,7 +38,12 @@ public class AndroidUtils
     {
         final Activity mainActivity = (Activity) context;
 
-        mainActivity.runOnUiThread(new Runnable()
+        String title = mainActivity.getResources().getString(titleId);
+        String msg = mainActivity.getResources().getString(messageId);
+        showAlertDialog(context, title, msg);
+        /**
+         * TODO: currently not working
+         * mainActivity.runOnUiThread(new Runnable()
         {
             public void run()
             {
@@ -49,7 +54,7 @@ public class AndroidUtils
                     .setNeutralButton(R.string.service_gui_CLOSE, null)
                     .show();
             }
-        });
+        });**/
     }
 
     /**
@@ -98,6 +103,9 @@ public class AndroidUtils
                                         final String title,
                                         final String message)
     {
+        System.err.println("Alert!!! T: "+title+" M: "+message);
+        /*
+        TODO: causes JVM to crash, because Jitsi activity is closed
         final Activity mainActivity = (Activity) context;
 
         mainActivity.runOnUiThread(new Runnable()
@@ -111,7 +119,7 @@ public class AndroidUtils
                     .setNeutralButton(R.string.service_gui_CLOSE, null)
                     .show();
             }
-        });
+        });*/
     }
 
     /**

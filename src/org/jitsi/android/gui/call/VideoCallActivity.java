@@ -12,9 +12,9 @@ import java.util.*;
 
 import net.java.sip.communicator.service.protocol.media.*;
 import org.jitsi.*;
-import org.jitsi.android.gui.menu.*;
 import org.jitsi.impl.neomedia.jmfext.media.protocol.mediarecorder.*;
 import org.jitsi.service.neomedia.*;
+import org.jitsi.service.osgi.*;
 import org.jitsi.util.event.*;
 
 import net.java.sip.communicator.service.gui.call.*;
@@ -37,7 +37,7 @@ import android.widget.*;
  * @author Pawel Domas
  */
 public class VideoCallActivity
-    extends MainMenuActivity
+    extends OSGiActivity
     implements  CallPeerRenderer,
                 CallRenderer,
                 CallChangeListener,
@@ -733,7 +733,7 @@ public class VideoCallActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        inflater.inflate(R.menu.video_call_menu, menu);
         return true;
     }
 
@@ -746,9 +746,25 @@ public class VideoCallActivity
                 return true;
             case R.id.high_resolution:
                 return true;
+            case R.id.call_info_item:
+                showCallInfoDialog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * Displays technical call information dialog.
+     */
+    private void showCallInfoDialog()
+    {
+        CallInfoDialogFragment callInfo
+                = CallInfoDialogFragment.newInstance(
+                getIntent().getStringExtra(
+                        CallManager.CALL_IDENTIFIER));
+
+        callInfo.show(getFragmentManager(), "callinfo");
     }
 
     public void propertyChange(PropertyChangeEvent evt)

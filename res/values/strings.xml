@@ -19,6 +19,7 @@
     <string name="hang_up">Hang up call</string>
     <string name="accept_call_video">Answer call with video</string>
     <string name="hold">Put call on hold</string>
+    <string name="show_call_info">Call info</string>
     <string name="video_resolution">Video resolution</string>
     <string name="low_video_resolution">320x240</string>
     <string name="high_video_resolution">640x480</string>
@@ -76,4 +77,49 @@
     <string name="service_gui_PRESENCE_EDIT_TITLE">Presence status {0}</string>
     <string name="service_gui_SELECT_AVATAR">Select new avatar image</string>
 
+    <!-- Call info -->
+    <string name="service_gui_callinfo_TECHNICAL_CALL_INFO">Technical Call Info</string>
+    <string name="service_gui_callinfo_CALL_INFORMATION">Call information</string>
+    <string name="service_gui_callinfo_CALL_IDENTITY">Identity</string>
+    <string name="service_gui_callinfo_PEER_COUNT">Participant count</string>
+    <string name="service_gui_callinfo_IS_CONFERENCE_FOCUS">Conference focus</string>
+    <string name="service_gui_callinfo_IS_DEFAULT_ENCRYPTED">Encryption enabled</string>
+    <string name="service_gui_callinfo_CALL_TRANSPORT">Signalling call transport</string>
+    <string name="service_gui_callinfo_CALL_DURATION">Call duration</string>
+    <string name="service_gui_callinfo_CODEC">Codec / Frequency</string>
+    <string name="service_gui_callinfo_NA">N.A.</string>
+    <string name="service_gui_callinfo_VIDEO_SIZE">Video size</string>
+    <string name="service_gui_callinfo_AUDIO_INFO">Audio info</string>
+    <string name="service_gui_callinfo_VIDEO_INFO">Video info</string>
+    <string name="service_gui_callinfo_LOCAL_IP">Local IP / Port</string>
+    <string name="service_gui_callinfo_REMOTE_IP">Remote IP / Port</string>
+    <string name="service_gui_callinfo_BANDWITH">Bandwith</string>
+    <string name="service_gui_callinfo_LOSS_RATE">Loss rate</string>
+    <string name="service_gui_callinfo_RTT">RTT</string>
+    <string name="service_gui_callinfo_JITTER">Jitter</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_TRANSPORT_PROTOCOL">Media stream transport protocol</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_RTP">RTP</string>
+    <string name="service_gui_callinfo_MEDIA_STREAM_SRTP">SRTP</string>
+    <string name="service_gui_callinfo_KEY_EXCHANGE_PROTOCOL">Key exchange protocol</string>
+    <string name="service_gui_callinfo_ICE_CANDIDATE_EXTENDED_TYPE">ICE candidate extended type</string>
+    <string name="service_gui_callinfo_ICE_STATE">ICE Processing State</string>
+    <string name="service_gui_callinfo_ICE_STATE_WAITING">Gather candidates</string>
+    <string name="service_gui_callinfo_ICE_STATE_RUNNING">Connectivity checks</string>
+    <string name="service_gui_callinfo_ICE_STATE_COMPLETED">Completed</string>
+    <string name="service_gui_callinfo_ICE_STATE_FAILED">Failed</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_HOST_ADDRESS">Local host IP / Port</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_REFLEXIVE_ADDRESS">Local reflexive IP / Port</string>
+    <string name="service_gui_callinfo_ICE_LOCAL_RELAYED_ADDRESS">Local relayed IP / Port</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_HOST_ADDRESS">Remote host IP / Port</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_REFLEXIVE_ADDRESS">Remote reflexive IP / Port</string>
+    <string name="service_gui_callinfo_ICE_REMOTE_RELAYED_ADDRESS">Remote relayed IP / Port</string>
+    <string name="service_gui_callinfo_TOTAL_HARVESTING_TIME">Total harvesting time</string>
+    <string name="service_gui_callinfo_HARVESTING_TIME">Harvesting time</string>
+    <string name="service_gui_callinfo_HARVESTING_MS_FOR">ms (for</string>
+    <string name="service_gui_callinfo_HARVESTS">harvests)</string>
+    <string name="service_gui_callinfo_DECODED_WITH_FEC">Packets decoded with FEC</string>
+    <string name="service_gui_callinfo_DISCARDED_PERCENT">Packets currently being discarded</string>
+    <string name="service_gui_callinfo_DISCARDED_TOTAL">Number of discarded packets</string>
+    <string name="service_gui_callinfo_ADAPTIVE_JITTER_BUFFER">Adaptive jitter buffer</string>
+    <string name="service_gui_callinfo_JITTER_BUFFER_DELAY">Jitter buffer</string>
 </resources>

@@ -32,6 +32,28 @@
     <style name="MediumFont" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">15sp</item>
     </style>
+
+    <!-- Call info section header -->
+    <style name="CallInfo.SectionHeader" parent="@android:style/TextAppearance.Large">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_alignParentLeft">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+    <!-- Call info header used for property names -->
+    <style name="CallInfo.Header" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+    <!-- Call info values style -->
+    <style name="CallInfo.Value" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_marginLeft">5dp</item>
+    </style>
+    <!-- Call info style of values displayed in single line -->
+    <style name="CallInfo.ValueSingleLine" parent="@android:style/TextAppearance.Medium">
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+
     <style name="ScreenPadding">
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:layout_marginLeft">20dp</item>
