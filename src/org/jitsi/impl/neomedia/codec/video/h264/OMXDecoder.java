@@ -18,7 +18,7 @@ import org.jitsi.service.neomedia.codec.*;
  * @author Lyubomir Marinov
  */
 public class OMXDecoder
-    extends AbstractCodecExt
+    extends AbstractCodec2
 {
     /**
      * The list of <tt>Format</tt>s of video data supported as input by

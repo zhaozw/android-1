@@ -28,7 +28,7 @@ import android.os.*;
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 public class AndroidMediaCodec
-    extends AbstractCodecExt
+    extends AbstractCodec2
 {
     /**
      * The interval of time in microseconds to wait for

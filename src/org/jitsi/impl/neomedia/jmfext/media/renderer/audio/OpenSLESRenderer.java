@@ -19,7 +19,7 @@ import org.jitsi.service.neomedia.codec.*;
  * @author Lyubomir Marinov
  */
 public class OpenSLESRenderer
-    extends AbstractAudioRenderer
+    extends AbstractAudioRenderer<AudioSystem>
 {
     /**
      * The human-readable name of the <tt>OpenSLESRenderer</tt> FMJ plug-in.

@@ -22,7 +22,7 @@ import org.jitsi.service.neomedia.codec.*;
  * @author Lyubomir Marinov
  */
 public class AudioTrackRenderer
-    extends AbstractAudioRenderer
+    extends AbstractAudioRenderer<AudioSystem>
 {
     /**
      * The <tt>Logger</tt> used by the <tt>AudioTrackRenderer</tt> class and its

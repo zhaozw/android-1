@@ -6,8 +6,6 @@
  */
 package net.java.sip.communicator.service.gui;
 
-import net.java.sip.communicator.plugin.desktoputil.*;
-
 import java.awt.*;
 import java.util.*;
 
@@ -143,8 +141,15 @@ public abstract class UIGroup
      *
      * @return a list of all custom action buttons for this group
      */
-    public Collection<SIPCommButton> getCustomActionButtons()
-    {
-        return null;
-    }
+    /**
+     * Commented out, as it's not being used in Android and would create
+     * unnecessary dependencies from even more stuff that will not be used.
+     * This change will not be overwritten automatically by the android sync.
+     * When any change will appear on the Jitsi side this will cause a conflict
+     * that has to be resolved.
+     */
+    //public Collection<SIPCommButton> getCustomActionButtons()
+    //{
+    //    return null;
+    //}
 }

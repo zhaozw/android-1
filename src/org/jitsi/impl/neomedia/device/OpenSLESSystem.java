@@ -141,14 +141,14 @@ public class OpenSLESSystem
 
         if (!formats.isEmpty())
         {
-            ExtendedCaptureDeviceInfo captureDevice
-                = new ExtendedCaptureDeviceInfo(
+            CaptureDeviceInfo2 captureDevice
+                = new CaptureDeviceInfo2(
                         "OpenSL ES",
                         new MediaLocator(LOCATOR_PROTOCOL + ":"),
                         formats.toArray(new Format[formats.size()]),
                         null, null, null);
-            List<ExtendedCaptureDeviceInfo> captureDevices
-                = new ArrayList<ExtendedCaptureDeviceInfo>(1);
+            List<CaptureDeviceInfo2> captureDevices
+                = new ArrayList<CaptureDeviceInfo2>(1);
 
             captureDevices.add(captureDevice);
             setCaptureDevices(captureDevices);
