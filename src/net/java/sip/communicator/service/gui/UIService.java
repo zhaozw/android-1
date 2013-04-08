@@ -215,6 +215,16 @@ public interface UIService
     public Chat getChat(Contact contact);
 
     /**
+     * Returns the <tt>Chat</tt> corresponding to the given <tt>Contact</tt>.
+     * 
+     * @param contact the <tt>Contact</tt> for which the searched chat is about.
+     * @param escapedMessageID the message ID of the message that should be
+     * excluded from the history when the last one is loaded in the chat
+     * @return the <tt>Chat</tt> corresponding to the given <tt>Contact</tt>.
+     */
+    public Chat getChat(Contact contact, String escapedMessageID);
+
+    /**
      * Returns the <tt>Chat</tt> corresponding to the given <tt>ChatRoom</tt>.
      * 
      * @param chatRoom the <tt>ChatRoom</tt> for which the searched chat is
@@ -364,22 +374,6 @@ public interface UIService
     public boolean useMacOSXScreenMenuBar();
 
     /**
-     * Shows or hides the "Tools &gt; Settings" configuration window.
-     * <p>
-     * The method hides the implementation-specific details of the configuration
-     * window from its clients and allows the UI to completely control, for
-     * example, how many instances of it are visible at one and the same time.
-     * <p>
-     *
-     * @param visible <tt>true</tt> to show the "Tools &gt; Settings"
-     *            configuration window; <tt>false</tt> to hide it
-     *
-     * @deprecated instead use getConfigurationContainer().setVisible(visible)
-     */
-    @Deprecated
-    public void setConfigurationWindowVisible(boolean visible);
-
-    /**
      * Returns the <tt>ConfigurationContainer</tt> associated with this
      * <tt>UIService</tt>.
      *
@@ -459,9 +453,11 @@ public interface UIService
     /**
      * Creates a contact list component.
      *
+     * @param clContainer the parent contact list container
      * @return the created <tt>ContactList</tt>
      */
-    public ContactList createContactListComponent();
+    public ContactList createContactListComponent(
+        ContactListContainer clContainer);
 
     /**
      * Returns a collection of all currently in progress calls.
