@@ -14,6 +14,8 @@ import android.annotation.*;
 import android.app.*;
 import android.content.*;
 import android.os.*;
+import org.jitsi.android.gui.call.*;
+import org.jitsi.service.osgi.*;
 
 /**
  * The <tt>AndroidUtils</tt> class provides a set of utility methods allowing
@@ -151,6 +153,23 @@ public class AndroidUtils
     }
 
     /**
+     * Clears the general notification.
+     *
+     * @param appContext the <tt>Context</tt> that will be used to create new
+     * activity from notification <tt>Intent</tt>.
+     */
+    public static void clearGeneralNotification(Context appContext)
+    {
+        AndroidUtils.updateGeneralNotification(
+                appContext,
+                OSGiService.getGeneralNotificationId(),
+                appContext.getString(R.string.app_name),
+                "",
+                System.currentTimeMillis(),
+                CallContactActivity.class);
+    }
+
+    /**
      * Shows an alert dialog for the given context and a title given by
      * <tt>titleId</tt> and message given by <tt>messageId</tt>.
      *
@@ -172,6 +191,36 @@ public class AndroidUtils
                                                 long date,
                                                 Class<?> resultActivityClass)
     {
+        Intent resultIntent = new Intent(context, resultActivityClass);
+
+        return updateGeneralNotification(
+                context, notificationID, title, message, date,
+                resultActivityClass, resultIntent);
+    }
+
+    /**
+     * Shows an alert dialog for the given context and a title given by
+     * <tt>titleId</tt> and message given by <tt>messageId</tt>.
+     *
+     * @param context the android <tt>Context</tt>
+     * @param notificationID the identifier of the notification to update
+     * @param title the title of the message
+     * @param message the message
+     * @param date the date on which the event corresponding to the notification
+     * happened
+     * @param resultActivityClass the result activity
+     *
+     * @return the identifier of this notification
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public static int updateGeneralNotification(Context context,
+                                                int notificationID,
+                                                String title,
+                                                String message,
+                                                long date,
+                                                Class<?> resultActivityClass,
+                                                Intent resultIntent)
+    {
         Notification.Builder nBuilder
             = new Notification.Builder(context)
             .setContentTitle(title)
@@ -180,8 +229,6 @@ public class AndroidUtils
             .setSmallIcon(R.drawable.notificationicon);
 
         isActivityRunning(context, resultActivityClass);
-
-        Intent resultIntent = new Intent(context, resultActivityClass);
 
         // The stack builder object will contain an artificial back stack for
         // the started Activity.

@@ -11,6 +11,7 @@ import android.content.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.call.*;
+import org.jitsi.android.gui.util.*;
 
 /**
  * A utility implementation of the {@link CallListener} interface which delivers
@@ -71,6 +72,8 @@ public class AndroidCallListener
         case CallEvent.CALL_ENDED:
             // Call Activity must close itself
             //startCallContactActivity(evt);
+            // Clears the in call notification
+            AndroidUtils.clearGeneralNotification(appContext);
             break;
         case CallEvent.CALL_INITIATED:
             startVideoCallActivity(evt);
@@ -149,16 +152,11 @@ public class AndroidCallListener
      */
     private void startVideoCallActivity(final CallEvent evt)
     {
-        Intent videoCallIntent
-            = new Intent(   appContext,
-                            VideoCallActivity.class);
-
         String callIdentifier = CallManager.addActiveCall(evt.getSourceCall());
-
-        videoCallIntent.putExtra(
-            CallManager.CALL_IDENTIFIER,
-            callIdentifier);
-
-        appContext.startActivity(videoCallIntent);
+        Intent videoCall
+                = VideoCallActivity.createVideoCallIntent(
+                        appContext,
+                        callIdentifier);
+        appContext.startActivity(videoCall);
     }
 }

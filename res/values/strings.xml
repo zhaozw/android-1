@@ -5,6 +5,7 @@
     <string name="send_process_signal">Send Process Signal</string>
     <string name="stop_osgi_framework">Stop OSGi Framework</string>
     <string name="call">Call</string>
+    <string name="in_call_with">In call with </string>
     <string name="settings">Settings</string>
     <string name="username">username</string>
     <string name="password">password</string>

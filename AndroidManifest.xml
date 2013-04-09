@@ -37,7 +37,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".android.gui.call.VideoCallActivity"
-                    android:label="@string/app_name">
+                    android:label="@string/app_name"
+                    android:launchMode="singleInstance">
         </activity>
         <activity android:name=".android.gui.call.ReceivedCallActivity"
                     android:label="@string/app_name">

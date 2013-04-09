@@ -46,7 +46,7 @@ public class ReceivedCallActivity
     /**
      * Called when the activity is starting. Initializes the call identifier.
      *
-     * @param savesInstanceState If the activity is being re-initialized after
+     * @param savedInstanceState If the activity is being re-initialized after
      * previously being shut down then this Bundle contains the data it most
      * recently supplied in onSaveInstanceState(Bundle).
      * Note: Otherwise it is null.
@@ -124,7 +124,7 @@ public class ReceivedCallActivity
     /**
      * Method mapped to answer button's onClick event
      *
-     * @param v
+     * @param v the answer with video button's <tt>View</tt>
      */
     public void onAnswerWithVideoClicked(View v)
     {
@@ -149,13 +149,12 @@ public class ReceivedCallActivity
         {
             public void run()
             {
-                Intent videoCallIntent
-                    = new Intent(   ReceivedCallActivity.this,
-                                    VideoCallActivity.class);
-
-                videoCallIntent.putExtra(   CallManager.CALL_IDENTIFIER,
-                                            callIdentifier);
-                startActivity(videoCallIntent);
+                Intent videoCall
+                        = VideoCallActivity
+                                .createVideoCallIntent(
+                                        ReceivedCallActivity.this,
+                                        callIdentifier);
+                startActivity(videoCall);
                 finish();
             }
         });
