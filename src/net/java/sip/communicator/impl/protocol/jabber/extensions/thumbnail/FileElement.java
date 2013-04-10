@@ -38,7 +38,7 @@ public class FileElement
                 setTimeZone(TimeZone.getTimeZone("UTC"));
             }});
 
-            // XEP-0203
+            // XEP-0082
             add(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"){{
                 setTimeZone(TimeZone.getTimeZone("UTC"));
             }});
@@ -122,8 +122,7 @@ public class FileElement
         if (getDate() != null)
         {
             buffer.append("date=\"").append(
-                DelayInformation.XEP_0091_UTC_FORMAT
-                .format(this.getDate())).append("\" ");
+                StringUtils.formatXEP0082Date(this.getDate())).append("\" ");
         }
 
         if (getHash() != null)
@@ -252,8 +251,14 @@ public class FileElement
             else if (eventType == XmlPullParser.END_TAG)
             {
                 if (elementName.equals("si"))
+                {
                     done = true;
-                else if (elementName.equals("file"))
+                }
+                // The name-attribute is required per XEP-0096, so ignore the
+                // IQ if the name is not set to avoid exceptions. Particularly,
+                // the SI response of Empathy contains an invalid, empty
+                // file-tag. 
+                else if (elementName.equals("file") && name != null)
                 {
                     long fileSize = 0;
 
@@ -265,7 +270,8 @@ public class FileElement
                         }
                         catch (NumberFormatException e)
                         {
-                            e.printStackTrace();
+                            logger.warn("Received an invalid file size,"
+                                + " continuing with fileSize set to 0", e);
                         }
                     }
 
