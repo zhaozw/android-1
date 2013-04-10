@@ -6,7 +6,7 @@
  */
 package net.java.sip.communicator.impl.protocol.jabber;
 
-import net.java.sip.communicator.impl.protocol.jabber.sasl.*;
+//import net.java.sip.communicator.impl.protocol.jabber.sasl.*;
 import net.java.sip.communicator.service.certificate.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -85,7 +85,7 @@ public class LoginByPasswordStrategy
 
         // Insert our sasl mechanism implementation
         // in order to support some incompatible servers
-        boolean disableCustomDigestMD5
+        /*boolean disableCustomDigestMD5
             = accountID.getAccountPropertyBoolean(
             "DISABLE_CUSTOM_DIGEST_MD5",
             false);
@@ -96,7 +96,7 @@ public class LoginByPasswordStrategy
             SASLAuthentication.registerSASLMechanism("DIGEST-MD5",
                 SASLDigestMD5Mechanism.class);
             SASLAuthentication.supportSASLMechanism("DIGEST-MD5");
-        }
+        }*/
 
         connection.login(userName, password, resource);
         return true;
