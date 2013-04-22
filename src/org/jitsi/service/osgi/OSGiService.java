@@ -8,7 +8,7 @@ package org.jitsi.service.osgi;
 
 import android.content.res.*;
 import org.jitsi.*;
-import org.jitsi.android.gui.call.*;
+import org.jitsi.android.*;
 import org.jitsi.impl.osgi.*;
 
 import android.app.*;
@@ -34,11 +34,6 @@ public class OSGiService
      * icon is available
      */
     private static boolean serviceStarted;
-
-    /**
-     * The home activity class
-     */
-    private static final Class<?> HOME_SCREEN_CLASS = CallContactActivity.class;
 
     /**
      * The very implementation of this Android <tt>Service</tt> which is split
@@ -92,7 +87,8 @@ public class OSGiService
     private void startForegroundService()
     {
         //The intent to launch when the user clicks the expanded notification
-        Intent intent = new Intent(this, HOME_SCREEN_CLASS);
+        Intent intent
+            = new Intent(this, JitsiApplication.getHomeScreenActivityClass());
         intent.setFlags(
                 Intent.FLAG_ACTIVITY_CLEAR_TOP
                         | Intent.FLAG_ACTIVITY_SINGLE_TOP);

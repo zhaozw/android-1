@@ -11,6 +11,8 @@ import android.content.*;
 import android.os.*;
 import android.os.Bundle; // disambiguation
 
+import android.view.*;
+import org.jitsi.android.*;
 import org.osgi.framework.*;
 
 /**
@@ -263,6 +265,28 @@ public class OSGiActivity
     {
         startActivity(activityClass);
         finish();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        // Handle home action
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                Class<?> homeActivity
+                        = JitsiApplication.getHomeScreenActivityClass();
+                if(!this.getClass().equals(homeActivity))
+                {
+                    switchActivity(homeActivity);
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

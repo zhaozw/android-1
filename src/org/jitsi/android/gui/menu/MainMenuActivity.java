@@ -95,9 +95,6 @@ public class MainMenuActivity
         case R.id.accounts_settings:
             startActivity(AccountEnableActivity.class);
             return true;
-        case android.R.id.home:
-            System.err.println("DO home action !!");
-            return true;
         case R.id.main_settings:
             // do something
             return true;
