@@ -11,12 +11,12 @@ import android.app.*;
 import android.content.res.*;
 import android.os.*;
 import android.view.*;
-import android.widget.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.media.*;
 import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.call.*;
 import org.jitsi.*;
+import org.jitsi.android.gui.util.*;
 import org.jitsi.service.neomedia.*;
 
 import java.awt.*;
@@ -121,13 +121,13 @@ public class CallInfoDialogFragment
      */
     private void setTextViewValue(int id, String text)
     {
-        setTextViewValue(getView(), id, text);
+        ViewUtil.setTextViewValue(getView(), id, text);
     }
 
     /**
      * Sets given <tt>text</tt> on the <tt>TextView</tt> identified by the
-     * <tt>id</tt>. The <tt>TextView</tt> must be inside <tt>container</tt> view
-     * hierarchy.
+     * <tt>id</tt>. The <tt>TextView</tt> must be inside <tt>container</tt>
+     * view hierarchy.
      *
      * @param container the <tt>View</tt> that contains the <tt>TextView</tt>.
      * @param id the id of <tt>TextView</tt> we want to edit.
@@ -135,8 +135,7 @@ public class CallInfoDialogFragment
      */
     private void setTextViewValue(View container, int id, String text)
     {
-        TextView tv = (TextView) container.findViewById(id);
-        tv.setText(text);
+        ViewUtil.setTextViewValue(container, id, text);
     }
 
     /**
@@ -151,17 +150,7 @@ public class CallInfoDialogFragment
      */
     private void ensureVisible(View container, int viewId, boolean isVisible)
     {
-        View view = container.findViewById(viewId);
-        if( isVisible
-            && view.getVisibility() != View.VISIBLE )
-        {
-            view.setVisibility(View.VISIBLE);
-        }
-        else if( !isVisible
-                 && view.getVisibility() != View.GONE )
-        {
-            view.setVisibility(View.GONE);
-        }
+        ViewUtil.ensureVisible(container, viewId, isVisible);
     }
 
     /**

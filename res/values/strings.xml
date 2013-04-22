@@ -21,6 +21,7 @@
     <string name="accept_call_video">Answer call with video</string>
     <string name="hold">Put call on hold</string>
     <string name="show_call_info">Call info</string>
+    <string name="show_call_zrtp_info">"Call ZRTP info</string>
     <string name="video_resolution">Video resolution</string>
     <string name="low_video_resolution">320x240</string>
     <string name="high_video_resolution">640x480</string>
@@ -123,4 +124,22 @@
     <string name="service_gui_callinfo_DISCARDED_TOTAL">Number of discarded packets</string>
     <string name="service_gui_callinfo_ADAPTIVE_JITTER_BUFFER">Adaptive jitter buffer</string>
     <string name="service_gui_callinfo_JITTER_BUFFER_DELAY">Jitter buffer</string>
+
+    <!-- ASecurity info -->
+    <string name="service_gui_SECURITY_INFO">Security information</string>
+    <string name="service_gui_security_SECURE_AUDIO">Secure audio</string>
+    <string name="service_gui_security_AUDIO_NOT_SECURED">Audio not secure</string>
+    <string name="service_gui_security_SECURE_VIDEO">Secure video</string>
+    <string name="service_gui_security_VIDEO_NOT_SECURED">Video not secure</string>
+    <string name="service_gui_security_NO_VIDEO">No video</string>
+    <string name="service_gui_security_CIPHER">Cipher: {0}</string>
+    <string name="service_gui_security_VERIFY_TOAST">Call security enabled! Tap to compare security string now or use the menu later.</string>
+    <string name="service_gui_security_CALL_SECURED_TOOLTIP">Call secured. Fore more information press here.</string>
+    <string name="service_gui_security_CALL_NOT_SECURED_TOOLTIP">Call not secure.</string>
+    <string name="service_gui_security_CALL_SECURED_COMPARE_TOOLTIP">Press here to compare security secret with your partner.</string>
+    <string name="service_gui_security_COMPARE_WITH_PARTNER_SHORT">Compare with partner:</string>
+    <string name="service_gui_security_STRING_COMPARED">String compared!</string>
+    <string name="service_gui_security_SECURITY_ALERT">Trying to secure call. Will disconnect in</string>
+    <string name="service_gui_security_CLEAR_SAS">Clear</string>
+    <string name="service_gui_security_CONFIRM_SAS">Confirm</string>
 </resources>

@@ -10,10 +10,12 @@ import java.awt.*;
 import java.beans.*;
 import java.util.*;
 
+import android.app.*;
 import android.content.*;
 import net.java.sip.communicator.service.protocol.media.*;
-import org.jitsi.*;
+import org.jitsi.R;
 import org.jitsi.android.gui.util.*;
+import org.jitsi.android.gui.widgets.*;
 import org.jitsi.impl.neomedia.jmfext.media.protocol.mediarecorder.*;
 import org.jitsi.service.neomedia.*;
 import org.jitsi.service.osgi.*;
@@ -43,7 +45,8 @@ public class VideoCallActivity
     implements  CallPeerRenderer,
                 CallRenderer,
                 CallChangeListener,
-                PropertyChangeListener
+                PropertyChangeListener,
+                ZrtpInfoDialog.SasVerificationListener
 {
     /**
      * The logger
@@ -134,6 +137,11 @@ public class VideoCallActivity
     private static boolean wasVideoEnabled = false;
 
     /**
+     * The zrtp SAS verification toast controller.
+     */
+    private ClickableToastController sasToastController;
+
+    /**
      * Called when the activity is starting. Initializes the corresponding
      * call interface.
      *
@@ -187,6 +195,32 @@ public class VideoCallActivity
 
         // Registers as the call state listener
         call.addCallChangeListener(this);
+
+        sasToastController = new ClickableToastController(
+                findViewById(R.id.clickable_toast),
+                new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                showZrtpInfoDialog();
+                sasToastController.hideToast(true);
+            }
+        },R.id.toast_msg);
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        sasToastController.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        sasToastController.onRestoreInstanceState(savedInstanceState);
     }
 
     /**
@@ -434,6 +468,7 @@ public class VideoCallActivity
         doUpdateHoldStatus();
         doUpdateCallDuration();
         doUpdateMuteStatus();
+        initSecurityStatus();
     }
 
     /**
@@ -800,11 +835,13 @@ public class VideoCallActivity
      */
     public void setPeerName(final String name)
     {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                TextView calleeName = (TextView) findViewById(R.id.calleeName);
-
-                calleeName.setText(name);
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                ActionBar ab = getActionBar();
+                ab.setDisplayShowTitleEnabled(true);
+                ab.setTitle(name);
             }
         });
     }
@@ -1036,6 +1073,9 @@ public class VideoCallActivity
             case R.id.call_info_item:
                 showCallInfoDialog();
                 return true;
+            case R.id.call_zrtp_info_item:
+                showZrtpInfoDialog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -1052,6 +1092,18 @@ public class VideoCallActivity
                         CallManager.CALL_IDENTIFIER));
 
         callInfo.show(getFragmentManager(), "callinfo");
+    }
+
+    /**
+     * Displays ZRTP call information dialog.
+     */
+    private void showZrtpInfoDialog()
+    {
+        ZrtpInfoDialog zrtpInfo
+            = ZrtpInfoDialog.newInstance(
+                getIntent().getStringExtra(CallManager.CALL_IDENTIFIER));
+
+        zrtpInfo.show(getFragmentManager(), "zrtpinfo");
     }
 
     public void propertyChange(PropertyChangeEvent evt)
@@ -1085,9 +1137,9 @@ public class VideoCallActivity
             callPeer.addPropertyChangeListener(callPeerAdapter);
         }
 
-        setPeerState(   callPeer.getState(),
-                        callPeer.getState(),
-                        callPeer.getState().getLocalizedStateString());
+        setPeerState(callPeer.getState(),
+                     callPeer.getState(),
+                     callPeer.getState().getLocalizedStateString());
 
         onCallConferenceEventObject(evt);
     }
@@ -1195,6 +1247,14 @@ public class VideoCallActivity
     public boolean isCallTimerStarted()
     {
         return isCallTimerStarted;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void onSasVerificationChanged(boolean isVerified)
+    {
+        doUpdatePadlockStatus(true, isVerified);
     }
 
     /**
@@ -1353,8 +1413,6 @@ public class VideoCallActivity
 
     private void addCallPeerUI(CallPeer callPeer)
     {
-        TextView calleeName = (TextView) findViewById(R.id.calleeName);
-
         callPeerAdapter
             = new CallPeerAdapter(callPeer, this);
         callPeer.addCallPeerListener(callPeerAdapter);
@@ -1364,8 +1422,7 @@ public class VideoCallActivity
         setPeerState(   null,
                         callPeer.getState(),
                         callPeer.getState().getLocalizedStateString());
-        setPeerName(calleeName.getText()
-            + " " + callPeer.getDisplayName());
+        setPeerName(callPeer.getDisplayName());
 
         CallPeerState currentState = callPeer.getState();
         if( (currentState == CallPeerState.CONNECTED
@@ -1403,15 +1460,183 @@ public class VideoCallActivity
     public void securityNegotiationStarted(
         CallPeerSecurityNegotiationStartedEvent securityStartedEvent) {}
 
-    public void securityPending() {}
+    /**
+     * Initializes current security status displays.
+     */
+    private void initSecurityStatus()
+    {
+        boolean isSecure=false;
+        boolean isVerified=false;
+        ZrtpControl zrtpCtrl = null;
 
-    public void securityTimeout(CallPeerSecurityTimeoutEvent evt) {}
+        Iterator<? extends CallPeer> callPeers = call.getCallPeers();
+        if(callPeers.hasNext())
+        {
+            CallPeer cpCandidate = callPeers.next();
+            if(cpCandidate instanceof MediaAwareCallPeer<?, ?, ?>)
+            {
+                MediaAwareCallPeer<?, ?, ?> mediaAwarePeer
+                        = (MediaAwareCallPeer<?, ?, ?>) cpCandidate;
+                SrtpControl srtpCtrl = mediaAwarePeer.getMediaHandler()
+                        .getEncryptionMethod(MediaType.AUDIO);
+                isSecure = srtpCtrl != null
+                        && srtpCtrl.getSecureCommunicationStatus();
 
+                if(srtpCtrl instanceof ZrtpControl)
+                {
+                    zrtpCtrl = (ZrtpControl)srtpCtrl;
+                    isVerified = zrtpCtrl.isSecurityVerified();
+                }
+                else
+                {
+                    isVerified = true;
+                }
+            }
+        }
+
+        // Protocol name label
+        ViewUtil.setTextViewValue(
+                findViewById(R.id.videoCallLayout),
+                R.id.security_protocol,
+                zrtpCtrl != null ? "zrtp" : "");
+
+        doUpdatePadlockStatus(isSecure, isVerified);
+    }
+
+    /**
+     * Updates padlock status text, icon and it's background color.
+     *
+     * @param isSecure <tt>true</tt> if the call is secured.
+     * @param isVerified <tt>true</tt> if zrtp SAS string is verified.
+     */
+    private void doUpdatePadlockStatus(boolean isSecure, boolean isVerified)
+    {
+        if(isSecure)
+        {
+            if(isVerified)
+            {
+                // Security on
+                setPadlockColor(R.color.green_padlock);
+                setPadlockSecure(true);
+            }
+            else
+            {
+                // Security pending
+                setPadlockColor(R.color.orange_padlock);
+                setPadlockSecure(true);
+            }
+        }
+        else
+        {
+            // Security off
+            setPadlockColor(R.color.red_padlock);
+            setPadlockSecure(false);
+        }
+    }
+
+    /**
+     * Sets the security padlock background color.
+     *
+     * @param colorId the color resource id that will be used.
+     */
+    private void setPadlockColor(int colorId)
+    {
+        View padlockGroup = findViewById(R.id.security_group);
+        int color = getResources().getColor(colorId);
+        padlockGroup.setBackgroundColor(color);
+    }
+
+    /**
+     * Updates padlock icon based on security status.
+     *
+     * @param isSecure <tt>true</tt> if the call is secure.
+     */
+    private void setPadlockSecure(boolean isSecure)
+    {
+        ViewUtil.setImageViewIcon(
+                findViewById(R.id.videoCallLayout),
+                R.id.security_padlock,
+                isSecure ? R.drawable.secure_on : R.drawable.secure_off);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void securityPending()
+    {
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                doUpdatePadlockStatus(false, false);
+            }
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void securityTimeout(CallPeerSecurityTimeoutEvent evt)
+    {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void setSecurityPanelVisible(boolean visible) {}
 
-    public void securityOff(CallPeerSecurityOffEvent evt) {}
+    /**
+     * {@inheritDoc}
+     */
+    public void securityOff(CallPeerSecurityOffEvent evt)
+    {
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                doUpdatePadlockStatus(false, false);
+            }
+        });
+    }
 
-    public void securityOn(CallPeerSecurityOnEvent evt) {}
+    /**
+     * {@inheritDoc}
+     */
+    public void securityOn(final CallPeerSecurityOnEvent evt)
+    {
+        runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                SrtpControl srtpCtrl = evt.getSecurityController();
+                ZrtpControl zrtpControl = null;
+                if(srtpCtrl instanceof ZrtpControl)
+                {
+                    zrtpControl = (ZrtpControl) srtpCtrl;
+                }
+
+                boolean isVerified
+                        = zrtpControl != null
+                                && zrtpControl.isSecurityVerified();
+
+                doUpdatePadlockStatus(true, isVerified);
+
+                // Protocol name label
+                ViewUtil.setTextViewValue(
+                        findViewById(R.id.videoCallLayout),
+                        R.id.security_protocol,
+                        zrtpControl != null ? "zrtp" : "");
+
+                if(!isVerified)
+                {
+                    String toastMsg
+                        = getString(R.string.service_gui_security_VERIFY_TOAST);
+                    sasToastController.showToast(false, toastMsg);
+                }
+            }
+        });
+    }
 
     /**
      * Creates new video call intent for given <tt>callIdentifier</tt>.

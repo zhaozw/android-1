@@ -8,7 +8,6 @@ package org.jitsi.android.gui.menu;
 
 import java.util.*;
 
-import android.app.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.*;
 
@@ -43,13 +42,6 @@ public class MainMenuActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
-
-        ActionBar ab = getActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-//        ab.setDisplayShowTitleEnabled(false);
-//        ab.setDisplayShowHomeEnabled(false);
     }
 
     /**

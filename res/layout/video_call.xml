@@ -22,45 +22,63 @@
         android:visibility="gone"/>
 
     <LinearLayout
-            android:layout_alignParentTop="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/screen_padding"
             android:orientation="vertical"
-            android:layout_centerInParent="true">
-
+            android:layout_centerInParent="true"
+            android:paddingBottom="80dp">
         <ImageView
-             android:id="@+id/calleeAvatar"
-             android:src="@drawable/personphoto"
-             android:contentDescription="@string/call"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_gravity="center_horizontal"
-             android:paddingBottom="@dimen/between_padding"/>
-
-        <TextView
-            android:id="@+id/calleeName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/label_text_size"
-            android:layout_gravity="center_horizontal"
-            android:paddingBottom="@dimen/between_padding"/>
-
-        <TextView
-            android:id="@+id/callStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/label_text_size"
-            android:layout_gravity="center_horizontal"
-            android:paddingBottom="@dimen/between_padding"/>
-
-        <TextView
-            android:id="@+id/callTime"
-            android:text="00:00:00"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/label_text_size"
-            android:layout_gravity="center_horizontal"/>
+                android:id="@+id/calleeAvatar"
+                android:src="@drawable/personphoto"
+                android:contentDescription="@string/call"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="@dimen/between_padding"/>
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                >
+            <TextView
+                    android:id="@+id/callStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/label_text_size"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingBottom="@dimen/between_padding"
+                    android:text="{call status}"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/security_group"/>
+            <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/security_group"
+                    android:background="@color/orange_padlock">
+                <TextView
+                        android:id="@+id/security_protocol"
+                        android:text="{proto}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/label_text_size"
+                        android:layout_gravity="center_horizontal"
+                        android:textColor="@color/white"/>
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/security_padlock"
+                        android:layout_toRightOf="@+id/security_protocol"
+                        android:src="@drawable/secure_off"/>
+            </RelativeLayout>
+            <TextView
+                    android:id="@+id/callTime"
+                    android:text="00:00:00"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/label_text_size"
+                    android:layout_toRightOf="@+id/callStatus"
+                    android:layout_marginLeft="5dp"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -129,4 +147,11 @@
             android:layout_gravity="center_vertical"
             android:focusable="true"/>
     </LinearLayout>
+    <include layout="@layout/clickable_toast"
+             android:id="@+id/clickable_toast"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_above="@+id/buttonContainer"
+             android:layout_centerHorizontal="true"
+             android:layout_marginBottom="5dp"/>
 </RelativeLayout>

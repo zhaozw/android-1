@@ -28,6 +28,7 @@ import org.jitsi.android.gui.util.event.EventListener;/*Disambiguation*/
 import org.osgi.framework.*;
 
 import java.io.*;
+import java.text.*;
 import java.util.*;
 
 /**
@@ -86,6 +87,8 @@ public class PresenceStatusActivity
     protected void onCreate(android.os.Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        // Enable title
+        getActionBar().setDisplayShowTitleEnabled(true);
         // Set the main layout
         setContentView(R.layout.presence_status);
     }
@@ -130,7 +133,8 @@ public class PresenceStatusActivity
         String titlePattern = getResources().getString(
                 R.string.service_gui_PRESENCE_EDIT_TITLE);
 
-        String title = String.format( titlePattern, account.getAccountName());
+        String title
+                = MessageFormat.format( titlePattern, account.getAccountName());
 
         getActionBar().setTitle(title);
 
