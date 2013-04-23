@@ -10,4 +10,5 @@
     <dimen name="status_spin_height" >50dp</dimen>
     <dimen name="status_screen_width" >300dp</dimen>
     <dimen name="status_edit_height" >65dp</dimen>
+    <dimen name="avatar_height" >220dp</dimen>
 </resources>

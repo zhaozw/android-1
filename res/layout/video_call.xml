@@ -32,7 +32,7 @@
                 android:src="@drawable/personphoto"
                 android:contentDescription="@string/call"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/avatar_height"
                 android:layout_gravity="center_horizontal"
                 android:paddingBottom="@dimen/between_padding"/>
         <RelativeLayout
