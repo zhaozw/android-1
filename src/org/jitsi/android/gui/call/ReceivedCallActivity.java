@@ -8,6 +8,7 @@ package org.jitsi.android.gui.call;
 
 import net.java.sip.communicator.util.*;
 import org.jitsi.*;
+import org.jitsi.android.*;
 import org.jitsi.service.osgi.*;
 
 import android.content.*;
@@ -102,7 +103,8 @@ public class ReceivedCallActivity
                 {
                     CallManager.hangupCall(call);
 
-                    switchActivity(CallContactActivity.class);
+                    switchActivity(
+                            JitsiApplication.getHomeScreenActivityClass());
                 }
             }
         });

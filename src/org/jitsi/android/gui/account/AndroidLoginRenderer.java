@@ -10,6 +10,7 @@ import java.beans.*;
 
 import net.java.sip.communicator.util.*;
 import org.jitsi.*;
+import org.jitsi.android.*;
 import org.jitsi.android.gui.*;
 import org.jitsi.android.gui.call.*;
 import org.jitsi.android.gui.util.*;
@@ -98,8 +99,6 @@ public class AndroidLoginRenderer
             presenceOpSet.addProviderPresenceStatusListener(
                 androidPresenceListener);
         }
-
-        startCallActivity();
     }
 
     /**
@@ -319,7 +318,7 @@ public class AndroidLoginRenderer
             protocolProvider.getAccountID().getAccountAddress()
                 + " " + status,
             date,
-            CallContactActivity.class);
+            JitsiApplication.getHomeScreenActivityClass());
     }
 
     /**
@@ -354,30 +353,5 @@ public class AndroidLoginRenderer
         ProtocolProviderService protocolProvider)
     {
         return false;
-    }
-
-    /**
-     * Initializes the call activity.
-     */
-    private void startCallActivity()
-    {
-        if (androidContext instanceof Activity)
-            ((Activity) androidContext).runOnUiThread(
-                new Runnable()
-                {
-                    public void run()
-                    {
-                        ((Activity) androidContext)
-                            .setProgressBarIndeterminateVisibility(false);
-
-                        Intent nextIntent
-                            = new Intent(   androidContext,
-                                            CallContactActivity.class);
-
-                        androidContext.startActivity(nextIntent);
-                        // Close the Jitsi Actvity
-                        ((Activity) androidContext).finish();
-                    }
-                });
     }
 }

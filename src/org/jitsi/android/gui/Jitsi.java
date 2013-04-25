@@ -6,30 +6,29 @@
  */
 package org.jitsi.android.gui;
 
+import android.app.*;
 import android.content.*;
-import android.content.res.*;
 import android.os.Bundle; // disambiguation
 import android.view.*;
-import android.view.animation.*;
-import android.widget.*;
 
-import net.java.sip.communicator.service.gui.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.*;
-import net.java.sip.communicator.util.account.*;
 
-import org.jitsi.*;
 import org.jitsi.android.gui.account.*;
+import org.jitsi.android.gui.call.*;
 import org.jitsi.android.gui.menu.*;
-import org.jitsi.android.gui.util.*;
 import org.osgi.framework.*;
 
 /**
- * Implements a test <tt>Activity</tt> which employs OSGi.
+ * The home <tt>Activity</tt> for Jitsi application. It displays
+ * {@link SplashScreenFragment} if the app is just starting. After
+ * initialization it shows <tt>CallContactFragment</tt> in case we have
+ * registered accounts or <tt>AccountLoginFragment</tt> otherwise.
  *
  * @author Damian Minkov
  * @author Lyubomir Marinov
  * @author Yana Stamcheva
+ * @author Pawel Domas
  */
 public class Jitsi
     extends MainMenuActivity
@@ -38,31 +37,25 @@ public class Jitsi
      * The logger
      */
     private static final Logger logger = Logger.getLogger(Jitsi.class);
-    
-    /**
-     * The OSGI bundle context.
-     */
-    public static BundleContext bundleContext;
 
     /**
-     * The android context.
+     * The action that will show contacts
+     * (currently <tt>CallContactFragment</tt>).
      */
-    private static Context androidContext;
-
-    /**
-     * The {@link Resources} for application
-     */
-    private static Resources applicationResources;
+    public static final String ACTION_SHOW_CONTACTS ="org.jitsi.show_contacts";
 
     /**
      * A call back parameter.
      */
     public static final int OBTAIN_CREDENTIALS = 1;
 
+
     /**
-     * The login manager.
+     * Flag indicating that there was no action supplied with <tt>Intent</tt>
+     * and we have to decide whether display contacts or login prompt.
+     * It's done after OSGI startup.
      */
-    private static LoginManager loginManager;
+    private boolean isEmpty=false;
 
     /**
      * Called when the activity is starting. Initializes the corresponding
@@ -76,25 +69,146 @@ public class Jitsi
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        if (bundleContext == null)
+        String action = getIntent().getAction();
+        if(action != null && action.equals(Intent.ACTION_MAIN))
         {
+            // Request indeterminate progress for splash screen
             requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-            setProgressBarIndeterminateVisibility(true);
         }
 
         super.onCreate(savedInstanceState);
 
-        androidContext = this;
+        handleIntent(getIntent(), savedInstanceState);
+    }
 
-        applicationResources = getBaseContext().getResources();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void start(BundleContext bundleContext)
+            throws Exception
+    {
+        super.start(bundleContext);
 
-        setContentView(R.layout.main);
+        if(isEmpty)
+        {
+            AccountManager accountManager
+                    = ServiceUtils.getService(
+                            bundleContext, AccountManager.class);
+            final int accountCount = accountManager.getStoredAccounts().size();
 
-        ImageView myImageView
-            = (ImageView)findViewById(R.id.loadingImage);
-        Animation myFadeInAnimation
-            = AnimationUtils.loadAnimation(this, R.anim.fadein);
-        myImageView.startAnimation(myFadeInAnimation);
+            runOnUiThread(new Runnable()
+            {
+                public void run()
+                {
+                    if (accountCount == 0)
+                    {
+                        showLoginFragment();
+                    }
+                    else
+                    {
+                        showContactsFragment();
+                    }
+                }
+            });
+            isEmpty = false;
+        }
+    }
+
+    /**
+     * Decides what should be displayed based on supplied <tt>Intent</tt> and
+     * instance state.
+     *
+     * @param intent <tt>Activity</tt> <tt>Intent</tt>.
+     * @param savedInstanceState <tt>Activity</tt> instance state.
+     */
+    private void handleIntent(Intent intent, Bundle savedInstanceState)
+    {
+        String action = intent.getAction();
+
+        if(action == null)
+        {
+            //Default behaviour
+            if(savedInstanceState == null)
+            {
+                // We have no action and no state, we need to delay
+                // the decision upon OSGi startup
+                isEmpty = true;
+            }
+            return;
+        }
+
+        if(savedInstanceState != null)
+        {
+            // The Activity is being restored so fragments have been already
+            // added
+            return;
+        }
+
+        if(action.equals(Intent.ACTION_MAIN))
+        {
+            // Launcher action
+            showSplashScreen();
+            isEmpty = true;
+        }
+        else if(action.equals(ACTION_SHOW_CONTACTS))
+        {
+            // Show contacts request
+            showContactsFragment();
+        }
+    }
+
+    /**
+     * Displays splash screen fragment.
+     */
+    private void showSplashScreen()
+    {
+        SplashScreenFragment splashScreen = new SplashScreenFragment();
+        getFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, splashScreen)
+                .commit();
+    }
+
+    /**
+     * Displays contacts fragment(currently <tt>CallContactFragment</tt>.
+     */
+    private void showContactsFragment()
+    {
+        // Currently call contacts serves as a contacts list
+        CallContactFragment callContactFragment
+                = CallContactFragment.newInstance(null);
+        getFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, callContactFragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+    }
+
+    /**
+     * Shows login prompt.
+     */
+    private void showLoginFragment()
+    {
+        // Displays login prompt
+        getFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, new AccountLoginFragment())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit();
+    }
+
+    /**
+     * Called when new <tt>Intent</tt> is received(this <tt>Activity</tt> is
+     * launched in <tt>singleTask</tt> mode.
+     * @param intent new <tt>Intent</tt> data.
+     */
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+
+        handleIntent(intent, null);
     }
 
     /**
@@ -107,6 +221,7 @@ public class Jitsi
 
         synchronized (this)
         {
+            BundleContext bundleContext = getBundlecontext();
             if (bundleContext != null)
                 try
                 {
@@ -124,89 +239,8 @@ public class Jitsi
     }
 
     /**
-     * Starts this osgi activity.
-     *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
-     * @throws Exception
+     * {@inheritDoc}
      */
-    @Override
-    protected synchronized void start(BundleContext bundleContext)
-        throws Exception
-    {
-        /*
-         * If there are unit tests to be run, do not run anything else and just
-         * perform the unit tests.
-         */
-        if (System.getProperty(
-                    "net.java.sip.communicator.slick.runner.TEST_LIST")
-                != null)
-            return;
-
-        Jitsi.bundleContext = bundleContext;
-
-        // Register the alert service android implementation.
-        AlertUIServiceImpl alertServiceImpl = new AlertUIServiceImpl(this);
-
-        bundleContext.registerService(  AlertUIService.class.getName(),
-                                        alertServiceImpl,
-                                        null);
-
-        AndroidLoginRenderer loginRenderer = new AndroidLoginRenderer(this);
-        loginManager = new LoginManager(loginRenderer);
-
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                initActivity();
-            }
-        });
-    }
-
-    /**
-     * Stops this osgi activity.
-     *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
-     * @throws Exception
-     */
-    @Override
-    protected synchronized void stop(BundleContext bundleContext)
-        throws Exception
-    {
-        if (Jitsi.bundleContext != null)
-            Jitsi.bundleContext = null;
-    }
-
-    /**
-     * Returns the login manager.
-     *
-     * @return the login manager
-     */
-    public static LoginManager getLoginManager()
-    {
-        return loginManager;
-    }
-
-    /**
-     * Returns the android context.
-     *
-     * @return the android application context
-     */
-    public static Context getAndroidContext()
-    {
-        return androidContext;
-    }
-
-    /**
-     * Returns the {@link Resources} of the application context
-     *
-     * @return the {@link Resources} object for the application
-     */
-    public static Resources getAppResources()
-    {
-        return applicationResources;
-    }
-
     @Override
     protected void onActivityResult(int requestCode,
                                     int resultCode,
@@ -222,35 +256,6 @@ public class Jitsi
                     System.err.println("ACCOUNT DATA STRING===="
                         + accountLoginIntent.getDataString());
                 }
-        }
-    }
-
-    /**
-     * Initializes the first activity.
-     */
-    private void initActivity()
-    {
-        this.setProgressBarIndeterminateVisibility(false);
-
-        AccountManager accountManager
-            = ServiceUtils.getService(
-                Jitsi.bundleContext, AccountManager.class);
-
-        if (accountManager.getStoredAccounts().size() > 0)
-        {
-            new Thread(new Runnable()
-            {
-                public void run()
-                {
-                    loginManager.runLogin();
-                }
-            }).start();
-        }
-        else
-        {
-            androidContext.startActivity(
-                    new Intent(androidContext,
-                            AccountLoginActivity.class));
         }
     }
 }

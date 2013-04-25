@@ -1,4 +1,3 @@
-
 /*
  * Jitsi, the OpenSource Java VoIP and Instant Messaging client.
  *
@@ -7,277 +6,52 @@
  */
 package org.jitsi.android.gui.call;
 
-import java.util.*;
+import android.app.*;
+import android.content.*;
 
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.AccountManager;
-
-import net.java.sip.communicator.util.*;
-import net.java.sip.communicator.util.account.*;
-import net.java.sip.communicator.util.call.*;
-
-import org.jitsi.*;
-import org.jitsi.android.gui.*;
 import org.jitsi.android.gui.menu.*;
-import org.jitsi.android.gui.util.*;
-import org.osgi.framework.*;
 
-import android.accounts.*;
 import android.os.Bundle;
 import android.telephony.*;
-import android.view.*;
-import android.widget.*;
 
 /**
- * Tha <tt>CallContactActivity</tt> is the one shown when we have a registered
- * account.
+ * Tha <tt>CallContactActivity</tt> can be used to call contact. The phone
+ * number can be filled from <tt>Intent</tt> data.
  *
  * @author Yana Stamcheva
+ * @author Pawel Domas
  */
 public class CallContactActivity
         extends MainMenuActivity
 {
     /**
-     * The logger
-     */
-    private static final Logger logger = 
-            Logger.getLogger(CallContactActivity.class);
-
-    /**
-     * The bundle context.
-     */
-    private BundleContext bundleContext;
-
-    /**
-     * Starts this osgi activity.
+     * Called when the activity is starting. Initializes the corresponding
+     * call interface.
      *
-     * @param bundleContext the osgi <tt>BundleContext</tt>
-     * @throws Exception
+     * @param savedInstanceState If the activity is being re-initialized after
+     * previously being shut down then this Bundle contains the data it most
+     * recently supplied in onSaveInstanceState(Bundle).
+     * Note: Otherwise it is null.
      */
-    @Override
-    protected synchronized void start(BundleContext bundleContext)
-            throws Exception
-    {
-        /*
-         * If there are unit tests to be run, do not run anything else and just
-         * perform the unit tests.
-         */
-        if (System.getProperty(
-                "net.java.sip.communicator.slick.runner.TEST_LIST")
-                != null)
-            return;
-
-        this.bundleContext = bundleContext;
-
-        //initAndroidAccounts();
-
-        new Thread()
-        {
-            public void run()
-            {
-                initAccounts();
-            }
-        }.start();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.call_contact);
-
-        final ImageView callButton
-                = (ImageView) findViewById(R.id.callButtonFull);
-
-        callButton.setOnClickListener(new View.OnClickListener()
+        // There's no need to create fragment if the Activity is being restored.
+        if(savedInstanceState == null)
         {
-            public void onClick(View v)
-            {
-                final EditText callField
-                        = (EditText) findViewById(R.id.callField);
-                String contact = callField.getText().toString();
-                if(contact.isEmpty())
-                {
-                    System.err.println("Contact is empty");
-                    return;
-                }
-                System.err.println("Calling "+contact);
-                
-                if (AccountUtils.getRegisteredProviders().size() > 1)
-                    showCallViaMenu(callButton, contact);
-                else
-                    createCall(contact);
-            }
-        });
-
-        String phoneNumber = null;
-        if (getIntent().getDataString() != null)
-            phoneNumber = PhoneNumberUtils.getNumberFromIntent( getIntent(),
-                    getApplicationContext());
-
-        if (phoneNumber != null && phoneNumber.length() > 0)
-        {
-            TextView callField = (TextView) findViewById(R.id.callField);
-            callField.setText(phoneNumber);
+            //Create new call contact fragment
+            String phoneNumber = null;
+            Intent intent = getIntent();
+            if (intent.getDataString() != null)
+                phoneNumber = PhoneNumberUtils.getNumberFromIntent( intent,
+                                                                    this);
+            Fragment ccFragment = CallContactFragment.newInstance(phoneNumber);
+            getFragmentManager()
+                    .beginTransaction()
+                    .add(android.R.id.content, ccFragment)
+                    .commit();
         }
-    }
-
-    private void createCall(final String destination)
-    {
-        Iterator<ProtocolProviderService> allProviders = 
-                AccountUtils.getRegisteredProviders().iterator();
-
-        if(!allProviders.hasNext())
-        {
-            logger.error("No registered providers found");
-            return;
-        }
-
-        createCall(destination, allProviders.next());
-    }
-
-    private void createCall( final String destination,
-                             final ProtocolProviderService provider)
-    {
-        new Thread()
-        {
-            public void run()
-            {
-                try
-                {
-                    CallManager.createCall(provider, destination);
-                }
-                catch(Throwable t)
-                {
-                    logger.error("Error creating the call: "+t.getMessage(), t);
-                    AndroidUtils.showAlertDialog(
-                            CallContactActivity.this,
-                            getString(R.string.service_gui_ERROR),
-                            t.getMessage());
-                }
-            }
-        }.start();
-    }
-
-    private void initAndroidAccounts()
-    {
-        android.accounts.AccountManager androidAccManager
-            = android.accounts.AccountManager.get(this);
-
-        Account[] androidAccounts
-            = androidAccManager.getAccountsByType(
-                getString(R.string.ACCOUNT_TYPE));
-
-        for (Account account: androidAccounts)
-        {
-            System.err.println("ACCOUNT======" + account);
-        }
-    }
-
-    /**
-     * Initializes accounts.
-     */
-    private void initAccounts()
-    {
-        AccountManager accountManager
-            = ServiceUtils.getService(bundleContext, AccountManager.class);
-
-        Iterator<AccountID> storedAccounts
-            = accountManager.getStoredAccounts().iterator();
-
-        while (storedAccounts.hasNext())
-        {
-            AccountID accountID = storedAccounts.next();
-
-            boolean isHidden = accountID.getAccountPropertyBoolean(
-                ProtocolProviderFactory.IS_PROTOCOL_HIDDEN, false);
-            System.err.println("Trying account "+accountID.getDisplayName()+
-                    " hidden? "+isHidden);
-            if (isHidden)
-                continue;
-
-            if (accountManager.isAccountLoaded(accountID))
-            {
-                ProtocolProviderService protocolProvider
-                    = AccountUtils.getRegisteredProviderForAccount(accountID);
-
-                if (protocolProvider != null)
-                {
-                    if (!protocolProvider.isRegistered())
-                    {
-                        Jitsi.getLoginManager().login(protocolProvider);
-                    }
-                    else
-                    {
-                        System.err.print("Acc "+accountID+" is logged in");
-                    }
-                    break;
-                }else
-                {
-                    System.err.println("No provider for "+accountID);
-                }
-            }else
-            {
-                System.err.println("Account not loaded: "+accountID);
-            }
-
-        }
-    }
-
-    /**
-     * Enables the call button.
-     */
-//    private void setCallButtonEnabled()
-//    {
-//        runOnUiThread(new Runnable()
-//        {
-//            public void run()
-//            {
-//                final ImageView callButton
-//                    = (ImageView) findViewById(R.id.callButtonFull);
-//
-//                callButton.setEnabled(true);
-//            }
-//        });
-//    }
-
-    /**
-     * 
-     * @param v
-     * @param destination
-     */
-    private void showCallViaMenu(View v, final String destination)
-    {
-        PopupMenu popup = new PopupMenu(this, v);
-
-        Menu menu = popup.getMenu();
-
-        Iterator<ProtocolProviderService> registeredProviders
-            = AccountUtils.getRegisteredProviders().iterator();
-
-        while (registeredProviders.hasNext())
-        {
-            final ProtocolProviderService provider = registeredProviders.next(); 
-            String accountAddress = provider.getAccountID().getAccountAddress();
-
-            MenuItem menuItem = menu.add(   Menu.NONE,
-                                            Menu.NONE,
-                                            Menu.NONE,
-                                            accountAddress);
-
-            menuItem.setOnMenuItemClickListener(
-                new MenuItem.OnMenuItemClickListener()
-            {
-                public boolean onMenuItemClick(MenuItem item)
-                {
-                    createCall(destination, provider);
-
-                    return false;
-                }
-            });
-        }
-
-        popup.show();
     }
 }

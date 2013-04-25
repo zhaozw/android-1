@@ -12,17 +12,26 @@ import android.os.*;
 import android.os.Bundle; // disambiguation
 
 import android.view.*;
+import net.java.sip.communicator.util.*;
 import org.jitsi.android.*;
 import org.osgi.framework.*;
+
+import java.util.*;
 
 /**
  * Implements a base <tt>Activity</tt> which employs OSGi.
  *
  * @author Lyubomir Marinov
+ * @author Pawel Domas
  */
 public class OSGiActivity
     extends Activity
 {
+    /**
+     * The logger
+     */
+    private final static Logger logger = Logger.getLogger(OSGiActivity.class);
+
     private BundleActivator bundleActivator;
 
     private BundleContext bundleContext;
@@ -32,14 +41,14 @@ public class OSGiActivity
     private ServiceConnection serviceConnection;
 
     /**
-     * The EXIT action name that is broadcasted to all OSGiActivities 
-     */
-    static final String EXIT_ACTION = "org.jitsi.android.exit";
-
-    /**
      * EXIT action listener that triggers closes the <tt>Activity</tt>
      */
     private ExitActionListener exitListener = new ExitActionListener();
+
+    /**
+     * List of attached {@link OSGiFragment}.
+     */
+    private List<OSGiFragment> osgiFrgaments = new ArrayList<OSGiFragment>();
     
     /**
      * Starts this osgi activity.
@@ -138,7 +147,7 @@ public class OSGiActivity
         // Registers exit action listener
         this.registerReceiver(
                 exitListener,
-                new IntentFilter(EXIT_ACTION));
+                new IntentFilter(JitsiApplication.ACTION_EXIT));
     }
 
     /**
@@ -221,11 +230,54 @@ public class OSGiActivity
     protected void start(BundleContext bundleContext)
         throws Exception
     {
+        // Starts children OSGI fragments.
+        for(OSGiFragment osGiFragment : osgiFrgaments)
+        {
+            osGiFragment.start(bundleContext);
+        }
     }
 
     protected void stop(BundleContext bundleContext)
         throws Exception
     {
+        // Stops children OSGI fragments.
+        for(OSGiFragment osGiFragment : osgiFrgaments)
+        {
+            osGiFragment.stop(bundleContext);
+        }
+    }
+
+    /**
+     * Registers child <tt>OSGiFragment</tt> to be notified on startup.
+     * @param fragment child <tt>OSGiFragment</tt>.
+     */
+    public void registerOSGiFragment(OSGiFragment fragment)
+    {
+        osgiFrgaments.add(fragment);
+
+        if(bundleContext != null)
+        {
+            // If context exists it means we have started already,
+            // so start the fragment immediately
+            try
+            {
+                fragment.start(bundleContext);
+            }
+            catch (Exception e)
+            {
+                logger.error("Error starting OSGiFragment.", e);
+            }
+        }
+    }
+
+    /**
+     * Unregisters child <tt>OSGiFragment</tt>.
+     *
+     * @param fragment the <tt>OSGiFragment</tt> that will be unregistered.
+     */
+    public void unregisterOSGiFragment(OSGiFragment fragment)
+    {
+        osgiFrgaments.remove(fragment);
     }
 
     /**
@@ -242,21 +294,6 @@ public class OSGiActivity
     }
 
     /**
-     * Shutdowns the app by stopping <tt>OSGiService</tt> and broadcasting 
-     * {@link #EXIT_ACTION}.
-     * 
-     */
-    protected void shutdownApplication()
-    {
-        // Shutdown the OSGi service
-        stopService(new Intent(this, OSGiService.class));
-        // Broadcast the exit action
-        Intent exitIntent = new Intent();
-        exitIntent.setAction(EXIT_ACTION);
-        sendBroadcast(exitIntent);
-    }
-
-    /**
      * Convenience method that switches from one activity to another.
      *
      * @param activityClass the activity class
@@ -264,6 +301,17 @@ public class OSGiActivity
     protected void switchActivity(Class<?> activityClass)
     {
         startActivity(activityClass);
+        finish();
+    }
+
+    /**
+     * Convenience method that switches from one activity to another.
+     *
+     * @param activityIntent the next activity <tt>Intent</tt>
+     */
+    protected void switchActivity(Intent activityIntent)
+    {
+        startActivity(activityIntent);
         finish();
     }
 
@@ -290,8 +338,17 @@ public class OSGiActivity
     }
 
     /**
-     * Broadcast listener that listens for {@link #EXIT_ACTION} and then 
-     * finishes this <tt>Activity</tt>
+     * Returns OSGI <tt>BundleContext</tt>.
+     * @return OSGI <tt>BundleContext</tt>.
+     */
+    protected BundleContext getBundlecontext()
+    {
+        return bundleContext;
+    }
+
+    /**
+     * Broadcast listener that listens for {@link JitsiApplication#ACTION_EXIT}
+     * and then finishes this <tt>Activity</tt>.
      * 
      */
     class ExitActionListener 

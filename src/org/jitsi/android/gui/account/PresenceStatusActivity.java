@@ -96,6 +96,7 @@ public class PresenceStatusActivity
     protected void start(BundleContext bundleContext)
             throws Exception
     {
+        super.start(bundleContext);
         // Get account ID from intent extras
         String accountIDStr = getIntent().getStringExtra(INTENT_ACCOUNT_ID);
         // Find account for given account ID
@@ -194,6 +195,8 @@ public class PresenceStatusActivity
     protected void stop(BundleContext bundleContext)
         throws Exception
     {
+        super.stop(bundleContext);
+
         commitStatusChanges();
     }
 

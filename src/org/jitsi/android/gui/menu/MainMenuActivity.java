@@ -12,6 +12,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.account.*;
 
 import org.jitsi.*;
+import org.jitsi.android.*;
 import org.jitsi.android.gui.account.*;
 import org.jitsi.service.osgi.*;
 
@@ -100,7 +101,7 @@ public class MainMenuActivity
             return true;
         case R.id.menu_exit:
             // Shutdown the app 
-            shutdownApplication();
+            JitsiApplication.shutdownApplication();
             return true;
         default:
             return super.onOptionsItemSelected(item);

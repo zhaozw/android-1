@@ -14,6 +14,7 @@ import android.app.*;
 import android.content.*;
 import net.java.sip.communicator.service.protocol.media.*;
 import org.jitsi.R;
+import org.jitsi.android.*;
 import org.jitsi.android.gui.util.*;
 import org.jitsi.android.gui.widgets.*;
 import org.jitsi.impl.neomedia.jmfext.media.protocol.mediarecorder.*;
@@ -288,7 +289,7 @@ public class VideoCallActivity
                 // Waits for camera to be stopped
                 previewSurfaceHandler.ensureCameraClosed();
 
-                switchActivity(CallContactActivity.class);
+                switchActivity(JitsiApplication.getHomeScreenActivityClass());
             }
         }).start();        
     }

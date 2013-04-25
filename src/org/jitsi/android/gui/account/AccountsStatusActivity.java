@@ -47,6 +47,7 @@ public class AccountsStatusActivity
     protected synchronized void start(BundleContext bundleContext)
         throws Exception
     {
+        super.start(bundleContext);
         /*
          * If there are unit tests to be run, do not run anything else and just
          * perform the unit tests.

@@ -14,7 +14,7 @@ import android.annotation.*;
 import android.app.*;
 import android.content.*;
 import android.os.*;
-import org.jitsi.android.gui.call.*;
+import org.jitsi.android.*;
 import org.jitsi.service.osgi.*;
 
 /**
@@ -38,10 +38,8 @@ public class AndroidUtils
                                         final int titleId,
                                         final int messageId)
     {
-        final Activity mainActivity = (Activity) context;
-
-        String title = mainActivity.getResources().getString(titleId);
-        String msg = mainActivity.getResources().getString(messageId);
+        String title = context.getResources().getString(titleId);
+        String msg = context.getResources().getString(messageId);
         showAlertDialog(context, title, msg);
         /**
          * TODO: currently not working
@@ -166,7 +164,7 @@ public class AndroidUtils
                 appContext.getString(R.string.app_name),
                 "",
                 System.currentTimeMillis(),
-                CallContactActivity.class);
+                JitsiApplication.getHomeScreenActivityClass());
     }
 
     /**

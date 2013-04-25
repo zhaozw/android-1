@@ -11,6 +11,7 @@ import android.content.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.call.*;
+import org.jitsi.android.*;
 import org.jitsi.android.gui.util.*;
 
 /**
@@ -71,7 +72,7 @@ public class AndroidCallListener
         {
         case CallEvent.CALL_ENDED:
             // Call Activity must close itself
-            //startCallContactActivity(evt);
+            //startHomeActivity(evt);
             // Clears the in call notification
             AndroidUtils.clearGeneralNotification(appContext);
             break;
@@ -110,6 +111,7 @@ public class AndroidCallListener
                 Intent receivedCallIntent
                     = new Intent(   appContext,
                                     ReceivedCallActivity.class);
+                receivedCallIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 String identifier = CallManager.addActiveCall(incomingCall);
 
@@ -136,13 +138,9 @@ public class AndroidCallListener
      *
      * @param evt the <tt>CallEvent</tt> that notified us
      */
-    private void startCallContactActivity(final CallEvent evt)
+    private void startHomeActivity(final CallEvent evt)
     {
-        Intent callContactIntent
-            = new Intent(   appContext,
-                            CallContactActivity.class);
-
-        appContext.startActivity(callContactIntent);
+        appContext.startActivity(JitsiApplication.getHomeIntent());
     }
 
     /**
