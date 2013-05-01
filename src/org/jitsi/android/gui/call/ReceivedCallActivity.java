@@ -9,7 +9,6 @@ package org.jitsi.android.gui.call;
 import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
 import org.jitsi.*;
-import org.jitsi.android.*;
 import org.jitsi.service.osgi.*;
 
 import android.content.*;
@@ -97,9 +96,7 @@ public class ReceivedCallActivity
         {
             public void onClick(View v)
             {
-                CallManager.hangupCall(call);
-
-                switchActivity(JitsiApplication.getHomeScreenActivityClass());
+                hangupCall();
             }
         });
 
@@ -153,6 +150,9 @@ public class ReceivedCallActivity
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onResume()
     {
@@ -168,12 +168,42 @@ public class ReceivedCallActivity
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void onPause()
     {
         call.removeCallChangeListener(this);
 
         super.onPause();
+    }
+
+    /**
+     * Hangs up the call and finishes this <tt>Activity</tt>.
+     */
+    private void hangupCall()
+    {
+        CallManager.hangupCall(call);
+
+        finish();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event)
+    {
+        if(keyCode == KeyEvent.KEYCODE_BACK)
+        {
+            // Hangs up the call when back is pressed as this Activity will be
+            // not displayed again.
+            hangupCall();
+
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     /**
