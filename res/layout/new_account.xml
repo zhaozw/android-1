@@ -67,15 +67,5 @@
             android:layout_gravity="center_horizontal"
             android:background="@drawable/signin_button"
             android:layout_marginBottom="@dimen/between_padding"/>
-
-        <Button
-            android:id="@+id/createAccountButton"
-            android:text="@string/service_gui_CREATE_ACCOUNT"
-            android:focusable="true" 
-            android:textColor="#ffffff"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/loginbutton"/>
     </LinearLayout>
 </RelativeLayout>
