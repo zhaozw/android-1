@@ -6,9 +6,8 @@
  */
 package org.jitsi.android.gui.account;
 
-import org.jitsi.android.gui.menu.*;
-
 import android.os.Bundle;
+import org.jitsi.service.osgi.*;
 
 /**
  * The <tt>AccountLoginActivity</tt> is the activity responsible for creating
@@ -18,7 +17,7 @@ import android.os.Bundle;
  * @author Pawel Domas
  */
 public class AccountLoginActivity
-    extends MainMenuActivity
+    extends OSGiActivity
 {
     /**
      * The username property name.

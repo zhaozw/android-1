@@ -14,7 +14,7 @@ import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.account.*;
 
 import org.jitsi.*;
-import org.jitsi.android.gui.menu.*;
+import org.jitsi.service.osgi.*;
 import org.osgi.framework.*;
 
 import java.util.*;
@@ -26,7 +26,7 @@ import java.util.*;
  * @author Pawel Domas
  */
 public class AccountEnableActivity
-    extends MainMenuActivity
+    extends OSGiActivity
 {
     /**
      * The logger

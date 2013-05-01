@@ -9,10 +9,9 @@ package org.jitsi.android.gui.call;
 import android.app.*;
 import android.content.*;
 
-import org.jitsi.android.gui.menu.*;
-
 import android.os.Bundle;
 import android.telephony.*;
+import org.jitsi.service.osgi.*;
 
 /**
  * Tha <tt>CallContactActivity</tt> can be used to call contact. The phone
@@ -22,7 +21,7 @@ import android.telephony.*;
  * @author Pawel Domas
  */
 public class CallContactActivity
-        extends MainMenuActivity
+        extends OSGiActivity
 {
     /**
      * Called when the activity is starting. Initializes the corresponding

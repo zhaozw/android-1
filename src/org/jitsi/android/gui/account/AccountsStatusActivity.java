@@ -11,7 +11,7 @@ import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.account.*;
 import org.jitsi.R;
-import org.jitsi.android.gui.menu.*;
+import org.jitsi.service.osgi.*;
 import org.osgi.framework.*;
 
 import android.view.*;
@@ -25,7 +25,7 @@ import java.util.*;
  * 
  */
 public class AccountsStatusActivity
-    extends MainMenuActivity
+    extends OSGiActivity
     implements AdapterView.OnItemClickListener
 {
     /**

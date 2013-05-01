@@ -21,10 +21,10 @@ import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.account.*;
 
 import org.jitsi.*;
-import org.jitsi.android.gui.menu.*;
 import org.jitsi.android.gui.util.*;
 import org.jitsi.android.gui.util.event.EventListener;/*Disambiguation*/
 
+import org.jitsi.service.osgi.*;
 import org.osgi.framework.*;
 
 import java.io.*;
@@ -41,7 +41,7 @@ import java.util.*;
  * @author Pawel Domas
  */
 public class PresenceStatusActivity
-    extends MainMenuActivity
+    extends OSGiActivity
     implements EventListener<AccountEvent>,
         AdapterView.OnItemSelectedListener
 {
