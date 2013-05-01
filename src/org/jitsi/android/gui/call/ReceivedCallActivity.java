@@ -6,6 +6,7 @@
  */
 package org.jitsi.android.gui.call;
 
+import net.java.sip.communicator.service.protocol.event.*;
 import net.java.sip.communicator.util.*;
 import org.jitsi.*;
 import org.jitsi.android.*;
@@ -24,9 +25,11 @@ import net.java.sip.communicator.util.call.*;
  * screen shown on incoming call.
  *
  * @author Yana Stamcheva
+ * @author Pawel Domas
  */
 public class ReceivedCallActivity
     extends OSGiActivity
+    implements CallChangeListener
 {
     /**
      * The logger
@@ -68,30 +71,25 @@ public class ReceivedCallActivity
             = (ImageView) findViewById(R.id.calleeAvatar);
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null)
+
+        displayNameView.setText(
+                extras.getString(CallManager.CALLEE_DISPLAY_NAME));
+
+        addressView.setText(extras.getString(CallManager.CALLEE_ADDRESS));
+
+        byte[] avatar = extras.getByteArray(CallManager.CALLEE_AVATAR);
+        if (avatar != null)
         {
-            String displayName
-                = extras.getString(CallManager.CALLEE_DISPLAY_NAME);
-
-            if (displayName != null)
-                displayNameView.setText(displayName);
-
-            String address = extras.getString(CallManager.CALLEE_ADDRESS);
-            if (address != null)
-                addressView.setText(address);
-
-            byte[] avatar = extras.getByteArray(CallManager.CALLEE_AVATAR);
-            if (avatar != null)
-            {
-                Bitmap bitmap
-                    = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
-                avatarView.setImageBitmap(bitmap);
-            }
-
-            callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
-
-            call = CallManager.getActiveCall(callIdentifier);
+            Bitmap bitmap
+                = BitmapFactory.decodeByteArray(avatar, 0, avatar.length);
+            avatarView.setImageBitmap(bitmap);
         }
+
+        callIdentifier = extras.getString(CallManager.CALL_IDENTIFIER);
+        call = CallManager.getActiveCall(callIdentifier);
+        if(call == null)
+            throw new IllegalArgumentException(
+                    "There is no call with ID: "+callIdentifier);
 
         ImageView hangupView = (ImageView) findViewById(R.id.hangupButton);
 
@@ -99,13 +97,9 @@ public class ReceivedCallActivity
         {
             public void onClick(View v)
             {
-                if (call != null)
-                {
-                    CallManager.hangupCall(call);
+                CallManager.hangupCall(call);
 
-                    switchActivity(
-                            JitsiApplication.getHomeScreenActivityClass());
-                }
+                switchActivity(JitsiApplication.getHomeScreenActivityClass());
             }
         });
 
@@ -115,10 +109,7 @@ public class ReceivedCallActivity
         {
             public void onClick(View v)
             {
-                if (call != null)
-                {
-                    answerCall(call, false);
-                }
+                answerCall(call, false);
             }
         });
     }
@@ -160,6 +151,65 @@ public class ReceivedCallActivity
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if(call.getCallState().equals(CallState.CALL_ENDED))
+        {
+            finish();
+        }
+        else
+        {
+            call.addCallChangeListener(this);
+        }
+    }
+
+    @Override
+    protected void onPause()
+    {
+        call.removeCallChangeListener(this);
+
+        super.onPause();
+    }
+
+    /**
+     * Indicates that a new call peer has joined the source call.
+     *
+     * @param evt the <tt>CallPeerEvent</tt> containing the source call
+     *            and call peer.
+     */
+    public void callPeerAdded(CallPeerEvent evt)
+    {
+
+    }
+
+    /**
+     * Indicates that a call peer has left the source call.
+     *
+     * @param evt the <tt>CallPeerEvent</tt> containing the source call
+     *            and call peer.
+     */
+    public void callPeerRemoved(CallPeerEvent evt)
+    {
+
+    }
+
+    /**
+     * Indicates that a change has occurred in the state of the source call.
+     *
+     * @param evt the <tt>CallChangeEvent</tt> instance containing the source
+     *            calls and its old and new state.
+     */
+    public void callStateChanged(CallChangeEvent evt)
+    {
+        if(evt.getNewValue().equals(CallState.CALL_ENDED))
+        {
+            finish();
+        }
     }
 }
 
