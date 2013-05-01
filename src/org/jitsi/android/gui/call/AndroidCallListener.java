@@ -80,7 +80,15 @@ public class AndroidCallListener
             startVideoCallActivity(evt);
             break;
         case CallEvent.CALL_RECEIVED:
-            startReceivedCallActivity(evt);
+            if(CallManager.getActiveCallsCount() > 0)
+            {
+                // Reject if there are active calls
+                CallManager.hangupCall(evt.getSourceCall());
+            }
+            else
+            {
+                startReceivedCallActivity(evt);
+            }
             break;
         }
     }

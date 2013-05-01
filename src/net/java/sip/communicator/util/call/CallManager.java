@@ -90,6 +90,19 @@ public class CallManager
     }
 
     /**
+     * Returns the number of currently active calls.
+     *
+     * @return the number of currently active calls.
+     */
+    public synchronized static int getActiveCallsCount()
+    {
+        synchronized (activeCalls)
+        {
+            return activeCalls.size();
+        }
+    }
+
+    /**
      * Hang ups the given call.
      *
      * @param call the call to hang up
