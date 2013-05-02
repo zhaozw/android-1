@@ -8,7 +8,10 @@
     <string name="in_call_with">In call with </string>
     <string name="settings">Settings</string>
     <string name="username">username</string>
+    <string name="username_label">Username:</string>
     <string name="password">password</string>
+    <string name="password_label">Password:</string>
+    <string name="store_password">Remember password</string>
     <string name="sign_in">Sign in</string>
     <string name="network">Network</string>
     <string name="choose_network">Choose a network</string>
@@ -51,16 +54,30 @@
         We failed to create your account due to the following error:
     </string>
 
+    <!-- Plugin reconnect -->
+    <string name="plugin_reconnectplugin_CONNECTION_FAILED_MSG">
+        Connection failed for the following account:\n
+        User name: {0}, Server name: {1}.\n
+        Please check your settings or contact your network administrator for more information.
+    </string>
+    <string name="plugin_reconnectplugin_NETWORK_DOWN">
+        Network connectivity lost!
+    </string>
+
     <!-- General -->
     <string name="service_gui_CLOSE">Close</string>
+    <string name="service_gui_OK">Ok</string>
     <string name="service_gui_CANCEL">Cancel</string>
     <string name="service_gui_SEARCH">Search</string>
     <string name="service_gui_ADD_CONTACT">Add contact</string>
     <string name="service_gui_ONLINE">Online</string>
     <string name="service_gui_RETRY">Retry</string>
     <string name="service_gui_ERROR">Error</string>
+    <string name="service.gui.AUTHENTICATION_FAILED">
+        Authentication failed for {0}. The password you entered is not valid.
+    </string>
     <string name="service_gui_CONNECTION_FAILED_MSG">Connection failed for the
-        following account: User name: %1$s, Server name: %2$s. Please check your
+        following account: User name: {0}, Server name: {1}. Please check your
         network connection or contact your network administrator for more
         information.</string>
     <string name="service_gui_NEW_ACCOUNT">Add new account</string>

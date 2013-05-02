@@ -31,6 +31,22 @@ public class ViewUtil
         tv.setText(text);
     }
 
+    public static String getTextViewValue(View container, int id)
+    {
+        return ((TextView)container.findViewById(id)).getText().toString();
+    }
+
+    public static boolean isCompoundChecked(View container, int id)
+    {
+        return ((CompoundButton)container.findViewById(id)).isChecked();
+    }
+
+    public static void setCompoundChecked( View container, int id,
+                                           boolean isChecked)
+    {
+        ((CompoundButton)container.findViewById(id)).setChecked(isChecked);
+    }
+
     /**
      * Sets image identified by <tt>drawableId</tt> resource id on the
      * <tt>ImageView</tt>. <tt>ImageView</tt> must exist in <tt>container</tt>

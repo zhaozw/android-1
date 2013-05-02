@@ -15,6 +15,7 @@ import android.app.*;
 import android.content.*;
 import android.os.*;
 import org.jitsi.android.*;
+import org.jitsi.android.gui.*;
 import org.jitsi.service.osgi.*;
 
 /**
@@ -23,6 +24,7 @@ import org.jitsi.service.osgi.*;
  * etc.
  *
  * @author Yana Stamcheva
+ * @author Pawel Domas
  */
 public class AndroidUtils
 {
@@ -41,20 +43,6 @@ public class AndroidUtils
         String title = context.getResources().getString(titleId);
         String msg = context.getResources().getString(messageId);
         showAlertDialog(context, title, msg);
-        /**
-         * TODO: currently not working
-         * mainActivity.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                new AlertDialog.Builder(mainActivity)
-                    .setIcon(R.drawable.icon)
-                    .setTitle(titleId)
-                    .setMessage(messageId)
-                    .setNeutralButton(R.string.service_gui_CLOSE, null)
-                    .show();
-            }
-        });**/
     }
 
     /**
@@ -65,30 +53,21 @@ public class AndroidUtils
      * @param title the title identifier in the resources
      * @param message the message identifier in the resources
      * @param button the confirm button string identifier
-     * @param listener the <tt>DialogInterface.OnClickListener</tt> to attach to
+     * @param listener the <tt>DialogInterface.DialogListener</tt> to attach to
      * the confirm button
      */
     public static void showAlertConfirmDialog(  Context context,
                                                 final String title,
                                                 final String message,
                                                 final String button,
-                                                final DialogInterface.OnClickListener listener)
+                                                final DialogActivity.DialogListener listener)
     {
-        final Activity mainActivity = (Activity) context;
-
-        mainActivity.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                new AlertDialog.Builder(mainActivity)
-                .setIcon(R.drawable.icon)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(button, listener)
-                .setNeutralButton(R.string.service_gui_CANCEL, null)
-                .show();
-            }
-        });
+        DialogActivity.showConfirmDialog(
+                context,
+                title,
+                message,
+                button,
+                listener);
     }
 
     /**
@@ -103,23 +82,7 @@ public class AndroidUtils
                                         final String title,
                                         final String message)
     {
-        System.err.println("Alert!!! T: "+title+" M: "+message);
-        /*
-        TODO: causes JVM to crash, because Jitsi activity is closed
-        final Activity mainActivity = (Activity) context;
-
-        mainActivity.runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
-                new AlertDialog.Builder(mainActivity)
-                    .setIcon(R.drawable.icon)
-                    .setTitle(title)
-                    .setMessage(message)
-                    .setNeutralButton(R.string.service_gui_CLOSE, null)
-                    .show();
-            }
-        });*/
+        DialogActivity.showDialog(context, title, message);
     }
 
     /**

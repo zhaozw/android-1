@@ -331,7 +331,7 @@ public class PresenceStatusActivity
                     logger.trace("Publishing status "+status+" msg: "+text);
                     accountPresence.publishPresenceStatus(status, text);
                 }
-                catch (OperationFailedException e)
+                catch (Exception e)
                 {
                     logger.error(e);
 

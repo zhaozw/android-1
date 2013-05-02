@@ -13,7 +13,9 @@ import net.java.sip.communicator.util.*;
 import net.java.sip.communicator.util.account.*;
 import org.jitsi.android.*;
 import org.jitsi.android.gui.account.*;
+import org.jitsi.android.gui.login.*;
 import org.jitsi.android.gui.util.*;
+import org.jitsi.service.resources.*;
 import org.osgi.framework.*;
 
 /**
@@ -35,15 +37,25 @@ public class AndroidGUIActivator
     private static LoginManager loginManager;
 
     /**
+     * The OSGI bundle context.
+     */
+    public static BundleContext bundleContext;
+
+    /**
      * {@inheritDoc}
      */
     public void start(BundleContext bundleContext)
             throws Exception
     {
+        AndroidGUIActivator.bundleContext = bundleContext;
+
         Context androidContext = JitsiApplication.getGlobalContext();
 
+        SecurityAuthority secuirtyAuthority
+                = new AndroidSecurityAuthority(androidContext);
+
         AndroidLoginRenderer loginRenderer
-                = new AndroidLoginRenderer(androidContext);
+                = new AndroidLoginRenderer(androidContext, secuirtyAuthority);
 
         loginManager = new LoginManager(loginRenderer);
 
@@ -54,6 +66,14 @@ public class AndroidGUIActivator
         bundleContext.registerService(
                 AlertUIService.class.getName(),
                 alertServiceImpl,
+                null);
+
+        // Registers UIService stub
+        AndroidUIService uiService = new AndroidUIService( secuirtyAuthority);
+
+        bundleContext.registerService(
+                UIService.class.getName(),
+                uiService,
                 null);
 
         AccountManager accountManager
@@ -78,6 +98,17 @@ public class AndroidGUIActivator
             throws Exception
     {
 
+    }
+
+    /**
+     * Returns <tt>ResourceManagementService</tt>.
+     *
+     * @return the <tt>ResourceManagementService</tt>.
+     */
+    public static ResourceManagementService getResourcesService()
+    {
+        return ServiceUtils.getService( bundleContext,
+                                        ResourceManagementService.class);
     }
 
     /**

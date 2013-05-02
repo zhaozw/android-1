@@ -15,9 +15,7 @@ import org.jitsi.android.gui.*;
 import org.jitsi.android.gui.call.*;
 import org.jitsi.android.gui.util.*;
 
-import android.app.*;
 import android.content.*;
-import android.content.DialogInterface.OnClickListener;
 
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -55,21 +53,26 @@ public class AndroidLoginRenderer
     private ProviderPresenceStatusListener androidPresenceListener;
 
     /**
-     * The credentials lock object.
+     * The security authority used by this login renderer.
      */
-    private final Object credentialsLock = new Object();
+    private final SecurityAuthority securityAuthority;
 
     /**
      * Creates an instance of <tt>AndroidLoginRenderer</tt> by specifying the
      * current <tt>Context</tt>.
      *
      * @param appContext the current android application context
+     * @param defaultSecurityAuthority the security authority that will be used
+     *        by this login renderer
      */
-    public AndroidLoginRenderer(Context appContext)
+    public AndroidLoginRenderer( Context appContext,
+                                 SecurityAuthority defaultSecurityAuthority )
     {
         this.androidContext = appContext;
 
         androidCallListener = new AndroidCallListener(appContext);
+
+        securityAuthority = defaultSecurityAuthority;
     }
 
     /**
@@ -184,11 +187,16 @@ public class AndroidLoginRenderer
                 accountID.getUserID(),
                 accountID.getService()),
             androidContext.getString(R.string.service_gui_RETRY),
-            new OnClickListener()
+            new DialogActivity.DialogListener()
             {
-                public void onClick(DialogInterface dialog, int which)
+                public void onConfirmClicked(DialogActivity dialog)
                 {
                     loginManagerCallback.login(protocolProvider);
+                }
+
+                public void onDialogCancelled(DialogActivity dialog)
+                {
+
                 }
             });
     }
@@ -206,87 +214,6 @@ public class AndroidLoginRenderer
         ProtocolProviderService protocolProvider)
     {
         return securityAuthority;
-    }
-
-    /**
-     * The security authority implementation used by this login renderer.
-     */
-    private final SecurityAuthority securityAuthority
-        = new SecurityAuthority()
-        {
-            public boolean isUserNameEditable()
-            {
-                return false;
-            }
-
-            public UserCredentials obtainCredentials(
-                    String realm,
-                    UserCredentials userCredentials)
-            {
-                String userName = userCredentials.getUserName();
-                char[] password = userCredentials.getPassword();
-
-                final Intent loginIntent
-                    = new Intent(androidContext, AccountLoginActivity.class);
-
-                if (userName != null && userName.length() > 0)
-                    loginIntent.putExtra(
-                        AccountLoginActivity.USERNAME, userName);
-
-                if (password != null && password.length > 0)
-                    loginIntent.putExtra(
-                        AccountLoginActivity.PASSWORD, password);
-
-                if (androidContext instanceof Activity)
-                    ((Activity) androidContext).runOnUiThread(
-                        new Runnable()
-                        {
-                            public void run()
-                            {
-                                ((Activity) androidContext)
-                                    .startActivityForResult(
-                                        loginIntent,
-                                        Jitsi.OBTAIN_CREDENTIALS);
-                            }
-                        });
-
-//                try
-//                {
-//                    credentialsLock.wait();
-//                }
-//                catch (InterruptedException e)
-//                {
-//                    System.err.println("Failed to obtain credentials: " + e);
-//                }
-
-                return userCredentials;
-            }
-
-            public UserCredentials obtainCredentials(
-                    String realm,
-                    UserCredentials defaultValues,
-                    int reasonCode)
-            {
-                AndroidUtils.showAlertDialog(
-                    androidContext,
-                    R.string.service_gui_LOGIN_FAILED,
-                    R.string.service_gui_USER_EXISTS_ERROR);
-
-                return null;
-            }
-
-            public void setUserNameEditable(boolean isUserNameEditable)
-            {
-                System.err.println("SET USERNAME EDITABLE===================");
-            }
-        };
-
-    /**
-     * Notify that credentials are ready to be passed to the protocol.
-     */
-    public void credentialsReady()
-    {
-        credentialsLock.notify();
     }
 
     /**
