@@ -163,6 +163,7 @@ public class AndroidCallListener
                 = VideoCallActivity.createVideoCallIntent(
                         appContext,
                         callIdentifier);
+        videoCall.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appContext.startActivity(videoCall);
     }
 }
