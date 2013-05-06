@@ -15,8 +15,8 @@
 
     <SurfaceView
         android:id="@+id/previewDisplay"
-        android:layout_width="320dp"
-        android:layout_height="240dp"
+        android:layout_width="160dp"
+        android:layout_height="120dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:visibility="gone"/>
