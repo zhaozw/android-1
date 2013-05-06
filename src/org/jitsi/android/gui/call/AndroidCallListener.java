@@ -75,6 +75,8 @@ public class AndroidCallListener
             //startHomeActivity(evt);
             // Clears the in call notification
             AndroidUtils.clearGeneralNotification(appContext);
+            // Removes the call from active calls list
+            CallManager.removeActiveCall(evt.getSourceCall());
             break;
         case CallEvent.CALL_INITIATED:
             startVideoCallActivity(evt);
