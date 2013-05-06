@@ -15,6 +15,7 @@ import android.content.*;
 import net.java.sip.communicator.service.protocol.media.*;
 import org.jitsi.R;
 import org.jitsi.android.*;
+import org.jitsi.android.gui.controller.*;
 import org.jitsi.android.gui.util.*;
 import org.jitsi.android.gui.widgets.*;
 import org.jitsi.impl.neomedia.jmfext.media.protocol.mediarecorder.*;
@@ -184,8 +185,7 @@ public class VideoCallActivity
 
         calleeAvatar = (ImageView) findViewById(R.id.calleeAvatar);
 
-        previewDisplay
-            = (SurfaceView) findViewById(R.id.previewDisplay);
+        previewDisplay = (SurfaceView) findViewById(R.id.previewDisplay);
         
         // Creates and registers surface handler for events
         this.previewSurfaceHandler = new CameraPreviewSurfaceHandler();            
@@ -197,19 +197,24 @@ public class VideoCallActivity
         // Preview display will be displayed on top of remote video
         previewDisplay.setZOrderMediaOverlay(true);
 
+        // Makes the preview display draggable on the screen
+        previewDisplay.setOnTouchListener(new SimpleDragController());
+
         // Registers as the call state listener
         call.addCallChangeListener(this);
 
-        sasToastController = new ClickableToastController(
-                findViewById(R.id.clickable_toast),
-                new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                showZrtpInfoDialog();
-                sasToastController.hideToast(true);
-            }
-        },R.id.toast_msg);
+        sasToastController
+            = new ClickableToastController(
+                    findViewById(R.id.clickable_toast),
+                    new View.OnClickListener()
+                    {
+                        public void onClick(View v)
+                        {
+                            showZrtpInfoDialog();
+                            sasToastController.hideToast(true);
+                        }
+                    },
+                    R.id.toast_msg);
 
     }
 
