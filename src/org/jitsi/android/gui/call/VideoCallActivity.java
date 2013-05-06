@@ -194,6 +194,9 @@ public class VideoCallActivity
                 .setPreviewSurfaceProvider(previewSurfaceHandler);            
         previewDisplay.getHolder().addCallback(previewSurfaceHandler);
 
+        // Preview display will be displayed on top of remote video
+        previewDisplay.setZOrderMediaOverlay(true);
+
         // Registers as the call state listener
         call.addCallChangeListener(this);
 
@@ -646,7 +649,7 @@ public class VideoCallActivity
         int width = -1;
         int height = -1;
 
-        if(remoteVideoView == null)
+        if(remoteVideoView == null || visualComponent == null)
         {
             // There's no remote video View, so returns invalid size
             return new Dimension(width, height);
