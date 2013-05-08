@@ -10,13 +10,13 @@ import android.app.*;
 import org.osgi.framework.*;
 
 /**
- * Class can be used to build {@link Fragment}s that require OSGI services
+ * Class can be used to build {@link DialogFragment}s that require OSGI services
  * access.
  *
  * @author Pawel Domas
  */
-public class OSGiFragment
-    extends Fragment
+public class OSGiDialogFragment
+    extends DialogFragment
     implements OSGiUiPart
 {
     /**

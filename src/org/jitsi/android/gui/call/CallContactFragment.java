@@ -55,7 +55,7 @@ public class CallContactFragment
      * {@inheritDoc}
      */
     @Override
-    protected synchronized void start(BundleContext bundleContext)
+    public synchronized void start(BundleContext bundleContext)
             throws Exception
     {
         super.start(bundleContext);

@@ -86,6 +86,8 @@
 
     <!-- Call -->
     <string name="service_gui_VOLUME_CONTROL_TOOL_TIP">Adjust volume</string>
+    <string name="service_gui_VOLUME_CONTROL_TITLE">Output volume gain level</string>
+    <string name="service_gui_MIC_CONTROL_TITLE">Microphone gain level</string>
     <string name="service_gui_MUTE_BUTTON_TOOL_TIP">Adjust microphone sound</string>
     <string name="service_gui_LOCAL_VIDEO_BUTTON_TOOL_TIP">Toggle video</string>
     <string name="service_gui_SEND_MESSAGE">Send a message</string>

@@ -46,9 +46,9 @@ public class OSGiActivity
     private ExitActionListener exitListener = new ExitActionListener();
 
     /**
-     * List of attached {@link OSGiFragment}.
+     * List of attached {@link OSGiUiPart}.
      */
-    private List<OSGiFragment> osgiFrgaments = new ArrayList<OSGiFragment>();
+    private List<OSGiUiPart> osgiFrgaments = new ArrayList<OSGiUiPart>();
     
     /**
      * Starts this osgi activity.
@@ -231,7 +231,7 @@ public class OSGiActivity
         throws Exception
     {
         // Starts children OSGI fragments.
-        for(OSGiFragment osGiFragment : osgiFrgaments)
+        for(OSGiUiPart osGiFragment : osgiFrgaments)
         {
             osGiFragment.start(bundleContext);
         }
@@ -241,17 +241,18 @@ public class OSGiActivity
         throws Exception
     {
         // Stops children OSGI fragments.
-        for(OSGiFragment osGiFragment : osgiFrgaments)
+        for(OSGiUiPart osGiFragment : osgiFrgaments)
         {
             osGiFragment.stop(bundleContext);
         }
     }
 
     /**
-     * Registers child <tt>OSGiFragment</tt> to be notified on startup.
-     * @param fragment child <tt>OSGiFragment</tt>.
+     * Registers child <tt>OSGiUiPart</tt> to be notified on startup.
+     * @param fragment child <tt>OSGiUiPart</tt> contained in this
+     *        <tt>Activity</tt>.
      */
-    public void registerOSGiFragment(OSGiFragment fragment)
+    public void registerOSGiFragment(OSGiUiPart fragment)
     {
         osgiFrgaments.add(fragment);
 
@@ -265,18 +266,29 @@ public class OSGiActivity
             }
             catch (Exception e)
             {
-                logger.error("Error starting OSGiFragment.", e);
+                logger.error("Error starting OSGiFragment", e);
             }
         }
     }
 
     /**
-     * Unregisters child <tt>OSGiFragment</tt>.
+     * Unregisters child <tt>OSGiUiPart</tt>.
      *
-     * @param fragment the <tt>OSGiFragment</tt> that will be unregistered.
+     * @param fragment the <tt>OSGiUiPart</tt> that will be unregistered.
      */
-    public void unregisterOSGiFragment(OSGiFragment fragment)
+    public void unregisterOSGiFragment(OSGiUiPart fragment)
     {
+        if(bundleContext != null)
+        {
+            try
+            {
+                fragment.stop(bundleContext);
+            }
+            catch (Exception e)
+            {
+                logger.error("Error while trying to stop OSGiFragment", e);
+            }
+        }
         osgiFrgaments.remove(fragment);
     }
 

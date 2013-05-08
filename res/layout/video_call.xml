@@ -99,7 +99,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:onClick="onCallVolumeClicked"/>
 
         <ImageButton
             android:id="@+id/callMicrophoneButton"

@@ -12,7 +12,9 @@ import java.util.*;
 
 import android.app.*;
 import android.content.*;
+import android.media.*;
 import net.java.sip.communicator.service.protocol.media.*;
+import net.sf.fmj.media.multiplexer.audio.*;
 import org.jitsi.R;
 import org.jitsi.android.*;
 import org.jitsi.android.gui.controller.*;
@@ -179,7 +181,6 @@ public class VideoCallActivity
             addCallPeerUI(callPeerIter.next());
         }
 
-        initVolumeView();
         initMicrophoneView();
         initHangupView();
 
@@ -356,6 +357,16 @@ public class VideoCallActivity
                 CallManager.setMute(call, !isMuted());
             }
         });
+        microphoneButton.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            public boolean onLongClick(View view)
+            {
+                DialogFragment newFragment
+                        = VolumeControlDialog.createInputVolCtrlDialog();
+                newFragment.show(getFragmentManager(), "vol_ctrl_dialog");
+                return true;
+            }
+        });
     }
 
     /**
@@ -407,19 +418,55 @@ public class VideoCallActivity
     }
 
     /**
-     * Initializes the volume button view.
+     * Fired when call volume control button is clicked.
+     * @param v the call volume control <tt>View</tt>.
      */
-    private void initVolumeView()
+    public void onCallVolumeClicked(View v)
     {
-        ImageView volumeButton
-            = (ImageView) findViewById(R.id.callVolumeButton);
+        // Create and show the dialog.
+        DialogFragment newFragment
+                = VolumeControlDialog.createOutputVolCtrlDialog();
+        newFragment.show(getFragmentManager(), "vol_ctrl_dialog");
+    }
 
-        volumeButton.setOnClickListener(new View.OnClickListener()
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event)
+    {
+        /**
+         * The call to:
+         * setVolumeControlStream(AudioManager.STREAM_VOICE_CALL)
+         * doesn't work when notification was being played during this Activity
+         * creation, so the buttons must be captured and the voice call level
+         * will be manipulated programmatically.
+         */
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode)
         {
-            public void onClick(View v)
-            {
-            }
-        });
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_UP)
+                {
+                    ((AudioManager)getSystemService(Context.AUDIO_SERVICE))
+                            .adjustStreamVolume(AudioManager.STREAM_VOICE_CALL,
+                                                AudioManager.ADJUST_RAISE,
+                                                AudioManager.FLAG_SHOW_UI);
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (action == KeyEvent.ACTION_DOWN)
+                {
+                    ((AudioManager)getSystemService(Context.AUDIO_SERVICE))
+                            .adjustStreamVolume(AudioManager.STREAM_VOICE_CALL,
+                                                AudioManager.ADJUST_LOWER,
+                                                AudioManager.FLAG_SHOW_UI);
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
+        }
     }
 
     /**
@@ -450,6 +497,8 @@ public class VideoCallActivity
     protected void onResume()
     {
         super.onResume();
+
+
 
         // Clears the in call notification
         if(isInCallNotificationLeft)

@@ -71,7 +71,7 @@ public class AccountLoginFragment
      * @param bundleContext the osgi <tt>BundleContext</tt>
      * @throws Exception
      */
-    protected synchronized void start(BundleContext bundleContext)
+    public synchronized void start(BundleContext bundleContext)
         throws Exception
     {
         super.start(bundleContext);
